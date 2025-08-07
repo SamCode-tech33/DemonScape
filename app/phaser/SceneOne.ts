@@ -1,5 +1,4 @@
 import Phaser from "phaser";
-
 export default class SceneOne extends Phaser.Scene {
   player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
@@ -9,6 +8,7 @@ export default class SceneOne extends Phaser.Scene {
   npc!: Phaser.Physics.Arcade.Sprite;
   enemy!: Phaser.Physics.Arcade.Sprite;
   controls!: Phaser.GameObjects.Text;
+  backgroundMusic!: Phaser.Sound.BaseSound;
   void!: number;
   isJumping = false;
 
@@ -18,6 +18,7 @@ export default class SceneOne extends Phaser.Scene {
 
   preload() {
     this.load.tilemapTiledJSON("map", "/assets/level-1-dungeon.json");
+    this.load.audio("bgm-1", "assets/music/in-the-end.mp3");
 
     this.load.image(
       "wall-8 - 2 tiles tall-transparency",
@@ -34,7 +35,6 @@ export default class SceneOne extends Phaser.Scene {
     this.load.image("Tileset-Terrain2", "/assets/Tileset-Terrain2.png");
 
     // PLAYER
-
     this.load.spritesheet("idle", "assets/player/idle.png", {
       frameWidth: 64,
       frameHeight: 64,
@@ -169,18 +169,29 @@ export default class SceneOne extends Phaser.Scene {
       .setDepth(7)
       .setCollideWorldBounds(true);
 
-    // NPCS
+    // MUSIC
 
+    this.backgroundMusic = this.sound.add("bgm-1", {
+      loop: true,
+      volume: 0.7,
+    });
+    this.backgroundMusic.play();
+
+    // NPCS
     this.npc = this.physics.add
       .sprite(128, 720, "sgr", 0)
       .setDepth(7)
       .setCollideWorldBounds(true);
 
     // KEY SETTINGS
-    this.cursors = this.input.keyboard!.createCursorKeys();
-    this.spaceKey = this.input.keyboard!.addKey(
-      Phaser.Input.Keyboard.KeyCodes.SPACE
-    );
+    this.cursors = this.input.keyboard!.addKeys({
+      up: Phaser.Input.Keyboard.KeyCodes.W,
+      down: Phaser.Input.Keyboard.KeyCodes.S,
+      left: Phaser.Input.Keyboard.KeyCodes.A,
+      right: Phaser.Input.Keyboard.KeyCodes.D,
+      space: Phaser.Input.Keyboard.KeyCodes.SPACE,
+      shift: Phaser.Input.Keyboard.KeyCodes.SHIFT,
+    }) as Phaser.Types.Input.Keyboard.CursorKeys;
 
     // ZOMBIES
     this.enemy = this.physics.add
@@ -200,9 +211,15 @@ export default class SceneOne extends Phaser.Scene {
 
     //CONTROLS HELP BOX
     this.controls = this.add
-      .text(0, 0, "Movement: WASD / Jump: Space / Run: Hold Shift", {
-        color: "white",
-      })
+      .text(
+        this.scale.width - 100,
+        20,
+        "Movement: WASD / Jump: Space / Run: Hold Shift",
+        {
+          fontSize: "24px",
+          color: "white",
+        }
+      )
       .setOrigin(0, 0);
 
     //VOID CLEANSE POINTS
@@ -353,6 +370,11 @@ export default class SceneOne extends Phaser.Scene {
     const spaceKey = this.input.keyboard!.addKey(
       Phaser.Input.Keyboard.KeyCodes.SPACE
     );
+
+    //CONTROLS HELP BOX
+    this.controls
+      .setText("Movement: WASD / Jump: Space / Run: Hold Shift")
+      .setOrigin(0, 0);
 
     if (Phaser.Input.Keyboard.JustDown(spaceKey) && !this.isJumping) {
       this.isJumping = true;
