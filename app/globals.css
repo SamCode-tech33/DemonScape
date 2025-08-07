@@ -70,3 +70,32 @@ main {
   overflow: hidden;
   border: solid red 8px;
 }
+
+.hero {
+  font-size: 128px;
+  -webkit-text-stroke: 4px gold;
+}
+
+.demon-background {
+  background-image: url("/assets/demon-scape-cover.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+  width: 100%;
+  position: relative;
+  z-index: 0;
+}
+
+.flame-background {
+  background-image: url("/assets/flames.gif");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+  width: 100%;
+  position: relative;
+  z-index: -1;
+  opacity: 0.1;
+  position: absolute;
+}
