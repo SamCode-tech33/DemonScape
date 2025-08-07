@@ -1,7 +1,20 @@
 import Phaser from "phaser";
+
+type WASDAndArrowKeys = {
+  up: Phaser.Input.Keyboard.Key;
+  down: Phaser.Input.Keyboard.Key;
+  left: Phaser.Input.Keyboard.Key;
+  right: Phaser.Input.Keyboard.Key;
+  w: Phaser.Input.Keyboard.Key;
+  a: Phaser.Input.Keyboard.Key;
+  s: Phaser.Input.Keyboard.Key;
+  d: Phaser.Input.Keyboard.Key;
+  space: Phaser.Input.Keyboard.Key;
+  shift: Phaser.Input.Keyboard.Key;
+};
 export default class SceneOne extends Phaser.Scene {
   player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
-  cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
+  keys!: WASDAndArrowKeys;
   spaceKey!: Phaser.Input.Keyboard.Key;
   sword!: Phaser.Physics.Arcade.Group;
   magic!: Phaser.Physics.Arcade.Group;
@@ -11,6 +24,7 @@ export default class SceneOne extends Phaser.Scene {
   backgroundMusic!: Phaser.Sound.BaseSound;
   void!: number;
   isJumping = false;
+  lastDirection: string = "down";
 
   constructor() {
     super({ key: "SceneOne" });
@@ -71,7 +85,7 @@ export default class SceneOne extends Phaser.Scene {
       frameWidth: 64,
       frameHeight: 64,
     });
-    this.load.spritesheet("slash", "assets/player/slash.png", {
+    this.load.spritesheet("halfslash", "assets/player/halfslash.png", {
       frameWidth: 64,
       frameHeight: 64,
     });
@@ -184,14 +198,17 @@ export default class SceneOne extends Phaser.Scene {
       .setCollideWorldBounds(true);
 
     // KEY SETTINGS
-    this.cursors = this.input.keyboard!.addKeys({
-      up: Phaser.Input.Keyboard.KeyCodes.W,
-      down: Phaser.Input.Keyboard.KeyCodes.S,
-      left: Phaser.Input.Keyboard.KeyCodes.A,
-      right: Phaser.Input.Keyboard.KeyCodes.D,
+    this.keys = this.input.keyboard!.addKeys({
+      w: Phaser.Input.Keyboard.KeyCodes.W,
+      up: Phaser.Input.Keyboard.KeyCodes.UP,
+      s: Phaser.Input.Keyboard.KeyCodes.S,
+      down: Phaser.Input.Keyboard.KeyCodes.DOWN,
+      a: Phaser.Input.Keyboard.KeyCodes.A,
+      left: Phaser.Input.Keyboard.KeyCodes.LEFT,
+      d: Phaser.Input.Keyboard.KeyCodes.D,
+      right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
       space: Phaser.Input.Keyboard.KeyCodes.SPACE,
-      shift: Phaser.Input.Keyboard.KeyCodes.SHIFT,
-    }) as Phaser.Types.Input.Keyboard.CursorKeys;
+    }) as WASDAndArrowKeys;
 
     // ZOMBIES
     this.enemy = this.physics.add
@@ -354,6 +371,72 @@ export default class SceneOne extends Phaser.Scene {
       repeat: 0,
     });
 
+    //ATTACK ANIMATION
+    this.anims.create({
+      key: "halfslash-forward",
+      frames: this.anims.generateFrameNumbers("halfslash", {
+        start: 0,
+        end: 5,
+      }),
+      frameRate: 10,
+      repeat: 0,
+      yoyo: true,
+    });
+    this.anims.create({
+      key: "halfslash-left",
+      frames: this.anims.generateFrameNumbers("halfslash", {
+        start: 7,
+        end: 12,
+      }),
+      frameRate: 10,
+      repeat: 0,
+    });
+    this.anims.create({
+      key: "halfslash-down",
+      frames: this.anims.generateFrameNumbers("halfslash", {
+        start: 14,
+        end: 19,
+      }),
+      frameRate: 8,
+      repeat: 0,
+    });
+    this.anims.create({
+      key: "halfslash-right",
+      frames: this.anims.generateFrameNumbers("halfslash", {
+        start: 21,
+        end: 26,
+      }),
+      frameRate: 8,
+      repeat: 0,
+    });
+
+    // BACK TO IDLE ANIMATION
+
+    this.anims.create({
+      key: "idle-up",
+      frames: [{ key: "idle", frame: 0 }],
+      frameRate: 1,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "idle-left",
+      frames: [{ key: "idle", frame: 2 }],
+      frameRate: 1,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "idle-down",
+      frames: [{ key: "idle", frame: 4 }],
+      frameRate: 1,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "idle-right",
+      frames: [{ key: "idle", frame: 6 }],
+      frameRate: 1,
+      repeat: -1,
+    });
+
     // Camera follows player
     this.cameras.main.startFollow(this.player);
     this.cameras.main.setZoom(3.3);
@@ -376,66 +459,100 @@ export default class SceneOne extends Phaser.Scene {
       .setText("Movement: WASD / Jump: Space / Run: Hold Shift")
       .setOrigin(0, 0);
 
+    const moving =
+      this.keys.left.isDown ||
+      this.keys.right.isDown ||
+      this.keys.up.isDown ||
+      this.keys.down.isDown ||
+      this.keys.w.isDown ||
+      this.keys.a.isDown ||
+      this.keys.s.isDown ||
+      this.keys.d.isDown;
+
     if (Phaser.Input.Keyboard.JustDown(spaceKey) && !this.isJumping) {
       this.isJumping = true;
       let jumpAnim = "jump";
       let jumpDirection = () => this.player.setVelocity(0);
-      if (this.cursors.up?.isDown) {
+      if (this.keys.up?.isDown || this.keys.w?.isDown) {
         jumpAnim = "jump-up";
         jumpDirection = () => this.player.setVelocityY(-jumpSpeed);
-      } else if (this.cursors.left?.isDown) {
+        this.lastDirection = "up";
+      } else if (this.keys.left?.isDown || this.keys.a?.isDown) {
         jumpAnim = "jump-left";
         jumpDirection = () => this.player.setVelocityX(-jumpSpeed);
-      } else if (this.cursors.right?.isDown) {
+        this.lastDirection = "left";
+      } else if (this.keys.right?.isDown || this.keys.d?.isDown) {
         jumpAnim = "jump-right";
         jumpDirection = () => this.player.setVelocityX(jumpSpeed);
-      } else if (this.cursors.down?.isDown) {
+        this.lastDirection = "right";
+      } else if (this.keys.down?.isDown || this.keys.s?.isDown) {
         jumpAnim = "jump-down";
         jumpDirection = () => this.player.setVelocityY(jumpSpeed);
+        this.lastDirection = "down";
       }
       this.player.anims.play(jumpAnim, true);
       jumpDirection();
-      this.player.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+
+      this.time.delayedCall(700, () => {
         this.isJumping = false;
         this.player.setVelocity(0);
       });
       return;
     }
 
-    if (!this.isJumping) {
+    if (moving && !this.isJumping) {
       this.player.setVelocity(0);
       if (isRunning) {
-        if (this.cursors.up?.isDown) {
+        if (this.keys.up?.isDown || this.keys.w?.isDown) {
           this.player.setVelocityY(-runSpeed);
           this.player.anims.play("run-up", true);
-        } else if (this.cursors.left?.isDown) {
+          this.lastDirection = "up";
+        } else if (this.keys.left?.isDown || this.keys.a?.isDown) {
           this.player.setVelocityX(-runSpeed);
           this.player.anims.play("run-left", true);
-        } else if (this.cursors.down?.isDown) {
+          this.lastDirection = "left";
+        } else if (this.keys.down?.isDown || this.keys.s?.isDown) {
           this.player.setVelocityY(runSpeed);
           this.player.anims.play("run-down", true);
-        } else if (this.cursors.right?.isDown) {
+          this.lastDirection = "down";
+        } else if (this.keys.right?.isDown || this.keys.d?.isDown) {
           this.player.setVelocityX(runSpeed);
           this.player.anims.play("run-right", true);
+          this.lastDirection = "right";
         } else {
           this.player.anims.stop();
         }
       } else {
-        if (this.cursors.up?.isDown) {
+        if (this.keys.up?.isDown || this.keys.w?.isDown) {
           this.player.setVelocityY(-walkSpeed);
           this.player.anims.play("walk-up", true);
-        } else if (this.cursors.left?.isDown) {
+          this.lastDirection = "up";
+        } else if (this.keys.left?.isDown || this.keys.a?.isDown) {
           this.player.setVelocityX(-walkSpeed);
           this.player.anims.play("walk-left", true);
-        } else if (this.cursors.down?.isDown) {
+          this.lastDirection = "left";
+        } else if (this.keys.down?.isDown || this.keys.s?.isDown) {
           this.player.setVelocityY(walkSpeed);
           this.player.anims.play("walk-down", true);
-        } else if (this.cursors.right?.isDown) {
+          this.lastDirection = "down";
+        } else if (this.keys.right?.isDown || this.keys.d?.isDown) {
           this.player.setVelocityX(walkSpeed);
           this.player.anims.play("walk-right", true);
+          this.lastDirection = "right";
         } else {
           this.player.anims.stop();
         }
+      }
+    } else if (!this.isJumping) {
+      this.player.setVelocity(0);
+      if (this.lastDirection === "up") {
+        this.player.anims.play("idle-up", true);
+      } else if (this.lastDirection === "left") {
+        this.player.anims.play("idle-left", true);
+      } else if (this.lastDirection === "right") {
+        this.player.anims.play("idle-right", true);
+      } else {
+        this.player.anims.play("idle-down", true);
       }
     }
   }
