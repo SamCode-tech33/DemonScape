@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { gameConfig } from "../game/config";
 
 export default function GameCanvas() {
@@ -323,10 +323,6 @@ export default function GameCanvas() {
           const walkSpeed = 150;
           const jumpSpeed = 200;
           const runSpeed = 250;
-
-          // wallsLayer && this.physics.add.collider(this.player, wallsLayer, () => {
-          //   this.player.setVelocity(0);
-          // });
 
           const isRunning = this.input.keyboard!.addKey(
             Phaser.Input.Keyboard.KeyCodes.SHIFT

@@ -1,16 +1,15 @@
 "use client"
 
-import GameCanvas from "../components/GameCanvas";
 import dynamic from "next/dynamic";
 
-const gameCanvas = dynamic(() => import("../components/GameCanvas"), {
+const CanvasOne = dynamic(() => import("../components/CanvasOne"), {
   ssr: false,
 });
 
 export default function GamePage() {
   return (
     <main className="flex items-center justify-center h-screen">
-      <GameCanvas />
+      <CanvasOne />
     </main>
   );
 }
