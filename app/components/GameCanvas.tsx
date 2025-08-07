@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { gameConfig } from "../game/config";
 
 export default function GameCanvas() {
@@ -150,18 +150,37 @@ export default function GameCanvas() {
           );
           const fireLayer = map.createLayer("fire", tilesets, 0, 0);
 
+          const collisionLayer = map.getObjectLayer("Collision");
+          const colliders = this.physics.add.staticGroup();
+
+          collisionLayer &&
+            collisionLayer.objects.forEach((obj) => {
+              if (
+                obj.width !== undefined &&
+                obj.height !== undefined &&
+                obj.x !== undefined &&
+                obj.y !== undefined
+              ) {
+                const collider = colliders
+                  .create(obj.x + obj.width / 2, obj.y - obj.height / 2, "box")
+                  .setSize(obj.width, obj.height)
+                  .setVisible(false)
+                  .refreshBody();
+              }
+            });
+
           floorLayer && floorLayer.setDepth(1);
           rugLayer && rugLayer.setDepth(2);
-          hiddenFloorLayer && hiddenFloorLayer.setDepth(3);
-          floorObjectsLayer && floorObjectsLayer.setDepth(4);
-          wallsLayer && wallsLayer.setDepth(5);
-          wallThingsLayer && wallThingsLayer.setDepth(8);
-          surfaceItemsLayer && surfaceItemsLayer.setDepth(6);
+          wallsLayer && wallsLayer.setDepth(3);
+          wallThingsLayer && wallThingsLayer.setDepth(4);
+          hiddenFloorLayer && hiddenFloorLayer.setDepth(5);
+          floorObjectsLayer && floorObjectsLayer.setDepth(7);
+          surfaceItemsLayer && surfaceItemsLayer.setDepth(8);
           fireLayer && fireLayer.setDepth(9);
 
           // --- Player Setup ---
-          this.player = this.physics.add.sprite(415, 475, "idle", 0);
-          this.player.setDepth(7);
+          this.player = this.physics.add.sprite(320, 575, "idle", 0);
+          this.player.setDepth(6);
           this.player.setCollideWorldBounds(true);
           this.player.body.setAllowGravity(false);
           this.cursors = this.input.keyboard!.createCursorKeys();
@@ -297,13 +316,17 @@ export default function GameCanvas() {
 
           // Camera follows player
           this.cameras.main.startFollow(this.player);
-          this.cameras.main.setZoom(2.5);
+          this.cameras.main.setZoom(3.3);
         }
 
         update() {
           const walkSpeed = 150;
           const jumpSpeed = 200;
           const runSpeed = 250;
+
+          // wallsLayer && this.physics.add.collider(this.player, wallsLayer, () => {
+          //   this.player.setVelocity(0);
+          // });
 
           const isRunning = this.input.keyboard!.addKey(
             Phaser.Input.Keyboard.KeyCodes.SHIFT
