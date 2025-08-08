@@ -199,13 +199,13 @@ export default class SceneOne extends Phaser.Scene {
     wallThingsLayer && wallThingsLayer.setDepth(4);
     hiddenFloorLayer && hiddenFloorLayer.setDepth(5);
     floorObjectsLayer && floorObjectsLayer.setDepth(6);
-    surfaceItemsLayer && surfaceItemsLayer.setDepth(8);
-    fireLayer && fireLayer.setDepth(9);
+    surfaceItemsLayer && surfaceItemsLayer.setDepth(9);
+    fireLayer && fireLayer.setDepth(10);
 
     // PLAYER
     this.player = this.physics.add
       .sprite(416, 475, "idle", 4)
-      .setDepth(7)
+      .setDepth(8)
       .setCollideWorldBounds(true)
       .setBounce(1);
 
