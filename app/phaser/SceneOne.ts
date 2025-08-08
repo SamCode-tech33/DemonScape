@@ -617,7 +617,39 @@ export default class SceneOne extends Phaser.Scene {
       this.isJumping = true;
       let jumpAnim = "jump";
       let jumpDirection = () => this.player.setVelocity(0);
-      if (this.keys.up?.isDown || this.keys.w?.isDown) {
+      if (
+        (this.keys.right?.isDown && this.keys.up?.isDown) ||
+        (this.keys.d?.isDown && this.keys.w?.isDown)
+      ) {
+        jumpAnim = "jump-right";
+        jumpDirection = () =>
+          this.player.setVelocity(jumpSpeed / 2, -jumpSpeed / 2);
+        this.lastDirection = "right";
+      } else if (
+        (this.keys.left?.isDown && this.keys.up?.isDown) ||
+        (this.keys.a?.isDown && this.keys.w?.isDown)
+      ) {
+        jumpAnim = "jump-left";
+        jumpDirection = () =>
+          this.player.setVelocity(-jumpSpeed / 2, -jumpSpeed / 2);
+        this.lastDirection = "right";
+      } else if (
+        (this.keys.right?.isDown && this.keys.down?.isDown) ||
+        (this.keys.d?.isDown && this.keys.s?.isDown)
+      ) {
+        jumpAnim = "jump-right";
+        jumpDirection = () =>
+          this.player.setVelocity(jumpSpeed / 2, jumpSpeed / 2);
+        this.lastDirection = "right";
+      } else if (
+        (this.keys.left?.isDown && this.keys.down?.isDown) ||
+        (this.keys.a?.isDown && this.keys.s?.isDown)
+      ) {
+        jumpAnim = "jump-left";
+        jumpDirection = () =>
+          this.player.setVelocity(-jumpSpeed / 2, jumpSpeed / 2);
+        this.lastDirection = "right";
+      } else if (this.keys.up?.isDown || this.keys.w?.isDown) {
         jumpAnim = "jump-up";
         jumpDirection = () => this.player.setVelocityY(-jumpSpeed);
         this.lastDirection = "up";
@@ -647,7 +679,35 @@ export default class SceneOne extends Phaser.Scene {
     if (moving && !this.isJumping) {
       this.player.setVelocity(0);
       if (isRunning) {
-        if (this.keys.up?.isDown || this.keys.w?.isDown) {
+        if (
+          (this.keys.right?.isDown && this.keys.up?.isDown) ||
+          (this.keys.d?.isDown && this.keys.w?.isDown)
+        ) {
+          this.player.setVelocity(runSpeed / 2, -runSpeed / 2);
+          this.player.anims.play("run-right", true);
+          this.lastDirection = "right";
+        } else if (
+          (this.keys.left?.isDown && this.keys.up?.isDown) ||
+          (this.keys.a?.isDown && this.keys.w?.isDown)
+        ) {
+          this.player.setVelocity(-runSpeed / 2, -runSpeed / 2);
+          this.player.anims.play("run-left", true);
+          this.lastDirection = "left";
+        } else if (
+          (this.keys.right?.isDown && this.keys.down?.isDown) ||
+          (this.keys.d?.isDown && this.keys.s?.isDown)
+        ) {
+          this.player.setVelocity(runSpeed / 2, runSpeed / 2);
+          this.player.anims.play("run-right", true);
+          this.lastDirection = "down";
+        } else if (
+          (this.keys.left?.isDown && this.keys.down?.isDown) ||
+          (this.keys.a?.isDown && this.keys.s?.isDown)
+        ) {
+          this.player.setVelocity(-runSpeed / 2, runSpeed / 2);
+          this.player.anims.play("run-left", true);
+          this.lastDirection = "right";
+        } else if (this.keys.up?.isDown || this.keys.w?.isDown) {
           this.player.setVelocityY(-runSpeed);
           this.player.anims.play("run-up", true);
           this.lastDirection = "up";
@@ -667,7 +727,35 @@ export default class SceneOne extends Phaser.Scene {
           this.player.anims.stop();
         }
       } else {
-        if (this.keys.up?.isDown || this.keys.w?.isDown) {
+        if (
+          (this.keys.right?.isDown && this.keys.up?.isDown) ||
+          (this.keys.d?.isDown && this.keys.w?.isDown)
+        ) {
+          this.player.setVelocity(walkSpeed / 2, -walkSpeed / 2);
+          this.player.anims.play("walk-right", true);
+          this.lastDirection = "right";
+        } else if (
+          (this.keys.left?.isDown && this.keys.up?.isDown) ||
+          (this.keys.a?.isDown && this.keys.w?.isDown)
+        ) {
+          this.player.setVelocity(-walkSpeed / 2, -walkSpeed / 2);
+          this.player.anims.play("walk-left", true);
+          this.lastDirection = "left";
+        } else if (
+          (this.keys.right?.isDown && this.keys.down?.isDown) ||
+          (this.keys.d?.isDown && this.keys.s?.isDown)
+        ) {
+          this.player.setVelocity(walkSpeed / 2, walkSpeed / 2);
+          this.player.anims.play("walk-right", true);
+          this.lastDirection = "down";
+        } else if (
+          (this.keys.left?.isDown && this.keys.down?.isDown) ||
+          (this.keys.a?.isDown && this.keys.s?.isDown)
+        ) {
+          this.player.setVelocity(-walkSpeed / 2, walkSpeed / 2);
+          this.player.anims.play("walk-left", true);
+          this.lastDirection = "right";
+        } else if (this.keys.up?.isDown || this.keys.w?.isDown) {
           this.player.setVelocityY(-walkSpeed);
           this.player.anims.play("walk-up", true);
           this.lastDirection = "up";
