@@ -330,18 +330,22 @@ export default class SceneOne extends Phaser.Scene {
       .setCollideWorldBounds(true)
       .setBounce(1);
 
-    //CONTROLS HELP BOX
+    // CONTROLS HELP BOX
     this.controls = this.add
       .text(
-        this.scale.width - 100,
-        20,
+        this.player.x - 400,
+        this.player.y - 192,
         "Movement: WASD / Jump: Space / Run: Hold Shift",
         {
-          fontSize: "24px",
-          color: "white",
+          fontFamily: "Georgia. serif",
+          fontSize: "16px",
+          color: "yellow",
+          stroke: "black",
+          strokeThickness: 2,
         }
       )
-      .setOrigin(0, 0);
+      .setOrigin(0, 0)
+      .setDepth(1000);
 
     //VOID CLEANSE POINTS
     this.void = 0;
@@ -590,6 +594,11 @@ export default class SceneOne extends Phaser.Scene {
     const zombieSpeed = 50;
     const floatSpeed = 5;
 
+    this.controls.setPosition(
+      Math.round(this.player.x - 400),
+      Math.round(this.player.y - 192)
+    );
+
     const isRunning = this.input.keyboard!.addKey(
       Phaser.Input.Keyboard.KeyCodes.SHIFT
     ).isDown;
@@ -597,11 +606,6 @@ export default class SceneOne extends Phaser.Scene {
     const spaceKey = this.input.keyboard!.addKey(
       Phaser.Input.Keyboard.KeyCodes.SPACE
     );
-
-    //CONTROLS HELP BOX
-    this.controls
-      .setText("Movement: WASD / Jump: Space / Run: Hold Shift")
-      .setOrigin(0, 0);
 
     const moving =
       this.keys.left.isDown ||
