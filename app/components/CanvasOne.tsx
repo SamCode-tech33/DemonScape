@@ -17,7 +17,7 @@ export default function CanvasOne() {
       parent: "gameCanvas",
       physics: {
         default: "arcade",
-        arcade: { gravity: { y: 0, x: 0 }, debug: true },
+        arcade: { gravity: { y: 0, x: 0 }, debug: false },
       },
       scene: [SceneOne],
     };
