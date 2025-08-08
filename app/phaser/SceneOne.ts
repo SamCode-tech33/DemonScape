@@ -19,12 +19,17 @@ export default class SceneOne extends Phaser.Scene {
   sword!: Phaser.Physics.Arcade.Group;
   magic!: Phaser.Physics.Arcade.Group;
   npc!: Phaser.Physics.Arcade.Sprite;
-  enemy!: Phaser.Physics.Arcade.Sprite;
+  ghost!: Phaser.Physics.Arcade.Sprite;
+  zom1!: Phaser.Physics.Arcade.Sprite;
+  zom2!: Phaser.Physics.Arcade.Sprite;
+  zom3!: Phaser.Physics.Arcade.Sprite;
   controls!: Phaser.GameObjects.Text;
   backgroundMusic!: Phaser.Sound.BaseSound;
   void!: number;
   isJumping = false;
   lastDirection: string = "down";
+  step!: 0;
+  ghostBob!: 0;
 
   constructor() {
     super({ key: "SceneOne" });
@@ -32,7 +37,7 @@ export default class SceneOne extends Phaser.Scene {
 
   preload() {
     this.load.tilemapTiledJSON("map", "/assets/level-1-dungeon.json");
-    this.load.audio("bgm-1", "assets/music/in-the-end.mp3");
+    this.load.audio("bgm-1", "assets/music/deskMys.mp3");
 
     this.load.image(
       "wall-8 - 2 tiles tall-transparency",
@@ -99,17 +104,37 @@ export default class SceneOne extends Phaser.Scene {
       frameWidth: 64,
       frameHeight: 64,
     });
+    this.load.spritesheet("dcult-walk", "assets/npc/demon-cultists/walk.png", {
+      frameWidth: 64,
+      frameHeight: 64,
+    });
+    this.load.spritesheet("dcult-sit", "assets/npc/demon-cultists/sit.png", {
+      frameWidth: 64,
+      frameHeight: 64,
+    });
+    this.load.spritesheet(
+      "dcult-spell",
+      "assets/npc/demon-cultists/spellcast.png",
+      {
+        frameWidth: 64,
+        frameHeight: 64,
+      }
+    );
+    this.load.spritesheet(
+      "dcult-emote",
+      "assets/npc/demon-cultists/emote.png",
+      {
+        frameWidth: 64,
+        frameHeight: 64,
+      }
+    );
 
     // ZOMBIES
-    this.load.spritesheet("zHalfSlash", "assets/zombie/halfslash.png", {
+    this.load.spritesheet("zHit", "assets/enemies/zombie/slash.png", {
       frameWidth: 64,
       frameHeight: 64,
     });
-    this.load.spritesheet("zIdle", "assets/zombie/idle.png", {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
-    this.load.spritesheet("zWalk", "assets/zombie/walk.png", {
+    this.load.spritesheet("zWalk", "assets/enemies/zombie/walk.png", {
       frameWidth: 64,
       frameHeight: 64,
     });
@@ -179,9 +204,10 @@ export default class SceneOne extends Phaser.Scene {
 
     // PLAYER
     this.player = this.physics.add
-      .sprite(320, 575, "idle", 4)
+      .sprite(416, 475, "idle", 4)
       .setDepth(7)
-      .setCollideWorldBounds(true);
+      .setCollideWorldBounds(true)
+      .setBounce(1);
 
     // MUSIC
 
@@ -191,11 +217,86 @@ export default class SceneOne extends Phaser.Scene {
     });
     this.backgroundMusic.play();
 
-    // NPCS
-    this.npc = this.physics.add
+    // NPCS //
+
+    // GHOST
+    this.ghost = this.physics.add
       .sprite(128, 720, "sgr", 0)
       .setDepth(7)
-      .setCollideWorldBounds(true);
+      .setCollideWorldBounds(true)
+      .setBounce(1);
+
+    // DEMONS
+    this.npc = this.physics.add
+      .sprite(128, 336, "dcult-sit", 0)
+      .setDepth(7)
+      .setCollideWorldBounds(true)
+      .setBounce(1);
+    this.npc = this.physics.add
+      .sprite(224, 336, "dcult-sit", 0)
+      .setDepth(7)
+      .setCollideWorldBounds(true)
+      .setBounce(1);
+    this.npc = this.physics.add
+      .sprite(416, 336, "dcult-sit", 0)
+      .setDepth(7)
+      .setCollideWorldBounds(true)
+      .setBounce(1);
+    this.npc = this.physics.add
+      .sprite(512, 336, "dcult-sit", 0)
+      .setDepth(7)
+      .setCollideWorldBounds(true)
+      .setBounce(1);
+    this.npc = this.physics.add
+      .sprite(128, 400, "dcult-sit", 0)
+      .setDepth(7)
+      .setCollideWorldBounds(true)
+      .setBounce(1);
+    this.npc = this.physics.add
+      .sprite(224, 400, "dcult-sit", 0)
+      .setDepth(7)
+      .setCollideWorldBounds(true)
+      .setBounce(1);
+    this.npc = this.physics.add
+      .sprite(416, 400, "dcult-sit", 0)
+      .setDepth(7)
+      .setCollideWorldBounds(true)
+      .setBounce(1);
+    this.npc = this.physics.add
+      .sprite(512, 400, "dcult-sit", 0)
+      .setDepth(7)
+      .setCollideWorldBounds(true)
+      .setBounce(1);
+    this.npc = this.physics.add
+      .sprite(128, 464, "dcult-sit", 0)
+      .setDepth(7)
+      .setCollideWorldBounds(true)
+      .setBounce(1);
+    this.npc = this.physics.add
+      .sprite(224, 464, "dcult-sit", 0)
+      .setDepth(7)
+      .setCollideWorldBounds(true)
+      .setBounce(1);
+    this.npc = this.physics.add
+      .sprite(512, 464, "dcult-sit", 0)
+      .setDepth(7)
+      .setCollideWorldBounds(true)
+      .setBounce(1);
+    this.npc = this.physics.add
+      .sprite(208, 192, "dcult-sit", 8)
+      .setDepth(7)
+      .setCollideWorldBounds(true)
+      .setBounce(1);
+    this.npc = this.physics.add
+      .sprite(432, 192, "dcult-sit", 8)
+      .setDepth(7)
+      .setCollideWorldBounds(true)
+      .setBounce(1);
+    this.npc = this.physics.add
+      .sprite(320, 222, "dcult-walk", 18)
+      .setDepth(7)
+      .setCollideWorldBounds(true)
+      .setBounce(1);
 
     // KEY SETTINGS
     this.keys = this.input.keyboard!.addKeys({
@@ -211,20 +312,23 @@ export default class SceneOne extends Phaser.Scene {
     }) as WASDAndArrowKeys;
 
     // ZOMBIES
-    this.enemy = this.physics.add
-      .sprite(128, 956, "zIdle", 7)
+    this.zom1 = this.physics.add
+      .sprite(128, 956, "zWalk", 27)
       .setDepth(7)
-      .setCollideWorldBounds(true);
+      .setCollideWorldBounds(true)
+      .setBounce(1);
 
-    this.enemy = this.physics.add
-      .sprite(128, 1040, "zIdle", 7)
+    this.zom2 = this.physics.add
+      .sprite(128, 1040, "zWalk", 27)
       .setDepth(7)
-      .setCollideWorldBounds(true);
+      .setCollideWorldBounds(true)
+      .setBounce(1);
 
-    this.enemy = this.physics.add
-      .sprite(128, 876, "zIdle", 7)
+    this.zom3 = this.physics.add
+      .sprite(128, 876, "zWalk", 27)
       .setDepth(7)
-      .setCollideWorldBounds(true);
+      .setCollideWorldBounds(true)
+      .setBounce(1);
 
     //CONTROLS HELP BOX
     this.controls = this.add
@@ -246,6 +350,7 @@ export default class SceneOne extends Phaser.Scene {
 
     // --- ANIMATIONS ---
 
+    // PLAYER
     //WALKING ANIMATION
     this.anims.create({
       key: "walk-up",
@@ -411,7 +516,6 @@ export default class SceneOne extends Phaser.Scene {
     });
 
     // BACK TO IDLE ANIMATION
-
     this.anims.create({
       key: "idle-up",
       frames: [{ key: "idle", frame: 0 }],
@@ -437,6 +541,44 @@ export default class SceneOne extends Phaser.Scene {
       repeat: -1,
     });
 
+    // ZOMBIE
+    this.anims.create({
+      key: "z-walk-up",
+      frames: this.anims.generateFrameNumbers("zWalk", {
+        start: 0,
+        end: 8,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "z-walk-left",
+      frames: this.anims.generateFrameNumbers("zWalk", {
+        start: 9,
+        end: 17,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "z-walk-down",
+      frames: this.anims.generateFrameNumbers("zWalk", {
+        start: 18,
+        end: 26,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "z-walk-right",
+      frames: this.anims.generateFrameNumbers("zWalk", {
+        start: 27,
+        end: 35,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
     // Camera follows player
     this.cameras.main.startFollow(this.player);
     this.cameras.main.setZoom(3.3);
@@ -445,6 +587,8 @@ export default class SceneOne extends Phaser.Scene {
     const walkSpeed = 150;
     const jumpSpeed = 200;
     const runSpeed = 250;
+    const zombieSpeed = 50;
+    const floatSpeed = 5;
 
     const isRunning = this.input.keyboard!.addKey(
       Phaser.Input.Keyboard.KeyCodes.SHIFT
@@ -554,6 +698,68 @@ export default class SceneOne extends Phaser.Scene {
       } else {
         this.player.anims.play("idle-down", true);
       }
+    }
+
+    // ZOMBIE ANIMATION AND PATROLLING
+
+    if (this.step <= 150) {
+      this.zom1.setVelocity(zombieSpeed, 0);
+      this.zom1.anims.play("z-walk-right", true);
+      this.step++;
+    } else if (this.step <= 220) {
+      this.zom1.setVelocity(0, zombieSpeed);
+      this.zom1.anims.play("z-walk-down", true);
+      this.step++;
+    } else if (this.step <= 370) {
+      this.zom1.setVelocity(-zombieSpeed, 0);
+      this.zom1.anims.play("z-walk-left", true);
+      this.step++;
+    } else if (this.step <= 440) {
+      this.zom1.setVelocity(0, -zombieSpeed);
+      this.zom1.anims.play("z-walk-up", true);
+      this.step++;
+    } else {
+      this.step = 0;
+    }
+    if (this.step <= 150) {
+      this.zom2.setVelocity(zombieSpeed, 0);
+      this.zom2.anims.play("z-walk-right", true);
+    } else if (this.step <= 220) {
+      this.zom2.setVelocity(0, -zombieSpeed);
+      this.zom2.anims.play("z-walk-up", true);
+    } else if (this.step <= 370) {
+      this.zom2.setVelocity(-zombieSpeed, 0);
+      this.zom2.anims.play("z-walk-left", true);
+    } else if (this.step <= 440) {
+      this.zom2.setVelocity(0, zombieSpeed);
+      this.zom2.anims.play("z-walk-down", true);
+    } else {
+      this.step = 0;
+    }
+    if (this.step <= 100) {
+      this.zom3.setVelocity(zombieSpeed, 0);
+      this.zom3.anims.play("z-walk-right", true);
+    } else if (this.step <= 220) {
+      this.zom3.setVelocity(0, zombieSpeed);
+      this.zom3.anims.play("z-walk-down", true);
+    } else if (this.step <= 320) {
+      this.zom3.setVelocity(-zombieSpeed, 0);
+      this.zom3.anims.play("z-walk-left", true);
+    } else if (this.step <= 440) {
+      this.zom3.setVelocity(0, -zombieSpeed);
+      this.zom3.anims.play("z-walk-up", true);
+    }
+
+    // GHOST BOBBING
+
+    if (this.ghostBob <= 75) {
+      this.ghost.setVelocityY(-floatSpeed);
+      this.ghostBob++;
+    } else if (this.ghostBob <= 150) {
+      this.ghost.setVelocityY(floatSpeed);
+      this.ghostBob++;
+    } else {
+      this.ghostBob = 0;
     }
   }
 }
