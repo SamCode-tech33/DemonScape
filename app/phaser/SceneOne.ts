@@ -518,25 +518,25 @@ export default class SceneOne extends Phaser.Scene {
     // BACK TO IDLE ANIMATION
     this.anims.create({
       key: "idle-up",
-      frames: [{ key: "idle", frame: 0 }],
+      frames: [{ key: "walk", frame: 0 }],
       frameRate: 1,
       repeat: -1,
     });
     this.anims.create({
       key: "idle-left",
-      frames: [{ key: "idle", frame: 2 }],
+      frames: [{ key: "walk", frame: 9 }],
       frameRate: 1,
       repeat: -1,
     });
     this.anims.create({
       key: "idle-right",
-      frames: [{ key: "idle", frame: 6 }],
+      frames: [{ key: "walk", frame: 27 }],
       frameRate: 1,
       repeat: -1,
     });
     this.anims.create({
       key: "idle-down",
-      frames: [{ key: "idle", frame: 4 }],
+      frames: [{ key: "walk", frame: 18 }],
       frameRate: 1,
       repeat: -1,
     });
