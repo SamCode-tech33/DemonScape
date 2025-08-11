@@ -28,7 +28,9 @@ export default class SceneOne extends Phaser.Scene {
   void!: number;
   isJumping = false;
   lastDirection: string = "down";
-  step!: 0;
+  zomPatrol1!: 0;
+  zomPatrol2!: 0;
+  zomPatrol3!: 0;
   ghostBob!: 0;
 
   constructor() {
@@ -36,22 +38,12 @@ export default class SceneOne extends Phaser.Scene {
   }
 
   preload() {
-    this.load.tilemapTiledJSON("map", "/assets/level-1-dungeon.json");
-    this.load.audio("bgm-1", "assets/music/deskMys.mp3");
-
+    this.load.tilemapTiledJSON("map", "/assets/level1-master-map.json");
     this.load.image(
-      "wall-8 - 2 tiles tall-transparency",
-      "/assets/wall-transparency.png"
+      "level1-master-tileset",
+      "/assets/level1-master-tileset.png"
     );
-    this.load.image("Dungeon A2_32x32", "/assets/A2_32x32.png");
-    this.load.image("Dungeon_A4_32x32", "/assets/B32x32.png");
-    this.load.image("A4_32x32_CUSTOM", "/assets/A4_32x32_CUSTOM.png");
-    this.load.image("Dungeon_B32x32", "/assets/B32x32.png");
-    this.load.image("props", "/assets/TX_Props.png");
-    this.load.image("more props", "/assets/Platformer_Asset_All_G.png");
-    this.load.image("moreprops2", "/assets/sRandomWorldItems.png");
-    this.load.image("alchemy", "/assets/SpriteSheet.png");
-    this.load.image("Tileset-Terrain2", "/assets/Tileset-Terrain2.png");
+    this.load.audio("bgm-1", "assets/music/deskMys.mp3");
 
     // PLAYER
     this.load.spritesheet("idle", "assets/player/idle.png", {
@@ -100,10 +92,18 @@ export default class SceneOne extends Phaser.Scene {
     });
 
     // NPCS
-    this.load.spritesheet("sgr", "assets/npc/strangeGhostRed.png", {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
+
+    // GHOST
+    this.load.spritesheet(
+      "sgr",
+      "assets/npc/strangeGhost/strangeGhostRed.png",
+      {
+        frameWidth: 64,
+        frameHeight: 64,
+      }
+    );
+
+    // DEMONS
     this.load.spritesheet("dcult-walk", "assets/npc/demon-cultists/walk.png", {
       frameWidth: 64,
       frameHeight: 64,
@@ -129,6 +129,44 @@ export default class SceneOne extends Phaser.Scene {
       }
     );
 
+    this.load.spritesheet("w-dcult-walk", "assets/npc/femDemon/walk.png", {
+      frameWidth: 64,
+      frameHeight: 64,
+    });
+    this.load.spritesheet("w-dcult-sit", "assets/npc/femDemon/sit.png", {
+      frameWidth: 64,
+      frameHeight: 64,
+    });
+    this.load.spritesheet(
+      "w-dcult-spell",
+      "assets/npc/femDemon/spellcast.png",
+      {
+        frameWidth: 64,
+        frameHeight: 64,
+      }
+    );
+    this.load.spritesheet("w-dcult-emote", "assets/npc/femDemon/emote.png", {
+      frameWidth: 64,
+      frameHeight: 64,
+    });
+
+    // SARA
+    this.load.spritesheet("sara-walk", "assets/npc/sara/walk.png", {
+      frameWidth: 64,
+      frameHeight: 64,
+    });
+
+    this.load.spritesheet("sara-sit", "assets/npc/sara/sit.png", {
+      frameWidth: 64,
+      frameHeight: 64,
+    });
+
+    // INFOGUY
+    this.load.spritesheet("infoGuy-sit", "assets/npc/infoGuy/sit.png", {
+      frameWidth: 64,
+      frameHeight: 64,
+    });
+
     // ZOMBIES
     this.load.spritesheet("zHit", "assets/enemies/zombie/slash.png", {
       frameWidth: 64,
@@ -138,60 +176,75 @@ export default class SceneOne extends Phaser.Scene {
       frameWidth: 64,
       frameHeight: 64,
     });
+
+    // SKELETON
+    this.load.spritesheet("skel-walk", "assets/npc/skelMan/walk.png", {
+      frameWidth: 64,
+      frameHeight: 64,
+    });
+
+    // ALCHEMISTS
+    this.load.spritesheet("alch-walk", "assets/npc/alchemists/walk.png", {
+      frameWidth: 64,
+      frameHeight: 64,
+    });
   }
   create() {
     // MAP
-
     const map = this.make.tilemap({ key: "map" });
+    const tiledMap = map.addTilesetImage(
+      "level1-master-tileset",
+      "level1-master-tileset"
+    )!;
 
-    const tilesets = [
-      map.addTilesetImage(
-        "wall-8 - 2 tiles tall-transparency",
-        "wall-8 - 2 tiles tall-transparency"
-      ),
-      map.addTilesetImage("Dungeon A2_32x32", "Dungeon A2_32x32"),
-      map.addTilesetImage("Dungeon_A4_32x32", "Dungeon_A4_32x32"),
-      map.addTilesetImage("A4_32x32_CUSTOM", "A4_32x32_CUSTOM"),
-      map.addTilesetImage("Dungeon_B32x32", "Dungeon_B32x32"),
-      map.addTilesetImage("props", "props"),
-      map.addTilesetImage("more props", "more props"),
-      map.addTilesetImage("moreprops2", "moreprops2"),
-      map.addTilesetImage("alchemy", "alchemy"),
-      map.addTilesetImage("Tileset-Terrain2", "Tileset-Terrain2"),
-    ] as Phaser.Tilemaps.Tileset[];
+    const collisionLayer = map.getObjectLayer("collision");
+    if (!collisionLayer) {
+      console.warn("No collision object layer found in map!");
+      return;
+    }
 
-    const floorLayer = map.createLayer("floor", tilesets, 0, 0);
-    const rugLayer = map.createLayer("rug", tilesets, 0, 0);
-    const wallsLayer = map.createLayer("walls", tilesets, 0, 0);
-    const wallThingsLayer = map.createLayer("wall-objects", tilesets, 0, 0);
+    // Create a static physics group for collision objects
+    const collisionGroup = this.physics.add.staticGroup();
+
+    // Iterate over all objects in the collision object layer
+    collisionLayer.objects.forEach((obj) => {
+      // Depending on your objects, you can have rectangles, polygons, etc.
+      // Here we'll assume rectangle objects for simplicity.
+
+      if (obj.rectangle) {
+        // Create an invisible static physics body for the rectangle
+        const collisionRect = this.add.rectangle(
+          obj.x! + obj.width! / 2,
+          obj.y! + obj.height! / 2,
+          obj.width!,
+          obj.height!
+        );
+        this.physics.add.existing(collisionRect, true); // true => static body
+
+        // Optionally make the collisionRect invisible, or visible for debug
+        collisionRect.setVisible(false);
+
+        // Add it to the collision group for easier management
+        collisionGroup.add(collisionRect);
+      }
+
+      // If you have polygons or other shapes, you'd handle them differently
+      // (You can create physics bodies with shapes using Matter.js or Arcade physics approximations)
+    });
+
+    const floorLayer = map.createLayer("floor", tiledMap, 0, 0);
+    const rugLayer = map.createLayer("rug", tiledMap, 0, 0);
+    const wallsLayer = map.createLayer("walls", tiledMap, 0, 0);
+    const wallThingsLayer = map.createLayer("wall-objects", tiledMap, 0, 0);
     const hiddenFloorLayer = map.createLayer(
       "hidden-floor-objects",
-      tilesets,
+      tiledMap,
       0,
       0
     );
-    const floorObjectsLayer = map.createLayer("floor-objects", tilesets, 0, 0);
-    const surfaceItemsLayer = map.createLayer("surface-items", tilesets, 0, 0);
-    const fireLayer = map.createLayer("fire", tilesets, 0, 0);
-
-    const collisionLayer = map.getObjectLayer("Collision");
-    const colliders = this.physics.add.staticGroup();
-
-    collisionLayer &&
-      collisionLayer.objects.forEach((obj) => {
-        if (
-          obj.width !== undefined &&
-          obj.height !== undefined &&
-          obj.x !== undefined &&
-          obj.y !== undefined
-        ) {
-          const collider = colliders
-            .create(obj.x + obj.width / 2, obj.y - obj.height / 2, "box")
-            .setSize(obj.width, obj.height)
-            .setVisible(false)
-            .refreshBody();
-        }
-      });
+    const floorObjectsLayer = map.createLayer("floor-objects", tiledMap, 0, 0);
+    const surfaceItemsLayer = map.createLayer("surface-items", tiledMap, 0, 0);
+    const fireLayer = map.createLayer("fire", tiledMap, 0, 0);
 
     floorLayer && floorLayer.setDepth(1);
     rugLayer && rugLayer.setDepth(2);
@@ -209,8 +262,18 @@ export default class SceneOne extends Phaser.Scene {
       .setCollideWorldBounds(true)
       .setBounce(1);
 
-    // MUSIC
+    this.physics.add.collider(this.player, collisionGroup);
 
+    // Adjust physics body size to cover only feet (width same, height smaller)
+    this.player.body.setSize(this.player.width * 0.4, this.player.height * 0.3);
+
+    // Offset the body downward so it aligns with the feet area
+    this.player.body.setOffset(
+      this.player.width * 0.3, // center horizontally inside sprite
+      this.player.height * 0.7 // push body down to feet
+    );
+
+    // MUSIC
     this.backgroundMusic = this.sound.add("bgm-1", {
       loop: true,
       volume: 0.7,
@@ -228,7 +291,7 @@ export default class SceneOne extends Phaser.Scene {
 
     // DEMONS
     this.npc = this.physics.add
-      .sprite(128, 336, "dcult-sit", 0)
+      .sprite(128, 336, "w-dcult-sit", 0)
       .setDepth(7)
       .setCollideWorldBounds(true)
       .setBounce(1);
@@ -243,7 +306,7 @@ export default class SceneOne extends Phaser.Scene {
       .setCollideWorldBounds(true)
       .setBounce(1);
     this.npc = this.physics.add
-      .sprite(512, 336, "dcult-sit", 0)
+      .sprite(512, 336, "w-dcult-sit", 0)
       .setDepth(7)
       .setCollideWorldBounds(true)
       .setBounce(1);
@@ -253,7 +316,7 @@ export default class SceneOne extends Phaser.Scene {
       .setCollideWorldBounds(true)
       .setBounce(1);
     this.npc = this.physics.add
-      .sprite(224, 400, "dcult-sit", 0)
+      .sprite(224, 400, "w-dcult-sit", 0)
       .setDepth(7)
       .setCollideWorldBounds(true)
       .setBounce(1);
@@ -278,7 +341,7 @@ export default class SceneOne extends Phaser.Scene {
       .setCollideWorldBounds(true)
       .setBounce(1);
     this.npc = this.physics.add
-      .sprite(512, 464, "dcult-sit", 0)
+      .sprite(512, 464, "w-dcult-sit", 0)
       .setDepth(7)
       .setCollideWorldBounds(true)
       .setBounce(1);
@@ -298,6 +361,41 @@ export default class SceneOne extends Phaser.Scene {
       .setCollideWorldBounds(true)
       .setBounce(1);
 
+    // SARA
+
+    this.npc = this.physics.add
+      .sprite(208, 824, "sara-sit", 6)
+      .setDepth(7)
+      .setCollideWorldBounds(true)
+      .setBounce(1);
+
+    // INFOGUY
+
+    this.npc = this.physics.add
+      .sprite(1364, 532, "infoGuy-sit", 11)
+      .setDepth(7)
+      .setCollideWorldBounds(true)
+      .setBounce(1);
+
+    // ALCHEMISTS
+    this.npc = this.physics.add
+      .sprite(1684, 532, "alch-walk", 27)
+      .setDepth(7)
+      .setCollideWorldBounds(true)
+      .setBounce(1);
+    this.npc = this.physics.add
+      .sprite(1580, 622, "alch-walk", 18)
+      .setDepth(7)
+      .setCollideWorldBounds(true)
+      .setBounce(1);
+
+    // SKELMAN
+    this.npc = this.physics.add
+      .sprite(1088, 432, "skel-walk", 18)
+      .setDepth(7)
+      .setCollideWorldBounds(true)
+      .setBounce(1);
+
     // KEY SETTINGS
     this.keys = this.input.keyboard!.addKeys({
       w: Phaser.Input.Keyboard.KeyCodes.W,
@@ -313,19 +411,19 @@ export default class SceneOne extends Phaser.Scene {
 
     // ZOMBIES
     this.zom1 = this.physics.add
-      .sprite(128, 956, "zWalk", 27)
+      .sprite(128, 862, "zWalk", 27)
       .setDepth(7)
       .setCollideWorldBounds(true)
       .setBounce(1);
 
     this.zom2 = this.physics.add
-      .sprite(128, 1040, "zWalk", 27)
+      .sprite(128, 988, "zWalk", 27)
       .setDepth(7)
       .setCollideWorldBounds(true)
       .setBounce(1);
 
     this.zom3 = this.physics.add
-      .sprite(128, 876, "zWalk", 27)
+      .sprite(150, 1040, "zWalk", 27)
       .setDepth(7)
       .setCollideWorldBounds(true)
       .setBounce(1);
@@ -587,11 +685,10 @@ export default class SceneOne extends Phaser.Scene {
     this.cameras.main.startFollow(this.player);
     this.cameras.main.setZoom(3.3);
   }
-  update() {
+  update(time: number, delta: number) {
     const walkSpeed = 150;
     const jumpSpeed = 200;
     const runSpeed = 250;
-    const zombieSpeed = 50;
     const floatSpeed = 5;
 
     this.controls.setPosition(
@@ -793,61 +890,71 @@ export default class SceneOne extends Phaser.Scene {
     }
 
     // ZOMBIE ANIMATION AND PATROLLING
+    const zombieSpeed = 28;
+    this.zomPatrol1 += delta / 1000;
+    this.zomPatrol2 += delta / 1000;
+    this.zomPatrol3 += delta / 1000;
 
-    if (this.step <= 150) {
+    // ZOMBIE 1
+    if (this.zomPatrol1 <= 14.4) {
+      // 14.4 seconds
       this.zom1.setVelocity(zombieSpeed, 0);
       this.zom1.anims.play("z-walk-right", true);
-      this.step++;
-    } else if (this.step <= 220) {
+    } else if (this.zomPatrol1 <= 16.4) {
+      // 2 seconds
       this.zom1.setVelocity(0, zombieSpeed);
       this.zom1.anims.play("z-walk-down", true);
-      this.step++;
-    } else if (this.step <= 370) {
+    } else if (this.zomPatrol1 <= 30.8) {
+      // 14.4 seconds
       this.zom1.setVelocity(-zombieSpeed, 0);
       this.zom1.anims.play("z-walk-left", true);
-      this.step++;
-    } else if (this.step <= 440) {
+    } else if (this.zomPatrol1 <= 32.8) {
+      // 2 seconds
       this.zom1.setVelocity(0, -zombieSpeed);
       this.zom1.anims.play("z-walk-up", true);
-      this.step++;
     } else {
-      this.step = 0;
+      this.zomPatrol1 = 0;
     }
-    if (this.step <= 150) {
+
+    // ZOMBIE 2
+    if (this.zomPatrol2 <= 8.8) {
       this.zom2.setVelocity(zombieSpeed, 0);
       this.zom2.anims.play("z-walk-right", true);
-    } else if (this.step <= 220) {
+    } else if (this.zomPatrol2 <= 11.2) {
       this.zom2.setVelocity(0, -zombieSpeed);
       this.zom2.anims.play("z-walk-up", true);
-    } else if (this.step <= 370) {
+    } else if (this.zomPatrol2 <= 20) {
       this.zom2.setVelocity(-zombieSpeed, 0);
       this.zom2.anims.play("z-walk-left", true);
-    } else if (this.step <= 440) {
+    } else if (this.zomPatrol2 <= 22.4) {
       this.zom2.setVelocity(0, zombieSpeed);
       this.zom2.anims.play("z-walk-down", true);
     } else {
-      this.step = 0;
+      this.zomPatrol2 = 0;
     }
-    if (this.step <= 100) {
+
+    // ZOMBIE 3
+    if (this.zomPatrol3 <= 10) {
       this.zom3.setVelocity(zombieSpeed, 0);
       this.zom3.anims.play("z-walk-right", true);
-    } else if (this.step <= 220) {
+    } else if (this.zomPatrol3 <= 11.6) {
       this.zom3.setVelocity(0, zombieSpeed);
       this.zom3.anims.play("z-walk-down", true);
-    } else if (this.step <= 320) {
+    } else if (this.zomPatrol3 <= 21.6) {
       this.zom3.setVelocity(-zombieSpeed, 0);
       this.zom3.anims.play("z-walk-left", true);
-    } else if (this.step <= 440) {
+    } else if (this.zomPatrol3 <= 23.2) {
       this.zom3.setVelocity(0, -zombieSpeed);
       this.zom3.anims.play("z-walk-up", true);
+    } else {
+      this.zomPatrol3 = 0;
     }
 
     // GHOST BOBBING
-
-    if (this.ghostBob <= 75) {
+    if (this.ghostBob <= 100) {
       this.ghost.setVelocityY(-floatSpeed);
       this.ghostBob++;
-    } else if (this.ghostBob <= 150) {
+    } else if (this.ghostBob <= 200) {
       this.ghost.setVelocityY(floatSpeed);
       this.ghostBob++;
     } else {
