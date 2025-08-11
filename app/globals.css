@@ -26,12 +26,6 @@
   --accClr: #0d0d35;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 html,
 body {
   height: 100%;
@@ -42,7 +36,6 @@ body {
   color: var(--liClr);
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
 }
 
 header,
@@ -53,9 +46,13 @@ footer {
   padding: 40px 20px;
 }
 
-main {
-  flex: 1;
-  display: flex;
+svg {
+  stroke-width: "1.5";
+}
+
+path {
+  stroke-linecap: "round";
+  stroke-linejoin: "round";
 }
 
 #game-container {
@@ -72,8 +69,11 @@ main {
 }
 
 .hero {
-  font-size: 128px;
+  font-size: 232px;
   -webkit-text-stroke: 4px gold;
+  font-weight: 700;
+  color: black;
+  opacity: 0.5;
 }
 
 .demon-background {
