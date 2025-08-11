@@ -38,7 +38,7 @@ export default function HomePage() {
     <div className="demon-background flex flex-col items-center justify-between">
       <div className="flex justify-between w-screen h-32">
         <button
-          className="mt-2 ml-4 h-16 w-36 bg-red-950 border-2 border-amber-500 text-white rounded-lg hover:text-amber-400 hover:bg-red-800 cursor-pointer flex justify-around items-center opacity-60 hover:opacity-90"
+          className="silver mt-2 ml-4 h-16 w-36 bg-red-950 border-2 border-amber-500 rounded-lg hover:text-amber-400 hover:bg-red-800 cursor-pointer flex justify-around items-center opacity-60 hover:opacity-90"
           onClick={!isAudio ? handlePlayAudio : handleStopAudio}
         >
           <svg
@@ -74,12 +74,12 @@ export default function HomePage() {
         </button>
         <div className="mt-2 mr-4 flex gap-8">
           <button
-            className={`${mostean.className} text-3xl text-amber-50 h-16 w-48 bg-red-950 border-2 border-amber-500 rounded-lg hover:text-amber-400 hover:bg-red-800 cursor-pointer flex justify-center items-center opacity-60 hover:opacity-90`}
+            className={`${mostean.className} silver text-3xl h-16 w-48 bg-red-950 border-2 border-amber-500 rounded-lg hover:text-amber-400 hover:bg-red-800 cursor-pointer flex justify-center items-center opacity-60 hover:opacity-90`}
           >
             Leader Boards
           </button>
           <button
-            className={`${mostean.className} text-3xl text-amber-50 h-16 w-48 bg-red-950 border-2 border-amber-500 rounded-lg hover:text-amber-400 hover:bg-red-800 cursor-pointer flex justify-center items-center opacity-60 hover:opacity-90`}
+            className={`${mostean.className} silver text-3xl h-16 w-48 bg-red-950 border-2 border-amber-500 rounded-lg hover:text-amber-400 hover:bg-red-800 cursor-pointer flex justify-center items-center opacity-60 hover:opacity-90`}
           >
             Login / Sign-up
           </button>
@@ -93,7 +93,7 @@ export default function HomePage() {
           <div className="flex flex-col gap-8">
             <Link href="/game">
               <button
-                className={`${mostean.className} text-[48px] h-20 w-56 bg-red-950 border-2 border-amber-500 text-black rounded-lg hover:text-amber-400 hover:bg-red-800 cursor-pointer opacity-50 hover:opacity-90`}
+                className={`${mostean.className} silver text-[48px] h-20 w-56 bg-red-950 border-2 border-amber-500 rounded-lg hover:text-amber-400 hover:bg-red-800 cursor-pointer opacity-50 hover:opacity-90`}
                 onClick={handleStopAudio}
               >
                 Continue
@@ -101,7 +101,7 @@ export default function HomePage() {
             </Link>
             <Link href="/game">
               <button
-                className={`${mostean.className} text-[48px] h-20 w-56 bg-red-950 border-2 border-amber-500 text-black rounded-lg hover:text-amber-400 hover:bg-red-800 cursor-pointer opacity-50 hover:opacity-90`}
+                className={`${mostean.className} silver text-[48px] h-20 w-56 bg-red-950 border-2 border-amber-500 rounded-lg hover:text-amber-400 hover:bg-red-800 cursor-pointer opacity-50 hover:opacity-90`}
                 onClick={handleStopAudio}
               >
                 New Game
@@ -109,7 +109,7 @@ export default function HomePage() {
             </Link>
             <Link href="/game">
               <button
-                className={`${mostean.className} text-[48px] h-20 w-56 bg-red-950 border-2 border-amber-500 text-black rounded-lg hover:text-amber-400 hover:bg-red-800 cursor-pointer opacity-50 hover:opacity-90`}
+                className={`${mostean.className} silver text-[48px] h-20 w-56 bg-red-950 border-2 border-amber-500 rounded-lg hover:text-amber-400 hover:bg-red-800 cursor-pointer opacity-50 hover:opacity-90`}
                 onClick={handleStopAudio}
               >
                 Options
