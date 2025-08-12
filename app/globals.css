@@ -103,3 +103,7 @@ path {
 .silver {
   color: #eaecec;
 }
+
+.silver:hover {
+  color: gold !important;
+}
