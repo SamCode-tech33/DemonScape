@@ -203,33 +203,19 @@ export default class SceneOne extends Phaser.Scene {
       return;
     }
 
-    // Create a static physics group for collision objects
     const collisionGroup = this.physics.add.staticGroup();
-
-    // Iterate over all objects in the collision object layer
     collisionLayer.objects.forEach((obj) => {
-      // Depending on your objects, you can have rectangles, polygons, etc.
-      // Here we'll assume rectangle objects for simplicity.
-
       if (obj.rectangle) {
-        // Create an invisible static physics body for the rectangle
         const collisionRect = this.add.rectangle(
           obj.x! + obj.width! / 2,
           obj.y! + obj.height! / 2,
           obj.width!,
           obj.height!
         );
-        this.physics.add.existing(collisionRect, true); // true => static body
-
-        // Optionally make the collisionRect invisible, or visible for debug
+        this.physics.add.existing(collisionRect, true);
         collisionRect.setVisible(false);
-
-        // Add it to the collision group for easier management
         collisionGroup.add(collisionRect);
       }
-
-      // If you have polygons or other shapes, you'd handle them differently
-      // (You can create physics bodies with shapes using Matter.js or Arcade physics approximations)
     });
 
     const floorLayer = map.createLayer("floor", tiledMap, 0, 0);
@@ -263,14 +249,10 @@ export default class SceneOne extends Phaser.Scene {
       .setBounce(1);
 
     this.physics.add.collider(this.player, collisionGroup);
-
-    // Adjust physics body size to cover only feet (width same, height smaller)
     this.player.body.setSize(this.player.width * 0.4, this.player.height * 0.3);
-
-    // Offset the body downward so it aligns with the feet area
     this.player.body.setOffset(
-      this.player.width * 0.3, // center horizontally inside sprite
-      this.player.height * 0.7 // push body down to feet
+      this.player.width * 0.3,
+      this.player.height * 0.7
     );
 
     // MUSIC
@@ -362,7 +344,6 @@ export default class SceneOne extends Phaser.Scene {
       .setBounce(1);
 
     // SARA
-
     this.npc = this.physics.add
       .sprite(208, 824, "sara-sit", 6)
       .setDepth(7)
@@ -370,7 +351,6 @@ export default class SceneOne extends Phaser.Scene {
       .setBounce(1);
 
     // INFOGUY
-
     this.npc = this.physics.add
       .sprite(1364, 532, "infoGuy-sit", 11)
       .setDepth(7)
@@ -427,23 +407,6 @@ export default class SceneOne extends Phaser.Scene {
       .setDepth(7)
       .setCollideWorldBounds(true)
       .setBounce(1);
-
-    // CONTROLS HELP BOX
-    this.controls = this.add
-      .text(
-        this.player.x - 400,
-        this.player.y - 192,
-        "Movement: WASD / Jump: Space / Run: Hold Shift",
-        {
-          fontFamily: "Georgia. serif",
-          fontSize: "16px",
-          color: "yellow",
-          stroke: "black",
-          strokeThickness: 2,
-        }
-      )
-      .setOrigin(0, 0)
-      .setDepth(1000);
 
     //VOID CLEANSE POINTS
     this.void = 0;
@@ -690,11 +653,6 @@ export default class SceneOne extends Phaser.Scene {
     const jumpSpeed = 200;
     const runSpeed = 250;
     const floatSpeed = 5;
-
-    this.controls.setPosition(
-      Math.round(this.player.x - 400),
-      Math.round(this.player.y - 192)
-    );
 
     const isRunning = this.input.keyboard!.addKey(
       Phaser.Input.Keyboard.KeyCodes.SHIFT
