@@ -229,6 +229,7 @@ export default class SceneOne extends Phaser.Scene {
       0
     );
     const floorObjectsLayer = map.createLayer("floor-objects", tiledMap, 0, 0);
+    const largeFloorObjects = map.createLayer("floor-objects2", tiledMap, 0, 0);
     const surfaceItemsLayer = map.createLayer("surface-items", tiledMap, 0, 0);
     const fireLayer = map.createLayer("fire", tiledMap, 0, 0);
 
@@ -238,13 +239,14 @@ export default class SceneOne extends Phaser.Scene {
     wallThingsLayer && wallThingsLayer.setDepth(4);
     hiddenFloorLayer && hiddenFloorLayer.setDepth(5);
     floorObjectsLayer && floorObjectsLayer.setDepth(6);
+    largeFloorObjects && largeFloorObjects.setDepth(8);
     surfaceItemsLayer && surfaceItemsLayer.setDepth(9);
     fireLayer && fireLayer.setDepth(10);
 
     // PLAYER
     this.player = this.physics.add
       .sprite(416, 475, "idle", 4)
-      .setDepth(8)
+      .setDepth(7)
       .setCollideWorldBounds(true)
       .setBounce(1);
 
