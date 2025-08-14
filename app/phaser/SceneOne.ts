@@ -32,6 +32,8 @@ export default class SceneOne extends Phaser.Scene {
   zomPatrol2!: 0;
   zomPatrol3!: 0;
   ghostBob!: 0;
+  animatedTorches: Phaser.GameObjects.Sprite[] = [];
+  animatedAlchemy: Phaser.GameObjects.Sprite[] = [];
 
   constructor() {
     super({ key: "SceneOne" });
@@ -44,6 +46,24 @@ export default class SceneOne extends Phaser.Scene {
       "/assets/level1-master-tileset.png"
     );
     this.load.audio("bgm-1", "assets/music/deskMys.mp3");
+
+    this.load.spritesheet(
+      "torch",
+      "assets/animated-objects/torches-animated.png",
+      {
+        frameWidth: 32,
+        frameHeight: 32,
+      }
+    );
+
+    this.load.spritesheet(
+      "alchemy",
+      "assets/animated-objects/alchemy-animated.png",
+      {
+        frameWidth: 32,
+        frameHeight: 32,
+      }
+    );
 
     // PLAYER
     this.load.spritesheet("idle", "assets/player/idle.png", {
@@ -243,6 +263,61 @@ export default class SceneOne extends Phaser.Scene {
     surfaceItemsLayer && surfaceItemsLayer.setDepth(9);
     fireLayer && fireLayer.setDepth(10);
 
+    this.anims.create({
+      key: "torchBurn",
+      frames: this.anims.generateFrameNumbers("torch", { start: 0, end: 2 }),
+      frameRate: 8,
+      repeat: -1,
+    });
+
+    const torchPositions = [
+      { x: 369, y: 462.5 },
+      { x: 369, y: 366 },
+      { x: 369, y: 270 },
+      { x: 272.5, y: 462.5 },
+      { x: 272.5, y: 366 },
+      { x: 272.5, y: 270 },
+      { x: 465, y: 624 },
+      { x: 561, y: 624 },
+      { x: 817, y: 624 },
+      { x: 1009, y: 624 },
+      { x: 1105, y: 624 },
+      { x: 1265, y: 624 },
+      { x: 1521, y: 402 },
+      { x: 1137, y: 402 },
+      { x: 497, y: 1010 },
+      { x: 337, y: 784 },
+      { x: 113, y: 624 },
+      { x: 240, y: 48 },
+      { x: 400, y: 48 },
+    ];
+
+    this.animatedTorches = torchPositions.map((pos) => {
+      const torch = this.add.sprite(pos.x, pos.y, "torch");
+      torch.play("torchBurn");
+      torch.setDepth(8);
+      return torch;
+    });
+
+    this.anims.create({
+      key: "alch",
+      frames: this.anims.generateFrameNumbers("alchemy", { start: 0, end: 2 }),
+      frameRate: 8,
+      repeat: -1,
+    });
+
+    const alchemyPositions = [
+      { x: 1552, y: 656 },
+      { x: 1616, y: 656 },
+    ];
+
+    this.animatedTorches = alchemyPositions.map((pos) => {
+      const torch = this.add.sprite(pos.x, pos.y, "alch");
+      torch.play("alch");
+      torch.setDepth(6);
+      return torch;
+    });
+
     // PLAYER
     this.player = this.physics.add
       .sprite(416, 475, "idle", 4)
@@ -251,9 +326,12 @@ export default class SceneOne extends Phaser.Scene {
       .setBounce(1);
 
     this.physics.add.collider(this.player, collisionGroup);
-    this.player.body.setSize(this.player.width * 0.4, this.player.height * 0.3);
+    this.player.body.setSize(
+      this.player.width * 0.25,
+      this.player.height * 0.3
+    );
     this.player.body.setOffset(
-      this.player.width * 0.3,
+      this.player.width * 0.37,
       this.player.height * 0.7
     );
 
@@ -269,112 +347,112 @@ export default class SceneOne extends Phaser.Scene {
     // GHOST
     this.ghost = this.physics.add
       .sprite(128, 720, "sgr", 0)
-      .setDepth(7)
+      .setDepth(6)
       .setCollideWorldBounds(true)
       .setBounce(1);
 
     // DEMONS
     this.npc = this.physics.add
       .sprite(128, 336, "w-dcult-sit", 0)
-      .setDepth(7)
+      .setDepth(6)
       .setCollideWorldBounds(true)
       .setBounce(1);
     this.npc = this.physics.add
       .sprite(224, 336, "dcult-sit", 0)
-      .setDepth(7)
+      .setDepth(6)
       .setCollideWorldBounds(true)
       .setBounce(1);
     this.npc = this.physics.add
       .sprite(416, 336, "dcult-sit", 0)
-      .setDepth(7)
+      .setDepth(6)
       .setCollideWorldBounds(true)
       .setBounce(1);
     this.npc = this.physics.add
       .sprite(512, 336, "w-dcult-sit", 0)
-      .setDepth(7)
+      .setDepth(6)
       .setCollideWorldBounds(true)
       .setBounce(1);
     this.npc = this.physics.add
       .sprite(128, 400, "dcult-sit", 0)
-      .setDepth(7)
+      .setDepth(6)
       .setCollideWorldBounds(true)
       .setBounce(1);
     this.npc = this.physics.add
       .sprite(224, 400, "w-dcult-sit", 0)
-      .setDepth(7)
+      .setDepth(6)
       .setCollideWorldBounds(true)
       .setBounce(1);
     this.npc = this.physics.add
       .sprite(416, 400, "dcult-sit", 0)
-      .setDepth(7)
+      .setDepth(6)
       .setCollideWorldBounds(true)
       .setBounce(1);
     this.npc = this.physics.add
       .sprite(512, 400, "dcult-sit", 0)
-      .setDepth(7)
+      .setDepth(6)
       .setCollideWorldBounds(true)
       .setBounce(1);
     this.npc = this.physics.add
       .sprite(128, 464, "dcult-sit", 0)
-      .setDepth(7)
+      .setDepth(6)
       .setCollideWorldBounds(true)
       .setBounce(1);
     this.npc = this.physics.add
       .sprite(224, 464, "dcult-sit", 0)
-      .setDepth(7)
+      .setDepth(6)
       .setCollideWorldBounds(true)
       .setBounce(1);
     this.npc = this.physics.add
       .sprite(512, 464, "w-dcult-sit", 0)
-      .setDepth(7)
+      .setDepth(6)
       .setCollideWorldBounds(true)
       .setBounce(1);
     this.npc = this.physics.add
       .sprite(208, 192, "dcult-sit", 8)
-      .setDepth(7)
+      .setDepth(6)
       .setCollideWorldBounds(true)
       .setBounce(1);
     this.npc = this.physics.add
       .sprite(432, 192, "dcult-sit", 8)
-      .setDepth(7)
+      .setDepth(6)
       .setCollideWorldBounds(true)
       .setBounce(1);
     this.npc = this.physics.add
       .sprite(320, 222, "dcult-walk", 18)
-      .setDepth(7)
+      .setDepth(6)
       .setCollideWorldBounds(true)
       .setBounce(1);
 
     // SARA
     this.npc = this.physics.add
       .sprite(208, 824, "sara-sit", 6)
-      .setDepth(7)
+      .setDepth(6)
       .setCollideWorldBounds(true)
       .setBounce(1);
 
     // INFOGUY
     this.npc = this.physics.add
       .sprite(1364, 532, "infoGuy-sit", 11)
-      .setDepth(7)
+      .setDepth(9)
       .setCollideWorldBounds(true)
       .setBounce(1);
 
     // ALCHEMISTS
     this.npc = this.physics.add
       .sprite(1684, 532, "alch-walk", 27)
-      .setDepth(7)
+      .setDepth(6)
       .setCollideWorldBounds(true)
       .setBounce(1);
     this.npc = this.physics.add
       .sprite(1580, 622, "alch-walk", 18)
-      .setDepth(7)
+      .setDepth(6)
       .setCollideWorldBounds(true)
       .setBounce(1);
 
     // SKELMAN
     this.npc = this.physics.add
       .sprite(1088, 432, "skel-walk", 18)
-      .setDepth(7)
+      .setDepth(6)
       .setCollideWorldBounds(true)
       .setBounce(1);
 
@@ -646,6 +724,13 @@ export default class SceneOne extends Phaser.Scene {
       repeat: -1,
     });
 
+    this.anims.create({
+      key: "torch",
+      frames: this.anims.generateFrameNumbers("torch", { start: 0, end: 2 }),
+      frameRate: 8,
+      repeat: -1,
+    });
+
     // Camera follows player
     this.cameras.main.startFollow(this.player);
     this.cameras.main.setZoom(3.3);
@@ -653,7 +738,7 @@ export default class SceneOne extends Phaser.Scene {
   update(time: number, delta: number) {
     const walkSpeed = 150;
     const jumpSpeed = 200;
-    const runSpeed = 250;
+    const runSpeed = 300;
     const floatSpeed = 5;
 
     const isRunning = this.input.keyboard!.addKey(
