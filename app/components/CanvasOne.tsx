@@ -19,7 +19,7 @@ export default function CanvasOne() {
       transparent: true,
       physics: {
         default: "arcade",
-        arcade: { gravity: { y: 0, x: 0 }, debug: false },
+        arcade: { gravity: { y: 0, x: 0 }, debug: true },
       },
       scene: [SceneOne, SceneHud],
     };
