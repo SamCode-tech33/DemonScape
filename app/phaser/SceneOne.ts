@@ -288,10 +288,14 @@ export default class SceneOne extends Phaser.Scene {
       { x: 400, y: 48 },
     ];
 
-    this.animatedTorches = torchPositions.map((pos) => {
+    this.animatedTorches = torchPositions.map((pos, index) => {
       const torch = this.add.sprite(pos.x, pos.y, "torch");
       torch.play("torchBurn");
-      torch.setDepth(7);
+      if (index < 6) {
+        torch.setDepth(24);
+      } else {
+        torch.setDepth(7);
+      }
       return torch;
     });
 
@@ -321,14 +325,9 @@ export default class SceneOne extends Phaser.Scene {
       .setCollideWorldBounds(true);
 
     this.physics.add.collider(this.player, collisionGroup);
-    this.player.body.setSize(
-      this.player.width * 0.25,
-      this.player.height * 0.3
-    );
-    this.player.body.setOffset(
-      this.player.width * 0.37,
-      this.player.height * 0.7
-    );
+    this.player.body
+      .setSize(this.player.width * 0.25, this.player.height * 0.3)
+      .setOffset(this.player.width * 0.37, this.player.height * 0.7);
 
     // MUSIC
     this.backgroundMusic = this.sound.add("bgm-1", {
@@ -342,8 +341,13 @@ export default class SceneOne extends Phaser.Scene {
     // GHOST
     this.ghost = this.physics.add
       .sprite(128, 720, "sgr", 0)
-      .setDepth(7)
-      .setCollideWorldBounds(true);
+      .setCollideWorldBounds(true)
+      .setImmovable(true);
+
+    this.ghost
+      .setSize(this.ghost.width * 0.4, this.ghost.height * 0.4)
+      .setOffset(this.ghost.width * 0.25, this.ghost.height * 0.55);
+    this.physics.add.collider(this.player, this.ghost);
 
     this.npcs = this.physics.add.group();
 
@@ -774,6 +778,12 @@ export default class SceneOne extends Phaser.Scene {
       this.boxNpc.setDepth(33);
     } else {
       this.boxNpc.setDepth(7);
+    }
+
+    if (this.player.y < this.ghost.y) {
+      this.ghost.setDepth(12);
+    } else {
+      this.ghost.setDepth(7);
     }
 
     const moving =
