@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Phaser from "phaser";
 import SceneOne from "../phaser/SceneOne";
 import SceneHud from "../phaser/SceneHud";
+import CultHead from "../phaser/CultHead";
 
 export default function CanvasOne() {
   const gameRef = useRef<Phaser.Game | null>(null);
@@ -13,16 +14,24 @@ export default function CanvasOne() {
 
     const config: Phaser.Types.Core.GameConfig = {
       type: Phaser.AUTO,
-      width: 2555,
-      height: 1280,
+      width: window.innerWidth,
+      height: window.innerHeight,
       parent: "gameCanvas",
       transparent: true,
       physics: {
         default: "arcade",
         arcade: { gravity: { y: 0, x: 0 }, debug: false },
       },
-      scene: [SceneOne, SceneHud],
+      scene: [SceneOne, SceneHud, CultHead],
+      scale: {
+        mode: Phaser.Scale.RESIZE,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+      },
     };
+
+    window.addEventListener("resize", () => {
+      gameRef.current?.scale.resize(window.innerWidth, window.innerHeight);
+    });
 
     gameRef.current = new Phaser.Game(config);
 
