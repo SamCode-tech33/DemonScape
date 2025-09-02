@@ -19,6 +19,7 @@ export default class SceneOne extends Phaser.Scene {
   sword!: Phaser.Physics.Arcade.Group;
   magic!: Phaser.Physics.Arcade.Group;
   cultHead!: Phaser.Physics.Arcade.Sprite;
+  alchTwin!: Phaser.Physics.Arcade.Sprite;
   npcs!: Phaser.Physics.Arcade.Group;
   boxNpc!: Phaser.Physics.Arcade.Sprite;
   ghost!: Phaser.Physics.Arcade.Sprite;
@@ -424,6 +425,11 @@ export default class SceneOne extends Phaser.Scene {
       .setCollideWorldBounds(true)
       .setImmovable(true);
 
+    this.cultHead
+      .setSize(this.cultHead.width * 0.4, this.cultHead.height * 0.4)
+      .setOffset(this.cultHead.width * 0.25, this.cultHead.height * 0.55);
+    this.physics.add.collider(this.player, this.cultHead);
+
     // SARA
     this.npcs.add(
       this.physics.add
@@ -449,11 +455,9 @@ export default class SceneOne extends Phaser.Scene {
       .setCollideWorldBounds(true);
     this.npcs.add(alch1);
 
-    this.npcs.add(
-      this.physics.add
-        .sprite(1580, 622, "alch-walk", 18)
-        .setCollideWorldBounds(true)
-    );
+    this.alchTwin = this.physics.add
+      .sprite(1580, 622, "alch-walk", 18)
+      .setCollideWorldBounds(true);
 
     // SKELMAN
     this.npcs.add(
@@ -786,9 +790,9 @@ export default class SceneOne extends Phaser.Scene {
       repeat: -1,
     });
 
-    this.time.delayedCall(1000, () => {
-      walkNpcToPlayer();
-    });
+    // this.time.delayedCall(1000, () => {
+    //   walkNpcToPlayer();
+    // });
 
     const walkNpcToPlayer = () => {
       this.tweens.add({
@@ -853,7 +857,6 @@ export default class SceneOne extends Phaser.Scene {
     });
 
     this.physics.world.setBounds(0, 0, 2555, 1280);
-
     this.cameras.main.setZoom(2.5);
     this.cameras.main.startFollow(this.player);
   }
@@ -897,6 +900,32 @@ export default class SceneOne extends Phaser.Scene {
       this.cultHead.setDepth(12);
     } else {
       this.cultHead.setDepth(7);
+    }
+
+    if (this.player.y < this.alchTwin.y) {
+      this.alchTwin.setDepth(12);
+    } else {
+      this.alchTwin.setDepth(7);
+    }
+
+    if (
+      Math.abs(this.player.y - this.alchTwin.y) &&
+      Math.abs(this.player.x - this.alchTwin.x) < 33
+    ) {
+      this.add
+        .rectangle(this.alchTwin.x, this.alchTwin.y - 22, 33, 33, 0x000000, 0.6)
+        .setDepth(13);
+      this.add
+        .text(this.alchTwin.x, this.alchTwin.y - 22, "E", {
+          fontSize: "24px",
+          color: "#ffffff",
+        })
+        .setDepth(13);
+      this.input.keyboard!.once("keydown-E", () => {
+        this.backgroundMusic.stop();
+        this.scene.pause("SceneOne");
+        this.scene.launch("AlchemistTwins");
+      });
     }
 
     const moving =
