@@ -6,6 +6,7 @@ import SceneOne from "../phaser/SceneOne";
 import SceneHud from "../phaser/SceneHud";
 import CultHead from "../phaser/CultHead";
 import AlchemistTwins from "../phaser/AlchemistTwins";
+import BoxGuy from "../phaser/BoxGuy";
 
 export default function CanvasOne() {
   const gameRef = useRef<Phaser.Game | null>(null);
@@ -23,7 +24,7 @@ export default function CanvasOne() {
         default: "arcade",
         arcade: { gravity: { y: 0, x: 0 }, debug: false },
       },
-      scene: [SceneOne, SceneHud, CultHead, AlchemistTwins],
+      scene: [SceneOne, SceneHud, CultHead, AlchemistTwins, BoxGuy],
       scale: {
         mode: Phaser.Scale.RESIZE,
         autoCenter: Phaser.Scale.CENTER_BOTH,
