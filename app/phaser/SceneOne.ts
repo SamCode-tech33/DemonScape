@@ -37,6 +37,10 @@ export default class SceneOne extends Phaser.Scene {
   ghostBob!: 0;
   animatedTorches: Phaser.GameObjects.Sprite[] = [];
   animatedAlchemy: Phaser.GameObjects.Sprite[] = [];
+  seuthTalkButton!: Phaser.GameObjects.Rectangle | undefined;
+  seuthTalkText!: Phaser.GameObjects.Text | undefined;
+  boxGuyTalkButton!: Phaser.GameObjects.Rectangle | undefined;
+  boxGuyTalkText!: Phaser.GameObjects.Text | undefined;
 
   constructor() {
     super({ key: "SceneOne" });
@@ -457,7 +461,13 @@ export default class SceneOne extends Phaser.Scene {
 
     this.alchTwin = this.physics.add
       .sprite(1580, 622, "alch-walk", 18)
-      .setCollideWorldBounds(true);
+      .setCollideWorldBounds(true)
+      .setImmovable(true);
+
+    this.alchTwin
+      .setSize(this.alchTwin.width * 0.4, this.alchTwin.height * 0.4)
+      .setOffset(this.alchTwin.width * 0.37, this.alchTwin.height * 0.55);
+    this.physics.add.collider(this.player, this.alchTwin);
 
     // SKELMAN
     this.npcs.add(
@@ -790,9 +800,9 @@ export default class SceneOne extends Phaser.Scene {
       repeat: -1,
     });
 
-    // this.time.delayedCall(1000, () => {
-    //   walkNpcToPlayer();
-    // });
+    this.time.delayedCall(1000, () => {
+      walkNpcToPlayer();
+    });
 
     const walkNpcToPlayer = () => {
       this.tweens.add({
@@ -909,23 +919,64 @@ export default class SceneOne extends Phaser.Scene {
     }
 
     if (
-      Math.abs(this.player.y - this.alchTwin.y) &&
-      Math.abs(this.player.x - this.alchTwin.x) < 33
+      Math.abs(this.player.y - this.alchTwin.y) < 28 &&
+      Math.abs(this.player.x - this.alchTwin.x) < 28
     ) {
-      this.add
-        .rectangle(this.alchTwin.x, this.alchTwin.y - 22, 33, 33, 0x000000, 0.6)
-        .setDepth(13);
-      this.add
-        .text(this.alchTwin.x, this.alchTwin.y - 22, "E", {
-          fontSize: "24px",
-          color: "#ffffff",
-        })
-        .setDepth(13);
-      this.input.keyboard!.once("keydown-E", () => {
-        this.backgroundMusic.stop();
-        this.scene.pause("SceneOne");
-        this.scene.launch("AlchemistTwins");
-      });
+      if (!this.seuthTalkButton && !this.seuthTalkText) {
+        this.seuthTalkButton = this.add
+          .rectangle(
+            this.alchTwin.x,
+            this.alchTwin.y - 33,
+            22,
+            22,
+            0x000000,
+            0.6
+          )
+          .setDepth(13);
+        this.seuthTalkText = this.add
+          .text(this.alchTwin.x - 6, this.alchTwin.y - 44, "E", {
+            fontSize: "20px",
+            color: "#ffffff",
+          })
+          .setDepth(13);
+        this.input.keyboard!.once("keydown-E", () => {
+          this.backgroundMusic.stop();
+          this.scene.pause("SceneOne");
+          this.scene.launch("AlchemistTwins");
+        });
+      }
+    } else {
+      this.seuthTalkButton?.destroy();
+      this.seuthTalkText?.destroy();
+      this.seuthTalkButton = undefined;
+      this.seuthTalkText = undefined;
+    }
+
+    if (
+      Math.abs(this.player.y - this.boxNpc.y) < 28 &&
+      Math.abs(this.player.x - this.boxNpc.x) < 28
+    ) {
+      if (!this.boxGuyTalkButton && !this.boxGuyTalkText) {
+        this.boxGuyTalkButton = this.add
+          .rectangle(this.boxNpc.x, this.boxNpc.y - 33, 22, 22, 0x000000, 0.6)
+          .setDepth(13);
+        this.boxGuyTalkText = this.add
+          .text(this.boxNpc.x - 6, this.boxNpc.y - 44, "E", {
+            fontSize: "20px",
+            color: "#ffffff",
+          })
+          .setDepth(13);
+        this.input.keyboard!.once("keydown-E", () => {
+          this.backgroundMusic.stop();
+          this.scene.pause("SceneOne");
+          this.scene.launch("BoxGuy");
+        });
+      }
+    } else {
+      this.boxGuyTalkButton?.destroy();
+      this.boxGuyTalkText?.destroy();
+      this.boxGuyTalkButton = undefined;
+      this.boxGuyTalkText = undefined;
     }
 
     const moving =

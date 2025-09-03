@@ -13,29 +13,7 @@ interface DialogueNode {
 export default class CultHead extends Phaser.Scene {
   private dialogueNodes: DialogueNode[] = [
     {
-      text: "Cult Head: You whine like fettered swine. Why?",
-      choices: [
-        {
-          text: "1) Th-this heart in my hand. . . wh-where am I? I-I was just in my room...",
-          next: 1,
-        },
-        {
-          text: "2) Fuck off bitch. I'll scream if I want to scream.",
-          next: 2,
-        },
-      ],
-    },
-    {
-      text: "Cult Head: *He leans in and peers intently into your eyes* Hmm your eyes show no light, and so the bind is tight. But what pathetic words for a demon of your stature... Hell burns at the same rate as your evaporating masculinity.",
-      choices: [{ text: "Continue...", next: 3 }],
-    },
-    {
-      text: "Cult Head: *He leans in and peers intently into your eyes* Hmm your eyes show no light, and so the bind is tight. But for a demon of your stature to so brazenly speak to a Lord two-hundred years your superior... You must be having trouble grasping reality.",
-      choices: [{ text: "Continue...", next: 3 }],
-    },
-    {
-      text: "Cult Head: *His fist lights aflame and he punches you swiftly in the gut* Heal your mind or we will tear your soul for energy. Have the twins check you out. They're in the room to the right of here. We will finish without you...",
-      // no choices = end
+      text: "Box Guy: Man I am so high right now..... what a view lies before me...*His smirk grows in intensity*",
     },
   ];
 
@@ -45,18 +23,18 @@ export default class CultHead extends Phaser.Scene {
   private music!: Phaser.Sound.BaseSound;
 
   constructor() {
-    super({ key: "CultHead" });
+    super({ key: "BoxGuy" });
   }
 
   preload() {
-    this.load.image("cultHeadConvo", "/assets/cultHead.png");
-    this.load.audio("cultHeadMusic", "/assets/music/morbid.mp3");
+    this.load.image("boxGuyConvo", "/assets/BoxGuy.jpeg");
+    this.load.audio("boxGuyMusic", "/assets/music/dimension-2.mp3");
   }
 
   create() {
     // Background portrait
     const portrait = this.add
-      .image(this.scale.width / 2, this.scale.height / 2, "cultHeadConvo")
+      .image(this.scale.width / 2, this.scale.height / 2, "boxGuyConvo")
       .setOrigin(0.5);
     portrait.displayWidth = this.scale.width;
     portrait.displayHeight = this.scale.height;
@@ -66,18 +44,18 @@ export default class CultHead extends Phaser.Scene {
       this.scale.width / 2,
       this.scale.height - 150,
       this.scale.width,
-      250,
+      290,
       0x000000,
-      0.6
+      0.4
     );
 
-    this.dialogueText = this.add.text(150, this.scale.height - 190, "", {
-      fontSize: "32px",
+    this.dialogueText = this.add.text(150, this.scale.height - 270, "", {
+      fontSize: "26px",
       color: "#ffffff",
       wordWrap: { width: this.scale.width - 300 },
     });
 
-    this.music = this.sound.add("cultHeadMusic", { loop: true, volume: 1 });
+    this.music = this.sound.add("boxGuyMusic", { loop: true, volume: 1 });
     this.music.play();
 
     // Show first node
@@ -108,6 +86,16 @@ export default class CultHead extends Phaser.Scene {
 
     // If no choices, check if end
     if (!node.choices || node.choices.length === 0) {
+      this.add.text(
+        180,
+        this.scale.height - 110,
+        "Press space to exit conversation",
+        {
+          fontSize: "24px",
+          color: "#ffcc00",
+          wordWrap: { width: this.scale.width - 300 },
+        }
+      );
       this.input.keyboard!.once("keydown-SPACE", () => {
         this.music.stop();
         this.scene.stop();
@@ -120,9 +108,13 @@ export default class CultHead extends Phaser.Scene {
     node.choices.forEach((choice, i) => {
       const choiceText = this.add.text(
         180,
-        this.scale.height - 100 + i * 40,
+        this.scale.height - 110 + i * 40,
         choice.text,
-        { fontSize: "28px", color: "#ffcc00" }
+        {
+          fontSize: "24px",
+          color: "#ffcc00",
+          wordWrap: { width: this.scale.width - 300 },
+        }
       );
       this.choiceTexts.push(choiceText);
     });

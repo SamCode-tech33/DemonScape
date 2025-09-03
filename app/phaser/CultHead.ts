@@ -13,64 +13,29 @@ interface DialogueNode {
 export default class CultHead extends Phaser.Scene {
   private dialogueNodes: DialogueNode[] = [
     {
-      text: "Seuthala: *Seuthala rolls her eyes at you* Yes? Do you need something?",
+      text: "Cult Head: You whine like fettered swine. Why?",
       choices: [
         {
-          text: "1) U-um I uh don't know what's happening to me. It's all so creepy. Where is my house?",
+          text: "1) Th-this heart in my hand. . . wh-where am I? I-I was just in my room...",
           next: 1,
         },
         {
-          text: "2) Some annoying old man told me to come to you... I'm going along with it because it smells like moth-balls over there.",
+          text: "2) Fuck off bitch. I'll scream if I want to scream.",
           next: 2,
         },
       ],
     },
     {
-      text: "Seuthala: Ok, whatever... He probably wants me to make you drink this *She hands you a potion*",
+      text: "Cult Head: *He leans in and peers intently into your eyes* Hmm your eyes show no light, and so the bind is tight. But what pathetic words for a demon of your stature... Hell burns at the same rate as your evaporating masculinity.",
       choices: [{ text: "1) Continue...", next: 3 }],
     },
     {
-      text: "Seuthala: Ok, I see why he would be pissed. Your probably fine, other than being a complete idiot. Well he probably wants you to drink this anyways. *She hands you a potion*",
+      text: "Cult Head: *He leans in and peers intently into your eyes* Hmm your eyes show no light, and so the bind is tight. But for a demon of your stature to so brazenly speak to a Lord two-hundred years your superior... You must be having trouble grasping reality.",
       choices: [{ text: "1) Continue...", next: 3 }],
     },
     {
-      text: "*Seuthala's twin behind squirms awkwardly, her face is flush. She let's out a deep moan as her eyes roll back* Uahhhn!",
-      choices: [
-        { text: "1) Um is she ok back there?...", next: 4 },
-        {
-          text: "2) Looks like someone is having a little fun on the job *You smirk coyly*",
-          next: 4,
-        },
-      ],
-    },
-    {
-      text: "Seuthala: Her? you mean me right? wow... you really are fucked in the head. Are you gonna drink the potion or what? If you don't... Well I could ask Maelvoth to let me use your husk for . . . hmm but would I feel as much across three as I do with two. . . *she drifts into thought, forgetting your existence*",
-      choices: [
-        {
-          text: "1) Me? u-um what does that mean? I mean are you like... Wait what?",
-          next: 5,
-        },
-        {
-          text: "2) Yeah I don't really give a flying fuck about whatever kinky shit is going on in there *You grab the potion from her hands and down it in one gulp*",
-          next: 6,
-        },
-      ],
-    },
-    {
-      text: "Seuthala: You know demons can't be twins right. She's a husk whom I use to feel pleasure 24/7 while I work 24/7. I'm just that valuable. Maelvoth gave me two husks for my spirit to inhabit. Jealous?",
-      choices: [
-        {
-          text: "1) W-well um that is all fine and all. I'm just gonna leave now *Don't drink the potion*",
-          next: 6,
-        },
-        {
-          text: "2) I see... well nothing better than a random potion from a degenerate demon... *You take the potion and drink it hesitantly*",
-          next: 6,
-        },
-      ],
-    },
-    {
-      text: "Seuthala: Great, well anyways your eyes are fine so it is likely nothing will happen. I think you fucked up your husk's brain and can just... *Darkness evelopes you as her voice fades*",
+      text: "Cult Head: *His fist lights aflame and he punches you swiftly in the gut* Heal your mind or we will tear your soul for energy. Have the twins check you out. They're in the room to the right of here. We will finish without you...",
+      // no choices = end
     },
   ];
 
@@ -80,18 +45,18 @@ export default class CultHead extends Phaser.Scene {
   private music!: Phaser.Sound.BaseSound;
 
   constructor() {
-    super({ key: "AlchemistTwins" });
+    super({ key: "CultHead" });
   }
 
   preload() {
-    this.load.image("AlchTwinsConvo", "/assets/AlchTwins.png");
-    this.load.audio("TwinDemonsMusic", "/assets/music/rain.mp3");
+    this.load.image("cultHeadConvo", "/assets/cultHead.png");
+    this.load.audio("cultHeadMusic", "/assets/music/morbid.mp3");
   }
 
   create() {
     // Background portrait
     const portrait = this.add
-      .image(this.scale.width / 2, this.scale.height / 2, "AlchTwinsConvo")
+      .image(this.scale.width / 2, this.scale.height / 2, "cultHeadConvo")
       .setOrigin(0.5);
     portrait.displayWidth = this.scale.width;
     portrait.displayHeight = this.scale.height;
@@ -112,7 +77,7 @@ export default class CultHead extends Phaser.Scene {
       wordWrap: { width: this.scale.width - 300 },
     });
 
-    this.music = this.sound.add("TwinDemonsMusic", { loop: true, volume: 1 });
+    this.music = this.sound.add("cultHeadMusic", { loop: true, volume: 1 });
     this.music.play();
 
     // Show first node
