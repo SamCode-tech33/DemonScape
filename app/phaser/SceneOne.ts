@@ -18,6 +18,8 @@ export default class SceneOne extends Phaser.Scene {
   spaceKey!: Phaser.Input.Keyboard.Key;
   sword!: Phaser.Physics.Arcade.Group;
   magic!: Phaser.Physics.Arcade.Group;
+  cultHead!: Phaser.Physics.Arcade.Sprite;
+  alchTwin!: Phaser.Physics.Arcade.Sprite;
   npcs!: Phaser.Physics.Arcade.Group;
   boxNpc!: Phaser.Physics.Arcade.Sprite;
   ghost!: Phaser.Physics.Arcade.Sprite;
@@ -332,9 +334,8 @@ export default class SceneOne extends Phaser.Scene {
     // MUSIC
     this.backgroundMusic = this.sound.add("bgm-1", {
       loop: true,
-      volume: 0.7,
+      volume: 1,
     });
-    this.backgroundMusic.play();
 
     // NPCS //
 
@@ -417,11 +418,17 @@ export default class SceneOne extends Phaser.Scene {
         .sprite(432, 192, "dcult-sit", 8)
         .setCollideWorldBounds(true)
     );
-    this.npcs.add(
-      this.physics.add
-        .sprite(320, 222, "dcult-walk", 18)
-        .setCollideWorldBounds(true)
-    );
+
+    // CULT HEAD
+    this.cultHead = this.physics.add
+      .sprite(320, 222, "dcult-walk", 18)
+      .setCollideWorldBounds(true)
+      .setImmovable(true);
+
+    this.cultHead
+      .setSize(this.cultHead.width * 0.4, this.cultHead.height * 0.4)
+      .setOffset(this.cultHead.width * 0.25, this.cultHead.height * 0.55);
+    this.physics.add.collider(this.player, this.cultHead);
 
     // SARA
     this.npcs.add(
@@ -448,11 +455,9 @@ export default class SceneOne extends Phaser.Scene {
       .setCollideWorldBounds(true);
     this.npcs.add(alch1);
 
-    this.npcs.add(
-      this.physics.add
-        .sprite(1580, 622, "alch-walk", 18)
-        .setCollideWorldBounds(true)
-    );
+    this.alchTwin = this.physics.add
+      .sprite(1580, 622, "alch-walk", 18)
+      .setCollideWorldBounds(true);
 
     // SKELMAN
     this.npcs.add(
@@ -746,9 +751,114 @@ export default class SceneOne extends Phaser.Scene {
       repeat: -1,
     });
 
-    // Camera follows player
+    // CULT HEAD ANIMATION
+
+    this.anims.create({
+      key: "dcult-walk-up",
+      frames: this.anims.generateFrameNumbers("dcult-walk", {
+        start: 0,
+        end: 8,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "dcult-walk-left",
+      frames: this.anims.generateFrameNumbers("dcult-walk", {
+        start: 9,
+        end: 17,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "dcult-walk-down",
+      frames: this.anims.generateFrameNumbers("dcult-walk", {
+        start: 18,
+        end: 26,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "dcult-walk-right",
+      frames: this.anims.generateFrameNumbers("dcult-walk", {
+        start: 27,
+        end: 35,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+    // this.time.delayedCall(1000, () => {
+    //   walkNpcToPlayer();
+    // });
+
+    const walkNpcToPlayer = () => {
+      this.tweens.add({
+        targets: this.cultHead,
+        y: this.player.y + 40,
+        duration: 2200,
+        onStart: () => {
+          this.cultHead.anims.play("dcult-walk-down", true);
+        },
+        onComplete: () => {
+          this.tweens.add({
+            targets: this.cultHead,
+            x: this.player.x,
+            duration: 1100,
+            onStart: () => {
+              this.cultHead.anims.play("dcult-walk-right", true);
+            },
+            onComplete: () => {
+              this.cultHead.anims.stop();
+              this.cultHead.setFrame(0);
+              startConversation();
+            },
+          });
+        },
+      });
+    };
+
+    const walkBackCultHead = () => {
+      this.tweens.add({
+        targets: this.cultHead,
+        x: 320,
+        duration: 1100,
+        onStart: () => {
+          this.cultHead.anims.play("dcult-walk-left", true);
+        },
+        onComplete: () => {
+          this.tweens.add({
+            targets: this.cultHead,
+            y: 222,
+            duration: 2200,
+            onStart: () => {
+              this.cultHead.anims.play("dcult-walk-up", true);
+            },
+            onComplete: () => {
+              this.cultHead.anims.stop();
+              this.cultHead.setFrame(18);
+            },
+          });
+        },
+      });
+    };
+
+    const startConversation = () => {
+      this.backgroundMusic.stop();
+      this.scene.pause("SceneOne");
+      this.scene.launch("CultHead");
+    };
+
+    this.events.on("resume", () => {
+      walkBackCultHead();
+      this.backgroundMusic.play();
+    });
+
+    this.physics.world.setBounds(0, 0, 2555, 1280);
+    this.cameras.main.setZoom(2.5);
     this.cameras.main.startFollow(this.player);
-    this.cameras.main.setZoom(3.3);
   }
   update(time: number, delta: number) {
     const walkSpeed = 150;
@@ -784,6 +894,38 @@ export default class SceneOne extends Phaser.Scene {
       this.ghost.setDepth(12);
     } else {
       this.ghost.setDepth(7);
+    }
+
+    if (this.player.y < this.cultHead.y) {
+      this.cultHead.setDepth(12);
+    } else {
+      this.cultHead.setDepth(7);
+    }
+
+    if (this.player.y < this.alchTwin.y) {
+      this.alchTwin.setDepth(12);
+    } else {
+      this.alchTwin.setDepth(7);
+    }
+
+    if (
+      Math.abs(this.player.y - this.alchTwin.y) &&
+      Math.abs(this.player.x - this.alchTwin.x) < 33
+    ) {
+      this.add
+        .rectangle(this.alchTwin.x, this.alchTwin.y - 22, 33, 33, 0x000000, 0.6)
+        .setDepth(13);
+      this.add
+        .text(this.alchTwin.x, this.alchTwin.y - 22, "E", {
+          fontSize: "24px",
+          color: "#ffffff",
+        })
+        .setDepth(13);
+      this.input.keyboard!.once("keydown-E", () => {
+        this.backgroundMusic.stop();
+        this.scene.pause("SceneOne");
+        this.scene.launch("AlchemistTwins");
+      });
     }
 
     const moving =
