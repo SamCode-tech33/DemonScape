@@ -2,11 +2,14 @@
 
 import { useEffect, useRef } from "react";
 import Phaser from "phaser";
-import SceneOne from "../phaser/SceneOne";
-import SceneHud from "../phaser/SceneHud";
-import CultHead from "../phaser/CultHead";
-import AlchemistTwins from "../phaser/AlchemistTwins";
-import BoxGuy from "../phaser/BoxGuy";
+import Main from "../phaser/LevelOne/Main";
+import SceneHud from "../phaser/UtilityScenes/SceneHud";
+import CultHead from "../phaser/LevelOne/Conversations/CultHead";
+import AlchTwins from "../phaser/LevelOne/Conversations/AlchTwins";
+import BoxGuy from "../phaser/LevelOne/Conversations/BoxGuy";
+import SaraOne from "../phaser/LevelOne/Conversations/SaraOne";
+import Ghost from "../phaser/LevelOne/Conversations/Ghost";
+import SkelMan from "../phaser/LevelOne/Conversations/SkelMan";
 
 export default function CanvasOne() {
   const gameRef = useRef<Phaser.Game | null>(null);
@@ -24,7 +27,16 @@ export default function CanvasOne() {
         default: "arcade",
         arcade: { gravity: { y: 0, x: 0 }, debug: false },
       },
-      scene: [SceneOne, SceneHud, CultHead, AlchemistTwins, BoxGuy],
+      scene: [
+        Main,
+        SceneHud,
+        CultHead,
+        AlchTwins,
+        BoxGuy,
+        SaraOne,
+        Ghost,
+        SkelMan,
+      ],
       scale: {
         mode: Phaser.Scale.RESIZE,
         autoCenter: Phaser.Scale.CENTER_BOTH,
