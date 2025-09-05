@@ -144,3 +144,73 @@ export const pathingGhost = (scene: any) => {
     scene.ghostBob = 0;
   }
 };
+
+export const pathingSkel = (scene: any) => {
+  const moveToNextPoint = () => {
+    scene.tweens.add({
+      targets: scene.skel,
+      x: 1228,
+      duration: 6000,
+      ease: "Linear",
+      onStart: () => scene.skel.anims.play("skel-walk-right", true),
+      onComplete: () => {
+        scene.skel.anims.stop();
+        scene.tweens.add({
+          targets: scene.skel,
+          x: 1010,
+          duration: 6000,
+          ease: "Linear",
+          onStart: () => scene.skel.anims.play("skel-walk-left", true),
+          onComplete: () => {
+            scene.skel.anims.stop();
+            moveToNextPoint();
+          },
+        });
+      },
+    });
+  };
+  moveToNextPoint();
+};
+
+export const pathingAlch2 = (scene: any) => {
+  scene.alchTwin2.anims.play("alch-turn", true);
+};
+
+export const pathingAlch1 = (scene: any) => {
+  const pathPoints = [
+    { x: 1488, y: 440, anim: "alch-walk-up", duration: 4000, stop: 0 },
+    { x: 1550, y: 610, anim: "alch-walk-down", duration: 4000, stop: 18 },
+    { x: 1614, y: 610, anim: "alch-walk-right", duration: 2000, stop: 18 },
+    { x: 1676, y: 575, anim: "alch-walk-right", duration: 2000, stop: 27 },
+    { x: 1614, y: 610, anim: "alch-walk-left", duration: 3000, stop: 18 },
+  ];
+
+  const npc = scene.alchTwin;
+  let index = 0;
+
+  const moveToNextPoint = () => {
+    const point = pathPoints[index];
+
+    scene.tweens.add({
+      targets: npc,
+      x: point.x,
+      y: point.y,
+      duration: point.duration,
+      ease: "Linear",
+      onStart: () => npc.anims.play(point.anim, true),
+      onComplete: () => {
+        // Stop animation and show frame 0
+        npc.anims.stop();
+        npc.setFrame(point.stop);
+
+        // Wait 5 seconds before moving to next point
+        scene.time.delayedCall(16000, () => {
+          index = (index + 1) % pathPoints.length;
+          moveToNextPoint();
+        });
+      },
+    });
+  };
+
+  moveToNextPoint(); // start the loop
+};

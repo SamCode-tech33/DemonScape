@@ -4,6 +4,9 @@ import {
   depthSetting,
   pathingZombies,
   pathingGhost,
+  pathingAlch2,
+  pathingAlch1,
+  pathingSkel,
 } from "@/app/components/npcLogic";
 import interactionLogic from "@/app/components/interactionLogic";
 import {
@@ -11,7 +14,9 @@ import {
   zombieAnimation,
   torchAnimation,
   cultHeadAnimation,
-  alchAnimation,
+  alch2Animation,
+  alchTorchAnimation,
+  skelManAnimation,
 } from "@/app/components/animationSettings";
 import { cultHeadEvent } from "@/app/components/levelOne/eventLogic";
 import {
@@ -147,7 +152,9 @@ export default class Main extends Phaser.Scene {
     zombieAnimation(this);
     cultHeadAnimation(this);
     torchAnimation(this, torchPositions);
-    alchAnimation(this, alchemyPositions);
+    alchTorchAnimation(this, alchemyPositions);
+    alch2Animation(this);
+    skelManAnimation(this);
 
     //EVENTS
     this.time.delayedCall(500, () => {
@@ -157,7 +164,11 @@ export default class Main extends Phaser.Scene {
     this.physics.world.setBounds(0, 0, 2555, 1280);
     this.cameras.main.setZoom(2.5);
     this.cameras.main.startFollow(this.player);
+    // PATROLS
+    pathingAlch1(this);
+    pathingSkel(this);
   }
+
   update(time: number, delta: number) {
     // INTERACTION LOGIC
     const npcs = [
@@ -214,5 +225,6 @@ export default class Main extends Phaser.Scene {
     depthSetting(this);
     pathingZombies(this, delta);
     pathingGhost(this);
+    pathingAlch2(this);
   }
 }
