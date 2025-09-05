@@ -353,7 +353,6 @@ export default class Main extends Phaser.Scene {
     this.ghost
       .setSize(this.ghost.width * 0.33, this.ghost.height * 0.3)
       .setOffset(this.ghost.width * 0.33, this.ghost.height * 0.7);
-    this.physics.add.collider(this.player, this.ghost);
 
     this.npcs = this.physics.add.group();
 
