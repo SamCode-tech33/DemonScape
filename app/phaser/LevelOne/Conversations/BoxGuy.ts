@@ -57,11 +57,11 @@ export default class BoxGuy extends Phaser.Scene {
       ],
     },
     {
-      text: "Box Guy: Man I am so high right now... you could ask me anything... and I wouldn't suspect you of being a light bleached or even a human or some crazy shit like that.",
+      text: "Box Guy: Man I am so high right now... you could ask me anything... and I wouldn't suspect you of being a Light-Bleached or even a human or some crazy shit like that.",
       choices: [
         {
           text: "1) Yeah I'm not falling for that shit.",
-          next: 11,
+          next: 12,
         },
         {
           text: "2) You mentioned humans. Are there any here?",
@@ -82,7 +82,7 @@ export default class BoxGuy extends Phaser.Scene {
       text: "Box Guy: Any other brimmmming questions?",
       choices: [
         {
-          text: "1) What is a light bleached?",
+          text: "1) What is a Light-Bleached?",
           next: 7,
         },
         {
@@ -90,7 +90,7 @@ export default class BoxGuy extends Phaser.Scene {
           next: 8,
         },
         {
-          text: "3) Do you like tacoes?",
+          text: "3) What do you even do here?",
           next: 9,
         },
         {
@@ -98,8 +98,12 @@ export default class BoxGuy extends Phaser.Scene {
           next: 10,
         },
         {
-          text: "5) No.",
+          text: "5) Do you like tacoes?",
           next: 11,
+        },
+        {
+          text: "6) No.",
+          next: 12,
         },
       ],
     },
@@ -107,7 +111,7 @@ export default class BoxGuy extends Phaser.Scene {
       text: "Box Guy: They're like that moment you take a huge hit and your mind goesss allll WHITE. I'm sure you know what I mean.",
       choices: [
         {
-          text: "1) continue...",
+          text: "1) OK...",
           next: 6,
         },
       ],
@@ -116,16 +120,16 @@ export default class BoxGuy extends Phaser.Scene {
       text: "Box Guy: We are in DA CATHEDRAL LE GROUND. It's a flipped over cathedral that is underground. That's right. We don't just like inverted crosses. We like INVERTED CHURCHES. It's a FATTER middle finger one might say. Also great for hotboxing. But we're in a shit poor town my dude. None of the good stuff around here. Mmmmmm actually you have more energy than most in this shithole. Unfortunate your a man...",
       choices: [
         {
-          text: "1) continue...",
+          text: "1) OK...",
           next: 6,
         },
       ],
     },
     {
-      text: "Box Guy: OHHHH YEAHHHH I was the first to INVERT THAT SHIT. Upside down tacoes with human flesh as meat and that sweet cockroach CRUNCH. Oh! and tomatoes... But mannnn that was a sad day. I was so high that ALFRED STOLE MY BUSINESS IDEA. Cocksucker's rich now.",
+      text: "Box Guy: Who me? I just sit on boxes and get high HAHAHAH. But for real, I am SUPPOSED to be... oh wait that's a secret! Whew, It would have been a sad day if I told you... AND THEN I WOULD HAVE TO SMOKE MORE. And if I got that high I wouldn't be able to see the glorious ass before me. Man you almost got me, but not quite hehehe.",
       choices: [
         {
-          text: "1) continue...",
+          text: "1) OK...",
           next: 6,
         },
       ],
@@ -134,7 +138,16 @@ export default class BoxGuy extends Phaser.Scene {
       text: "Box Guy: Mostly dead! But we still have the final cleanzzzzing coming up. I'm sad about that though. No more flesh for my tacoes after we finish. Maybe I'll ask Baelzog to make a human farm.... nah his presence is enough to kill people like us. Maybe I'll write a letter...",
       choices: [
         {
-          text: "1) continue...",
+          text: "1) OK...",
+          next: 6,
+        },
+      ],
+    },
+    {
+      text: "Box Guy: OHHHH YEAHHHH I was the first to INVERT THAT SHIT. Upside down tacoes with human flesh as meat and that sweet cockroach CRUNCH. Oh! and tomatoes... But mannnn that was a sad day. I was so high that ALFRED STOLE MY BUSINESS IDEA. Cocksucker's rich now.",
+      choices: [
+        {
+          text: "1) OK...",
           next: 6,
         },
       ],
@@ -238,7 +251,7 @@ export default class BoxGuy extends Phaser.Scene {
       let spacing = 40;
 
       if (this.currentNodeIndex === 6) {
-        startY = this.scale.height - 180;
+        startY = this.scale.height - 220;
         spacing = 35;
       }
 

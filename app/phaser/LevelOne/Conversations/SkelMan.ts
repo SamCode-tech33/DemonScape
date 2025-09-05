@@ -13,7 +13,7 @@ interface DialogueNode {
 export default class SkelMan extends Phaser.Scene {
   private dialogueNodes: DialogueNode[] = [
     {
-      text: "Fedora Skeleton: WAZZZZZUPP?",
+      text: "Fedora Skeleton: WAAAAAAZZZZZZZUUUUUPPPPPPPP?",
       choices: [
         {
           text: "1) And now there is a talking skeleton... I'm insane. I hope there is a lot of padding in my crazy room.",
@@ -43,9 +43,9 @@ export default class SkelMan extends Phaser.Scene {
       choices: [{ text: "1) Continue...", next: 3 }],
     },
     {
-      text: "Fedora Skeleton: GEH! Yeah it's wierd that you can see me. I'm light bleached after all.",
+      text: "Fedora Skeleton: GEH! Yeah it's wierd that you can see me. I'm Light-Bleached after all.",
       choices: [
-        { text: "1) What is light bleached?", next: 4 },
+        { text: "1) What is Light-Bleached?", next: 4 },
         {
           text: "2) Can I get some of that bleach for my eyes?",
           next: 4,
@@ -56,7 +56,7 @@ export default class SkelMan extends Phaser.Scene {
       text: "Fedora Skeleton: GEHEHEHEHEH ANYWAYS DO YOU LIKE PUZZLES? THERE IS ONE IN THIS VERY ROOM WOOWEEWOOWEE",
       choices: [
         {
-          text: "1) How about you tell me what light bleached means instead?",
+          text: "1) How about you tell me what Light-Bleached means instead?",
           next: 5,
         },
         {
