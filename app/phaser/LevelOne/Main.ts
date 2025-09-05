@@ -1,17 +1,38 @@
 import Phaser from "phaser";
+import playerMovement from "@/app/components/playerMovement";
+import {
+  depthSetting,
+  pathingZombies,
+  pathingGhost,
+} from "@/app/components/npcLogic";
+import interactionLogic from "@/app/components/interactionLogic";
+import {
+  playerAnimation,
+  zombieAnimation,
+  torchAnimation,
+  cultHeadAnimation,
+  alchAnimation,
+} from "@/app/components/animationSettings";
+import { cultHeadEvent } from "@/app/components/levelOne/eventLogic";
+import {
+  cultHeadNpc,
+  saraNpc,
+  boxNpc,
+  alchTwinsNpc,
+  skelNpc,
+  ghostNpc,
+} from "@/app/components/importantNpcs";
+import { demonCultMembers } from "@/app/components/fillerNpcs";
+import playerSprite from "@/app/components/player";
+import {
+  mapLayering,
+  collisions,
+} from "@/app/components/levelOne/mapLayeringAndCollision";
+import preLoadedAssets from "@/app/components/levelOne/preLoadedAssets";
+import type { WASDAndArrowKeys } from "@/app/components/demonScapeTypes";
+import keySettings from "@/app/components/keySettings";
+import { zombies } from "@/app/components/enemyNpcs";
 
-type WASDAndArrowKeys = {
-  up: Phaser.Input.Keyboard.Key;
-  down: Phaser.Input.Keyboard.Key;
-  left: Phaser.Input.Keyboard.Key;
-  right: Phaser.Input.Keyboard.Key;
-  w: Phaser.Input.Keyboard.Key;
-  a: Phaser.Input.Keyboard.Key;
-  s: Phaser.Input.Keyboard.Key;
-  d: Phaser.Input.Keyboard.Key;
-  space: Phaser.Input.Keyboard.Key;
-  shift: Phaser.Input.Keyboard.Key;
-};
 export default class Main extends Phaser.Scene {
   player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   keys!: WASDAndArrowKeys;
@@ -20,6 +41,7 @@ export default class Main extends Phaser.Scene {
   magic!: Phaser.Physics.Arcade.Group;
   cultHead!: Phaser.Physics.Arcade.Sprite;
   alchTwin!: Phaser.Physics.Arcade.Sprite;
+  alchTwin2!: Phaser.Physics.Arcade.Sprite;
   npcs!: Phaser.Physics.Arcade.Group;
   boxNpc!: Phaser.Physics.Arcade.Sprite;
   sara!: Phaser.Physics.Arcade.Sprite;
@@ -48,231 +70,54 @@ export default class Main extends Phaser.Scene {
   }
 
   preload() {
-    this.load.tilemapTiledJSON("map", "/assets/level1-master-map.json");
-    this.load.image(
-      "level1-master-tileset",
-      "/assets/level1-master-tileset.png"
-    );
-    this.load.audio("bgm-1", "assets/music/deskMys.mp3");
-
-    this.load.spritesheet(
-      "torch",
-      "assets/animated-objects/torches-animated.png",
-      {
-        frameWidth: 32,
-        frameHeight: 32,
-      }
-    );
-
-    this.load.spritesheet(
-      "alchemy",
-      "assets/animated-objects/alchemy-animated.png",
-      {
-        frameWidth: 32,
-        frameHeight: 32,
-      }
-    );
-
-    // PLAYER
-    this.load.spritesheet("idle", "assets/player/idle.png", {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
-    this.load.spritesheet("walk", "/assets/player/walk.png", {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
-    this.load.spritesheet("run", "/assets/player/run.png", {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
-    this.load.spritesheet("jump", "/assets/player/jump.png", {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
-    this.load.spritesheet("combat_idle", "assets/player/combat_idle.png", {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
-    this.load.spritesheet("emote", "assets/player/emote.png", {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
-    this.load.spritesheet("hurt", "assets/player/hurt.png", {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
-    this.load.spritesheet("shoot", "assets/player/shoot.png", {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
-    this.load.spritesheet("sit", "assets/player/sit.png", {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
-    this.load.spritesheet("halfslash", "assets/player/halfslash.png", {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
-    this.load.spritesheet("spellcast", "assets/player/spellcast.png", {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
-
-    // NPCS
-
-    // GHOST
-    this.load.spritesheet(
-      "sgr",
-      "assets/npc/strangeGhost/strangeGhostRed.png",
-      {
-        frameWidth: 64,
-        frameHeight: 64,
-      }
-    );
-
-    // DEMONS
-    this.load.spritesheet("dcult-walk", "assets/npc/demon-cultists/walk.png", {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
-    this.load.spritesheet("dcult-sit", "assets/npc/demon-cultists/sit.png", {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
-    this.load.spritesheet(
-      "dcult-spell",
-      "assets/npc/demon-cultists/spellcast.png",
-      {
-        frameWidth: 64,
-        frameHeight: 64,
-      }
-    );
-    this.load.spritesheet(
-      "dcult-emote",
-      "assets/npc/demon-cultists/emote.png",
-      {
-        frameWidth: 64,
-        frameHeight: 64,
-      }
-    );
-
-    this.load.spritesheet("w-dcult-walk", "assets/npc/femDemon/walk.png", {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
-    this.load.spritesheet("w-dcult-sit", "assets/npc/femDemon/sit.png", {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
-    this.load.spritesheet(
-      "w-dcult-spell",
-      "assets/npc/femDemon/spellcast.png",
-      {
-        frameWidth: 64,
-        frameHeight: 64,
-      }
-    );
-    this.load.spritesheet("w-dcult-emote", "assets/npc/femDemon/emote.png", {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
-
-    // SARA
-    this.load.spritesheet("sara-walk", "assets/npc/sara/walk.png", {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
-
-    this.load.spritesheet("sara-sit", "assets/npc/sara/sit.png", {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
-
-    // INFOGUY
-    this.load.spritesheet("infoGuy-sit", "assets/npc/infoGuy/sit.png", {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
-
-    // ZOMBIES
-    this.load.spritesheet("zHit", "assets/enemies/zombie/slash.png", {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
-    this.load.spritesheet("zWalk", "assets/enemies/zombie/walk.png", {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
-
-    // SKELETON
-    this.load.spritesheet("skel-walk", "assets/npc/skelMan/walk.png", {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
-
-    // ALCHEMISTS
-    this.load.spritesheet("alch-walk", "assets/npc/alchemists/walk.png", {
-      frameWidth: 64,
-      frameHeight: 64,
-    });
+    preLoadedAssets(this);
   }
   create() {
     // MAP
-    const map = this.make.tilemap({ key: "map" });
-    const tiledMap = map.addTilesetImage(
-      "level1-master-tileset",
-      "level1-master-tileset"
-    )!;
+    mapLayering(this);
 
-    const collisionLayer = map.getObjectLayer("collision");
-    const collisionGroup = this.physics.add.staticGroup();
-    collisionLayer!.objects.forEach((obj) => {
-      if (obj.rectangle) {
-        const collisionRect = this.add.rectangle(
-          obj.x! + obj.width! / 2,
-          obj.y! + obj.height! / 2,
-          obj.width!,
-          obj.height!
-        );
-        this.physics.add.existing(collisionRect, true);
-        collisionRect.setVisible(false);
-        collisionGroup.add(collisionRect);
-      }
+    // MUSIC
+    this.backgroundMusic = this.sound.add("bgm-1", {
+      loop: true,
+      volume: 1,
     });
 
-    const floorLayer = map.createLayer("floor", tiledMap, 0, 0);
-    const rugLayer = map.createLayer("rug", tiledMap, 0, 0);
-    const wallsLayer = map.createLayer("walls", tiledMap, 0, 0);
-    const wallThingsLayer = map.createLayer("wall-objects", tiledMap, 0, 0);
-    const hiddenFloorLayer = map.createLayer(
-      "hidden-floor-objects",
-      tiledMap,
-      0,
-      0
-    );
-    const floorObjectsLayer = map.createLayer("floor-objects", tiledMap, 0, 0);
-    const largeFloorObjects = map.createLayer("floor-objects2", tiledMap, 0, 0);
-    const surfaceItemsLayer = map.createLayer("surface-items", tiledMap, 0, 0);
-    const fireLayer = map.createLayer("fire", tiledMap, 0, 0);
+    // KEY SETTINGS
+    keySettings(this);
 
-    floorLayer && floorLayer.setDepth(1);
-    rugLayer && rugLayer.setDepth(2);
-    wallsLayer && wallsLayer.setDepth(3);
-    wallThingsLayer && wallThingsLayer.setDepth(4);
-    hiddenFloorLayer && hiddenFloorLayer.setDepth(5);
-    floorObjectsLayer && floorObjectsLayer.setDepth(6);
-    largeFloorObjects && largeFloorObjects.setDepth(20);
-    surfaceItemsLayer && surfaceItemsLayer.setDepth(21);
-    fireLayer && fireLayer.setDepth(23);
+    // PLAYER
+    playerSprite(this, collisions(this));
 
-    this.anims.create({
-      key: "torchBurn",
-      frames: this.anims.generateFrameNumbers("torch", { start: 0, end: 2 }),
-      frameRate: 8,
-      repeat: -1,
-    });
+    // IMPORTANT NPCS
+    cultHeadNpc(this);
+    saraNpc(this);
+    boxNpc(this);
+    alchTwinsNpc(this);
+    skelNpc(this);
+    ghostNpc(this);
 
+    // FILLER NPCS
+    const cultMemberPositions = [
+      { x: 128, y: 336 },
+      { x: 224, y: 336 },
+      { x: 416, y: 336 },
+      { x: 512, y: 336 },
+      { x: 128, y: 400 },
+      { x: 224, y: 400 },
+      { x: 416, y: 400 },
+      { x: 512, y: 400 },
+      { x: 128, y: 464 },
+      { x: 224, y: 464 },
+      { x: 512, y: 464 },
+      { x: 208, y: 192 },
+      { x: 432, y: 192 },
+    ];
+    demonCultMembers(this, cultMemberPositions);
+
+    // ENEMIES
+    zombies(this);
+
+    //ANIMATIONS
     const torchPositions = [
       { x: 369, y: 462.5 },
       { x: 369, y: 366 },
@@ -294,595 +139,19 @@ export default class Main extends Phaser.Scene {
       { x: 240, y: 48 },
       { x: 400, y: 48 },
     ];
-
-    this.animatedTorches = torchPositions.map((pos, index) => {
-      const torch = this.add.sprite(pos.x, pos.y, "torch");
-      torch.play("torchBurn");
-      if (index < 6) {
-        torch.setDepth(24);
-      } else {
-        torch.setDepth(7);
-      }
-      return torch;
-    });
-
-    this.anims.create({
-      key: "alch",
-      frames: this.anims.generateFrameNumbers("alchemy", { start: 0, end: 2 }),
-      frameRate: 8,
-      repeat: -1,
-    });
-
     const alchemyPositions = [
       { x: 1552, y: 656 },
       { x: 1616, y: 656 },
     ];
+    playerAnimation(this);
+    zombieAnimation(this);
+    cultHeadAnimation(this);
+    torchAnimation(this, torchPositions);
+    alchAnimation(this, alchemyPositions);
 
-    this.animatedTorches = alchemyPositions.map((pos) => {
-      const torch = this.add.sprite(pos.x, pos.y, "alch");
-      torch.play("alch");
-      torch.setDepth(6);
-      return torch;
-    });
-
-    // PLAYER
-    this.player = this.physics.add
-      .sprite(416, 475, "idle", 4)
-      .setDepth(8)
-      .setCollideWorldBounds(true);
-
-    this.physics.add.collider(this.player, collisionGroup);
-    this.player.body
-      .setSize(this.player.width * 0.25, this.player.height * 0.3)
-      .setOffset(this.player.width * 0.37, this.player.height * 0.7);
-
-    // MUSIC
-    this.backgroundMusic = this.sound.add("bgm-1", {
-      loop: true,
-      volume: 1,
-    });
-
-    // NPCS //
-
-    // GHOST
-    this.ghost = this.physics.add
-      .sprite(128, 720, "sgr", 0)
-      .setCollideWorldBounds(true)
-      .setImmovable(true);
-
-    this.ghost
-      .setSize(this.ghost.width * 0.33, this.ghost.height * 0.3)
-      .setOffset(this.ghost.width * 0.33, this.ghost.height * 0.7);
-
-    this.npcs = this.physics.add.group();
-
-    // DEMONS
-    this.npcs.add(
-      this.physics.add
-        .sprite(128, 336, "w-dcult-sit", 0)
-        .setCollideWorldBounds(true)
-    );
-    this.npcs.add(
-      this.physics.add
-        .sprite(224, 336, "dcult-sit", 0)
-        .setCollideWorldBounds(true)
-    );
-    this.npcs.add(
-      this.physics.add
-        .sprite(416, 336, "dcult-sit", 0)
-        .setCollideWorldBounds(true)
-    );
-    this.npcs.add(
-      this.physics.add
-        .sprite(512, 336, "w-dcult-sit", 0)
-        .setCollideWorldBounds(true)
-    );
-    this.npcs.add(
-      this.physics.add
-        .sprite(128, 400, "dcult-sit", 0)
-        .setCollideWorldBounds(true)
-    );
-    this.npcs.add(
-      this.physics.add
-        .sprite(224, 400, "w-dcult-sit", 0)
-        .setCollideWorldBounds(true)
-    );
-    this.npcs.add(
-      this.physics.add
-        .sprite(416, 400, "dcult-sit", 0)
-        .setCollideWorldBounds(true)
-    );
-    this.npcs.add(
-      this.physics.add
-        .sprite(512, 400, "dcult-sit", 0)
-        .setCollideWorldBounds(true)
-    );
-    this.npcs.add(
-      this.physics.add
-        .sprite(128, 464, "dcult-sit", 0)
-        .setCollideWorldBounds(true)
-    );
-    this.npcs.add(
-      this.physics.add
-        .sprite(224, 464, "dcult-sit", 0)
-        .setCollideWorldBounds(true)
-    );
-    this.npcs.add(
-      this.physics.add
-        .sprite(512, 464, "w-dcult-sit", 0)
-        .setCollideWorldBounds(true)
-    );
-    this.npcs.add(
-      this.physics.add
-        .sprite(208, 192, "dcult-sit", 8)
-        .setCollideWorldBounds(true)
-    );
-    this.npcs.add(
-      this.physics.add
-        .sprite(432, 192, "dcult-sit", 8)
-        .setCollideWorldBounds(true)
-    );
-
-    // CULT HEAD
-    this.cultHead = this.physics.add
-      .sprite(320, 222, "dcult-walk", 18)
-      .setCollideWorldBounds(true)
-      .setImmovable(true);
-    this.cultHead
-      .setSize(this.cultHead.width * 0.33, this.cultHead.height * 0.3)
-      .setOffset(this.cultHead.width * 0.33, this.cultHead.height * 0.7);
-    this.physics.add.collider(this.player, this.cultHead);
-
-    // SARA
-    this.sara = this.physics.add
-      .sprite(208, 824, "sara-sit", 6)
-      .setCollideWorldBounds(true)
-      .setImmovable(true);
-    this.sara
-      .setSize(this.sara.width * 0.33, this.sara.height * 0.3)
-      .setOffset(this.sara.width * 0.33, this.sara.height * 0.7);
-    this.physics.add.collider(this.player, this.sara);
-
-    // INFOGUY
-    this.boxNpc = this.physics.add
-      .sprite(1364, 532, "infoGuy-sit", 11)
-      .setDepth(33)
-      .setCollideWorldBounds(true)
-      .setImmovable(true);
-    this.boxNpc
-      .setSize(this.boxNpc.width * 0.4, this.boxNpc.height * 0.4)
-      .setOffset(this.boxNpc.width * 0.37, this.boxNpc.height * 0.55);
-    this.physics.add.collider(this.player, this.boxNpc);
-
-    // ALCHEMISTS
-    const alch1 = this.physics.add
-      .sprite(1684, 532, "alch-walk", 27)
-      .setCollideWorldBounds(true);
-    this.npcs.add(alch1);
-
-    this.alchTwin = this.physics.add
-      .sprite(1580, 622, "alch-walk", 18)
-      .setCollideWorldBounds(true)
-      .setImmovable(true);
-    this.alchTwin
-      .setSize(this.alchTwin.width * 0.33, this.alchTwin.height * 0.3)
-      .setOffset(this.alchTwin.width * 0.33, this.alchTwin.height * 0.7);
-    this.physics.add.collider(this.player, this.alchTwin);
-
-    // SKELMAN
-    this.skel = this.physics.add
-      .sprite(1088, 432, "skel-walk", 18)
-      .setCollideWorldBounds(true)
-      .setImmovable(true);
-    this.skel
-      .setSize(this.skel.width * 0.4, this.skel.height * 0.4)
-      .setOffset(this.skel.width * 0.37, this.skel.height * 0.55);
-    this.physics.add.collider(this.player, this.skel);
-
-    (this.npcs.getChildren() as Phaser.Physics.Arcade.Sprite[]).forEach(
-      (np) => {
-        np.body!.setSize(np.width * 0.33, np.height * 0.3);
-        np.body!.setOffset(np.width * 0.33, np.height * 0.7);
-        np.setImmovable(true);
-      }
-    );
-
-    this.physics.add.collider(this.player, this.npcs);
-
-    // KEY SETTINGS
-    this.keys = this.input.keyboard!.addKeys({
-      w: Phaser.Input.Keyboard.KeyCodes.W,
-      up: Phaser.Input.Keyboard.KeyCodes.UP,
-      s: Phaser.Input.Keyboard.KeyCodes.S,
-      down: Phaser.Input.Keyboard.KeyCodes.DOWN,
-      a: Phaser.Input.Keyboard.KeyCodes.A,
-      left: Phaser.Input.Keyboard.KeyCodes.LEFT,
-      d: Phaser.Input.Keyboard.KeyCodes.D,
-      right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
-      space: Phaser.Input.Keyboard.KeyCodes.SPACE,
-    }) as WASDAndArrowKeys;
-
-    // ZOMBIES
-    this.zom1 = this.physics.add
-      .sprite(128, 862, "zWalk", 27)
-      .setDepth(7)
-      .setCollideWorldBounds(true)
-      .setImmovable(true);
-    this.zom1
-      .setSize(this.zom1.width * 0.33, this.zom1.height * 0.3)
-      .setOffset(this.zom1.width * 0.33, this.zom1.height * 0.7);
-    this.physics.add.collider(this.player, this.zom1);
-
-    this.zom2 = this.physics.add
-      .sprite(128, 988, "zWalk", 27)
-      .setDepth(7)
-      .setCollideWorldBounds(true)
-      .setImmovable(true);
-    this.zom2
-      .setSize(this.zom2.width * 0.33, this.zom2.height * 0.3)
-      .setOffset(this.zom2.width * 0.33, this.zom2.height * 0.7);
-    this.physics.add.collider(this.player, this.zom2);
-
-    this.zom3 = this.physics.add
-      .sprite(150, 1040, "zWalk", 27)
-      .setDepth(7)
-      .setCollideWorldBounds(true)
-      .setImmovable(true);
-    this.zom3
-      .setSize(this.zom3.width * 0.33, this.zom3.height * 0.3)
-      .setOffset(this.zom3.width * 0.33, this.zom3.height * 0.7);
-    this.physics.add.collider(this.player, this.zom3);
-
-    //VOID CLEANSE POINTS
-    this.void = 0;
-
-    //COLLISION HANDLING
-
-    // --- ANIMATIONS ---
-
-    // PLAYER
-    //WALKING ANIMATION
-    this.anims.create({
-      key: "walk-up",
-      frames: this.anims.generateFrameNumbers("walk", {
-        start: 0,
-        end: 8,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: "walk-left",
-      frames: this.anims.generateFrameNumbers("walk", {
-        start: 9,
-        end: 17,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: "walk-down",
-      frames: this.anims.generateFrameNumbers("walk", {
-        start: 18,
-        end: 26,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: "walk-right",
-      frames: this.anims.generateFrameNumbers("walk", {
-        start: 27,
-        end: 35,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-
-    //RUNNING ANIMATION
-    this.anims.create({
-      key: "run-up",
-      frames: this.anims.generateFrameNumbers("run", {
-        start: 0,
-        end: 7,
-      }),
-      frameRate: 12,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: "run-left",
-      frames: this.anims.generateFrameNumbers("run", {
-        start: 8,
-        end: 15,
-      }),
-      frameRate: 12,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: "run-down",
-      frames: this.anims.generateFrameNumbers("run", {
-        start: 16,
-        end: 23,
-      }),
-      frameRate: 12,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: "run-right",
-      frames: this.anims.generateFrameNumbers("run", {
-        start: 24,
-        end: 31,
-      }),
-      frameRate: 12,
-      repeat: -1,
-    });
-
-    //JUMPING ANIMATION
-    this.anims.create({
-      key: "jump",
-      frames: this.anims.generateFrameNumbers("jump", {
-        start: 0,
-        end: 4,
-      }),
-      frameRate: 8,
-      repeat: 0,
-      yoyo: true,
-    });
-    this.anims.create({
-      key: "jump-up",
-      frames: this.anims.generateFrameNumbers("jump", {
-        start: 0,
-        end: 4,
-      }),
-      frameRate: 8,
-      repeat: 0,
-    });
-    this.anims.create({
-      key: "jump-left",
-      frames: this.anims.generateFrameNumbers("jump", {
-        start: 5,
-        end: 9,
-      }),
-      frameRate: 8,
-      repeat: 0,
-    });
-    this.anims.create({
-      key: "jump-down",
-      frames: this.anims.generateFrameNumbers("jump", {
-        start: 10,
-        end: 14,
-      }),
-      frameRate: 8,
-      repeat: 0,
-    });
-    this.anims.create({
-      key: "jump-right",
-      frames: this.anims.generateFrameNumbers("jump", {
-        start: 15,
-        end: 19,
-      }),
-      frameRate: 8,
-      repeat: 0,
-    });
-
-    //ATTACK ANIMATION
-    this.anims.create({
-      key: "halfslash-forward",
-      frames: this.anims.generateFrameNumbers("halfslash", {
-        start: 0,
-        end: 5,
-      }),
-      frameRate: 10,
-      repeat: 0,
-      yoyo: true,
-    });
-    this.anims.create({
-      key: "halfslash-left",
-      frames: this.anims.generateFrameNumbers("halfslash", {
-        start: 7,
-        end: 12,
-      }),
-      frameRate: 10,
-      repeat: 0,
-    });
-    this.anims.create({
-      key: "halfslash-down",
-      frames: this.anims.generateFrameNumbers("halfslash", {
-        start: 14,
-        end: 19,
-      }),
-      frameRate: 8,
-      repeat: 0,
-    });
-    this.anims.create({
-      key: "halfslash-right",
-      frames: this.anims.generateFrameNumbers("halfslash", {
-        start: 21,
-        end: 26,
-      }),
-      frameRate: 8,
-      repeat: 0,
-    });
-
-    // BACK TO IDLE ANIMATION
-    this.anims.create({
-      key: "idle-up",
-      frames: [{ key: "walk", frame: 0 }],
-      frameRate: 1,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: "idle-left",
-      frames: [{ key: "walk", frame: 9 }],
-      frameRate: 1,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: "idle-right",
-      frames: [{ key: "walk", frame: 27 }],
-      frameRate: 1,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: "idle-down",
-      frames: [{ key: "walk", frame: 18 }],
-      frameRate: 1,
-      repeat: -1,
-    });
-
-    // ZOMBIE
-    this.anims.create({
-      key: "z-walk-up",
-      frames: this.anims.generateFrameNumbers("zWalk", {
-        start: 0,
-        end: 8,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: "z-walk-left",
-      frames: this.anims.generateFrameNumbers("zWalk", {
-        start: 9,
-        end: 17,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: "z-walk-down",
-      frames: this.anims.generateFrameNumbers("zWalk", {
-        start: 18,
-        end: 26,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: "z-walk-right",
-      frames: this.anims.generateFrameNumbers("zWalk", {
-        start: 27,
-        end: 35,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-
-    this.anims.create({
-      key: "torch",
-      frames: this.anims.generateFrameNumbers("torch", { start: 0, end: 2 }),
-      frameRate: 8,
-      repeat: -1,
-    });
-
-    // CULT HEAD ANIMATION
-
-    this.anims.create({
-      key: "dcult-walk-up",
-      frames: this.anims.generateFrameNumbers("dcult-walk", {
-        start: 0,
-        end: 8,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: "dcult-walk-left",
-      frames: this.anims.generateFrameNumbers("dcult-walk", {
-        start: 9,
-        end: 17,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: "dcult-walk-down",
-      frames: this.anims.generateFrameNumbers("dcult-walk", {
-        start: 18,
-        end: 26,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: "dcult-walk-right",
-      frames: this.anims.generateFrameNumbers("dcult-walk", {
-        start: 27,
-        end: 35,
-      }),
-      frameRate: 10,
-      repeat: -1,
-    });
-
-    this.time.delayedCall(1000, () => {
-      walkNpcToPlayer();
-    });
-
-    const walkNpcToPlayer = () => {
-      this.tweens.add({
-        targets: this.cultHead,
-        y: this.player.y + 40,
-        duration: 2200,
-        onStart: () => {
-          this.cultHead.anims.play("dcult-walk-down", true);
-        },
-        onComplete: () => {
-          this.tweens.add({
-            targets: this.cultHead,
-            x: this.player.x,
-            duration: 1100,
-            onStart: () => {
-              this.cultHead.anims.play("dcult-walk-right", true);
-            },
-            onComplete: () => {
-              this.cultHead.anims.stop();
-              this.cultHead.setFrame(0);
-              startConversation();
-            },
-          });
-        },
-      });
-    };
-
-    const walkBackCultHead = () => {
-      this.tweens.add({
-        targets: this.cultHead,
-        x: 320,
-        duration: 1100,
-        onStart: () => {
-          this.cultHead.anims.play("dcult-walk-left", true);
-        },
-        onComplete: () => {
-          this.tweens.add({
-            targets: this.cultHead,
-            y: 222,
-            duration: 2200,
-            onStart: () => {
-              this.cultHead.anims.play("dcult-walk-up", true);
-            },
-            onComplete: () => {
-              this.cultHead.anims.stop();
-              this.cultHead.setFrame(18);
-            },
-          });
-        },
-      });
-    };
-
-    const startConversation = () => {
-      this.backgroundMusic.stop();
-      this.scene.pause("SceneOne");
-      this.scene.launch("CultHead");
-    };
-
-    this.events.on("resume", () => {
-      walkBackCultHead();
-      if (this.backgroundMusic.isPaused) {
-        this.backgroundMusic.resume();
-      } else {
-        this.backgroundMusic.play();
-      }
+    //EVENTS
+    this.time.delayedCall(500, () => {
+      cultHeadEvent(this);
     });
 
     this.physics.world.setBounds(0, 0, 2555, 1280);
@@ -890,88 +159,14 @@ export default class Main extends Phaser.Scene {
     this.cameras.main.startFollow(this.player);
   }
   update(time: number, delta: number) {
-    const walkSpeed = 150;
-    const jumpSpeed = 200;
-    const runSpeed = 300;
-    const floatSpeed = 5;
-
-    const isRunning = this.input.keyboard!.addKey(
-      Phaser.Input.Keyboard.KeyCodes.SHIFT
-    ).isDown;
-
-    const spaceKey = this.input.keyboard!.addKey(
-      Phaser.Input.Keyboard.KeyCodes.SPACE
-    );
-
-    (this.npcs.getChildren() as Phaser.Physics.Arcade.Sprite[]).forEach(
-      (npc) => {
-        if (this.player.y < npc.y) {
-          npc.setDepth(12);
-        } else {
-          npc.setDepth(7);
-        }
-      }
-    );
-
-    if (this.player.y < this.boxNpc.y) {
-      this.boxNpc.setDepth(33);
-    } else {
-      this.boxNpc.setDepth(7);
-    }
-
-    if (this.player.y < this.ghost.y) {
-      this.ghost.setDepth(12);
-    } else {
-      this.ghost.setDepth(7);
-    }
-
-    if (this.player.y < this.cultHead.y) {
-      this.cultHead.setDepth(12);
-    } else {
-      this.cultHead.setDepth(7);
-    }
-
-    if (this.player.y < this.alchTwin.y) {
-      this.alchTwin.setDepth(12);
-    } else {
-      this.alchTwin.setDepth(7);
-    }
-
-    if (this.player.y < this.sara.y) {
-      this.sara.setDepth(12);
-    } else {
-      this.sara.setDepth(7);
-    }
-
-    if (this.player.y < this.skel.y) {
-      this.skel.setDepth(12);
-    } else {
-      this.skel.setDepth(7);
-    }
-
-    if (this.player.y < this.zom1.y) {
-      this.zom1.setDepth(12);
-    } else {
-      this.zom1.setDepth(7);
-    }
-
-    if (this.player.y < this.zom2.y) {
-      this.zom2.setDepth(12);
-    } else {
-      this.zom2.setDepth(7);
-    }
-
-    if (this.player.y < this.zom3.y) {
-      this.zom3.setDepth(12);
-    } else {
-      this.zom3.setDepth(7);
-    }
-
+    // INTERACTION LOGIC
     const npcs = [
       {
         name: "AlchTwins",
         x: this.alchTwin.x,
         y: this.alchTwin.y,
+        floatRect: 33,
+        floatText: 44.5,
         scene: "AlchTwins",
         range: 28,
       },
@@ -979,342 +174,45 @@ export default class Main extends Phaser.Scene {
         name: "BoxGuy",
         x: this.boxNpc.x,
         y: this.boxNpc.y,
+        floatRect: 33,
+        floatText: 44.5,
         scene: "BoxGuy",
-        range: 64,
+        range: 56,
       },
       {
         name: "SaraOne",
         x: this.sara.x,
         y: this.sara.y,
+        floatRect: 33,
+        floatText: 44.5,
         scene: "SaraOne",
-        range: 64,
+        range: 56,
       },
       {
         name: "Ghost",
         x: this.ghost.x,
         y: this.ghost.y,
+        floatRect: 52,
+        floatText: 63.5,
         scene: "Ghost",
-        range: 64,
+        range: 56,
       },
       {
         name: "SkelMan",
         x: this.skel.x,
         y: this.skel.y,
+        floatRect: 40,
+        floatText: 51.5,
         scene: "SkelMan",
         range: 64,
       },
     ];
+    interactionLogic(this, npcs);
 
-    let npcInRange: {
-      name: string;
-      x: number;
-      y: number;
-      scene: string;
-    } | null = null;
-
-    // Find the first NPC the player is close enough to
-    for (const npc of npcs) {
-      if (
-        Math.abs(this.player.x - npc.x) < npc.range &&
-        Math.abs(this.player.y - npc.y) < npc.range
-      ) {
-        npcInRange = npc;
-        break; // stop after first match
-      }
-    }
-
-    if (npcInRange) {
-      if (!this.interactionBox && !this.interactionKey && !this.activeNpc) {
-        this.interactionBox = this.add
-          .rectangle(npcInRange.x, npcInRange.y - 33, 22, 22, 0x000000, 0.6)
-          .setDepth(50);
-
-        this.interactionKey = this.add
-          .text(npcInRange.x - 6, npcInRange.y - 44, "E", {
-            fontSize: "20px",
-            color: "#ffffff",
-          })
-          .setDepth(50);
-
-        this.activeNpc = { name: npcInRange.name, scene: npcInRange.scene };
-
-        this.input.keyboard!.on("keydown-E", () => {
-          if (this.activeNpc) {
-            this.backgroundMusic.pause();
-            this.scene.pause("SceneOne");
-            this.scene.launch(this.activeNpc.scene);
-            this.clearInteraction();
-          }
-        });
-      }
-    } else if (this.activeNpc) {
-      this.clearInteraction();
-    }
-
-    const moving =
-      this.keys.left.isDown ||
-      this.keys.right.isDown ||
-      this.keys.up.isDown ||
-      this.keys.down.isDown ||
-      this.keys.w.isDown ||
-      this.keys.a.isDown ||
-      this.keys.s.isDown ||
-      this.keys.d.isDown;
-
-    if (Phaser.Input.Keyboard.JustDown(spaceKey) && !this.isJumping) {
-      this.isJumping = true;
-      let jumpAnim = "jump";
-      let jumpDirection = () => this.player.setVelocity(0);
-      if (
-        (this.keys.right?.isDown && this.keys.up?.isDown) ||
-        (this.keys.d?.isDown && this.keys.w?.isDown)
-      ) {
-        jumpAnim = "jump-right";
-        jumpDirection = () =>
-          this.player.setVelocity(jumpSpeed / 1.5, -jumpSpeed / 1.5);
-        this.lastDirection = "right";
-      } else if (
-        (this.keys.left?.isDown && this.keys.up?.isDown) ||
-        (this.keys.a?.isDown && this.keys.w?.isDown)
-      ) {
-        jumpAnim = "jump-left";
-        jumpDirection = () =>
-          this.player.setVelocity(-jumpSpeed / 1.5, -jumpSpeed / 1.5);
-        this.lastDirection = "right";
-      } else if (
-        (this.keys.right?.isDown && this.keys.down?.isDown) ||
-        (this.keys.d?.isDown && this.keys.s?.isDown)
-      ) {
-        jumpAnim = "jump-right";
-        jumpDirection = () =>
-          this.player.setVelocity(jumpSpeed / 1.5, jumpSpeed / 1.5);
-        this.lastDirection = "right";
-      } else if (
-        (this.keys.left?.isDown && this.keys.down?.isDown) ||
-        (this.keys.a?.isDown && this.keys.s?.isDown)
-      ) {
-        jumpAnim = "jump-left";
-        jumpDirection = () =>
-          this.player.setVelocity(-jumpSpeed / 1.5, jumpSpeed / 1.5);
-        this.lastDirection = "right";
-      } else if (this.keys.up?.isDown || this.keys.w?.isDown) {
-        jumpAnim = "jump-up";
-        jumpDirection = () => this.player.setVelocityY(-jumpSpeed);
-        this.lastDirection = "up";
-      } else if (this.keys.left?.isDown || this.keys.a?.isDown) {
-        jumpAnim = "jump-left";
-        jumpDirection = () => this.player.setVelocityX(-jumpSpeed);
-        this.lastDirection = "left";
-      } else if (this.keys.right?.isDown || this.keys.d?.isDown) {
-        jumpAnim = "jump-right";
-        jumpDirection = () => this.player.setVelocityX(jumpSpeed);
-        this.lastDirection = "right";
-      } else if (this.keys.down?.isDown || this.keys.s?.isDown) {
-        jumpAnim = "jump-down";
-        jumpDirection = () => this.player.setVelocityY(jumpSpeed);
-        this.lastDirection = "down";
-      }
-      this.player.anims.play(jumpAnim, true);
-      jumpDirection();
-
-      this.time.delayedCall(700, () => {
-        this.isJumping = false;
-        this.player.setVelocity(0);
-      });
-      return;
-    }
-
-    if (moving && !this.isJumping) {
-      this.player.setVelocity(0);
-      if (isRunning) {
-        if (
-          (this.keys.right?.isDown && this.keys.up?.isDown) ||
-          (this.keys.d?.isDown && this.keys.w?.isDown)
-        ) {
-          this.player.setVelocity(runSpeed / 1.5, -runSpeed / 1.5);
-          this.player.anims.play("run-right", true);
-          this.lastDirection = "right";
-        } else if (
-          (this.keys.left?.isDown && this.keys.up?.isDown) ||
-          (this.keys.a?.isDown && this.keys.w?.isDown)
-        ) {
-          this.player.setVelocity(-runSpeed / 1.5, -runSpeed / 1.5);
-          this.player.anims.play("run-left", true);
-          this.lastDirection = "left";
-        } else if (
-          (this.keys.right?.isDown && this.keys.down?.isDown) ||
-          (this.keys.d?.isDown && this.keys.s?.isDown)
-        ) {
-          this.player.setVelocity(runSpeed / 1.5, runSpeed / 1.5);
-          this.player.anims.play("run-right", true);
-          this.lastDirection = "down";
-        } else if (
-          (this.keys.left?.isDown && this.keys.down?.isDown) ||
-          (this.keys.a?.isDown && this.keys.s?.isDown)
-        ) {
-          this.player.setVelocity(-runSpeed / 1.5, runSpeed / 1.5);
-          this.player.anims.play("run-left", true);
-          this.lastDirection = "right";
-        } else if (this.keys.up?.isDown || this.keys.w?.isDown) {
-          this.player.setVelocityY(-runSpeed);
-          this.player.anims.play("run-up", true);
-          this.lastDirection = "up";
-        } else if (this.keys.left?.isDown || this.keys.a?.isDown) {
-          this.player.setVelocityX(-runSpeed);
-          this.player.anims.play("run-left", true);
-          this.lastDirection = "left";
-        } else if (this.keys.down?.isDown || this.keys.s?.isDown) {
-          this.player.setVelocityY(runSpeed);
-          this.player.anims.play("run-down", true);
-          this.lastDirection = "down";
-        } else if (this.keys.right?.isDown || this.keys.d?.isDown) {
-          this.player.setVelocityX(runSpeed);
-          this.player.anims.play("run-right", true);
-          this.lastDirection = "right";
-        } else {
-          this.player.anims.stop();
-        }
-      } else {
-        if (
-          (this.keys.right?.isDown && this.keys.up?.isDown) ||
-          (this.keys.d?.isDown && this.keys.w?.isDown)
-        ) {
-          this.player.setVelocity(walkSpeed / 1.5, -walkSpeed / 1.5);
-          this.player.anims.play("walk-right", true);
-          this.lastDirection = "right";
-        } else if (
-          (this.keys.left?.isDown && this.keys.up?.isDown) ||
-          (this.keys.a?.isDown && this.keys.w?.isDown)
-        ) {
-          this.player.setVelocity(-walkSpeed / 1.5, -walkSpeed / 1.5);
-          this.player.anims.play("walk-left", true);
-          this.lastDirection = "left";
-        } else if (
-          (this.keys.right?.isDown && this.keys.down?.isDown) ||
-          (this.keys.d?.isDown && this.keys.s?.isDown)
-        ) {
-          this.player.setVelocity(walkSpeed / 1.5, walkSpeed / 1.5);
-          this.player.anims.play("walk-right", true);
-          this.lastDirection = "down";
-        } else if (
-          (this.keys.left?.isDown && this.keys.down?.isDown) ||
-          (this.keys.a?.isDown && this.keys.s?.isDown)
-        ) {
-          this.player.setVelocity(-walkSpeed / 1.5, walkSpeed / 1.5);
-          this.player.anims.play("walk-left", true);
-          this.lastDirection = "right";
-        } else if (this.keys.up?.isDown || this.keys.w?.isDown) {
-          this.player.setVelocityY(-walkSpeed);
-          this.player.anims.play("walk-up", true);
-          this.lastDirection = "up";
-        } else if (this.keys.left?.isDown || this.keys.a?.isDown) {
-          this.player.setVelocityX(-walkSpeed);
-          this.player.anims.play("walk-left", true);
-          this.lastDirection = "left";
-        } else if (this.keys.down?.isDown || this.keys.s?.isDown) {
-          this.player.setVelocityY(walkSpeed);
-          this.player.anims.play("walk-down", true);
-          this.lastDirection = "down";
-        } else if (this.keys.right?.isDown || this.keys.d?.isDown) {
-          this.player.setVelocityX(walkSpeed);
-          this.player.anims.play("walk-right", true);
-          this.lastDirection = "right";
-        } else {
-          this.player.anims.stop();
-        }
-      }
-    } else if (!this.isJumping) {
-      this.player.setVelocity(0);
-      if (this.lastDirection === "up") {
-        this.player.anims.play("idle-up", true);
-      } else if (this.lastDirection === "left") {
-        this.player.anims.play("idle-left", true);
-      } else if (this.lastDirection === "right") {
-        this.player.anims.play("idle-right", true);
-      } else {
-        this.player.anims.play("idle-down", true);
-      }
-    }
-
-    // PATHING
-
-    // ZOMBIE ANIMATION AND PATROLLING
-    const zombieSpeed = 28;
-    this.zomPatrol1 += delta / 1000;
-    this.zomPatrol2 += delta / 1000;
-    this.zomPatrol3 += delta / 1000;
-
-    // ZOMBIE 1
-    if (this.zomPatrol1 <= 14.4) {
-      // 14.4 seconds
-      this.zom1.setVelocity(zombieSpeed, 0);
-      this.zom1.anims.play("z-walk-right", true);
-    } else if (this.zomPatrol1 <= 16.4) {
-      // 2 seconds
-      this.zom1.setVelocity(0, zombieSpeed);
-      this.zom1.anims.play("z-walk-down", true);
-    } else if (this.zomPatrol1 <= 30.8) {
-      // 14.4 seconds
-      this.zom1.setVelocity(-zombieSpeed, 0);
-      this.zom1.anims.play("z-walk-left", true);
-    } else if (this.zomPatrol1 <= 32.8) {
-      // 2 seconds
-      this.zom1.setVelocity(0, -zombieSpeed);
-      this.zom1.anims.play("z-walk-up", true);
-    } else {
-      this.zomPatrol1 = 0;
-    }
-
-    // ZOMBIE 2
-    if (this.zomPatrol2 <= 8.8) {
-      this.zom2.setVelocity(zombieSpeed, 0);
-      this.zom2.anims.play("z-walk-right", true);
-    } else if (this.zomPatrol2 <= 11.2) {
-      this.zom2.setVelocity(0, -zombieSpeed);
-      this.zom2.anims.play("z-walk-up", true);
-    } else if (this.zomPatrol2 <= 20) {
-      this.zom2.setVelocity(-zombieSpeed, 0);
-      this.zom2.anims.play("z-walk-left", true);
-    } else if (this.zomPatrol2 <= 22.4) {
-      this.zom2.setVelocity(0, zombieSpeed);
-      this.zom2.anims.play("z-walk-down", true);
-    } else {
-      this.zomPatrol2 = 0;
-    }
-
-    // ZOMBIE 3
-    if (this.zomPatrol3 <= 10) {
-      this.zom3.setVelocity(zombieSpeed, 0);
-      this.zom3.anims.play("z-walk-right", true);
-    } else if (this.zomPatrol3 <= 11.6) {
-      this.zom3.setVelocity(0, zombieSpeed);
-      this.zom3.anims.play("z-walk-down", true);
-    } else if (this.zomPatrol3 <= 21.6) {
-      this.zom3.setVelocity(-zombieSpeed, 0);
-      this.zom3.anims.play("z-walk-left", true);
-    } else if (this.zomPatrol3 <= 23.2) {
-      this.zom3.setVelocity(0, -zombieSpeed);
-      this.zom3.anims.play("z-walk-up", true);
-    } else {
-      this.zomPatrol3 = 0;
-    }
-
-    // GHOST BOBBING
-    if (this.ghostBob <= 100) {
-      this.ghost.setVelocityY(-floatSpeed);
-      this.ghostBob++;
-    } else if (this.ghostBob <= 200) {
-      this.ghost.setVelocityY(floatSpeed);
-      this.ghostBob++;
-    } else {
-      this.ghostBob = 0;
-    }
-  }
-  private clearInteraction() {
-    this.interactionBox?.destroy();
-    this.interactionKey?.destroy();
-    this.interactionBox = undefined;
-    this.interactionKey = undefined;
-    this.activeNpc = null;
+    // MOVEMENT AND NPC LOGIC
+    playerMovement(this);
+    depthSetting(this);
+    pathingZombies(this, delta);
+    pathingGhost(this);
   }
 }

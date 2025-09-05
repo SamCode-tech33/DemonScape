@@ -1,0 +1,13 @@
+const playerSprite = (scene: any, collisionGroup: any) => {
+  scene.player = scene.physics.add
+    .sprite(416, 475, "idle", 4)
+    .setDepth(8)
+    .setCollideWorldBounds(true);
+
+  scene.physics.add.collider(scene.player, collisionGroup);
+  scene.player.body
+    .setSize(scene.player.width * 0.25, scene.player.height * 0.3)
+    .setOffset(scene.player.width * 0.37, scene.player.height * 0.7);
+};
+
+export default playerSprite;

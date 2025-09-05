@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
 import dynamic from "next/dynamic";
 
-const CanvasOne = dynamic(() => import("../components/CanvasOne"), {
+const CanvasOne = dynamic(() => import("../canvases/CanvasOne"), {
   ssr: false,
 });
 
