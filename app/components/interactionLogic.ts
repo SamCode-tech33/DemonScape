@@ -57,6 +57,7 @@ const interactionLogic = (scene: any) => {
     scene.interactionKey = undefined;
     scene.noInteraction = undefined;
     scene.activeNpc = null;
+    npcInRange = null;
   };
 
   // Find the first NPC the player is close enough to
@@ -125,7 +126,7 @@ const interactionLogic = (scene: any) => {
       scene.input.keyboard!.on("keydown-E", () => {
         if (
           (scene.activeNpc && scene.alchEvent) ||
-          (scene.activeNpc && npcInRange.name === "AlchTwins")
+          (scene.activeNpc && scene.activeNpc.name === "AlchTwins")
         ) {
           scene.backgroundMusic.pause();
           scene.scene.pause("SceneOne");
