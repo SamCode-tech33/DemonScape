@@ -3,7 +3,6 @@ import playerMovement from "@/app/components/playerMovement";
 import {
   depthSetting,
   pathingZombies,
-  pathingGhost,
   pathingAlch2,
   pathingAlch1,
   pathingSkel,
@@ -18,7 +17,10 @@ import {
   alchTorchAnimation,
   skelManAnimation,
 } from "@/app/components/animationSettings";
-import { cultHeadEvent } from "@/app/components/levelOne/eventLogic";
+import {
+  cultHeadEvent,
+  demonGhost,
+} from "@/app/components/levelOne/eventLogic";
 import {
   cultHeadNpc,
   saraNpc,
@@ -50,7 +52,7 @@ export default class Main extends Phaser.Scene {
   npcs!: Phaser.Physics.Arcade.Group;
   boxNpc!: Phaser.Physics.Arcade.Sprite;
   sara!: Phaser.Physics.Arcade.Sprite;
-  ghost!: Phaser.Physics.Arcade.Sprite;
+  ghost!: Phaser.GameObjects.Sprite;
   skel!: Phaser.Physics.Arcade.Sprite;
   zom1!: Phaser.Physics.Arcade.Sprite;
   zom2!: Phaser.Physics.Arcade.Sprite;
@@ -68,7 +70,9 @@ export default class Main extends Phaser.Scene {
   animatedAlchemy: Phaser.GameObjects.Sprite[] = [];
   interactionBox!: Phaser.GameObjects.Rectangle | undefined;
   interactionKey!: Phaser.GameObjects.Text | undefined;
+  noInteraction!: Phaser.GameObjects.Text | undefined;
   activeNpc: { name: string; scene: string } | null = null;
+  alchEvent: boolean = false;
 
   constructor() {
     super({ key: "SceneOne" });
@@ -99,7 +103,7 @@ export default class Main extends Phaser.Scene {
     boxNpc(this);
     alchTwinsNpc(this);
     skelNpc(this);
-    ghostNpc(this);
+    ghostNpc(this, 5000, 5000);
 
     // FILLER NPCS
     const cultMemberPositions = [
@@ -157,8 +161,16 @@ export default class Main extends Phaser.Scene {
     skelManAnimation(this);
 
     //EVENTS
-    this.time.delayedCall(500, () => {
+    this.time.delayedCall(700, () => {
       cultHeadEvent(this);
+    });
+
+    this.events.on("resume", (sys: Phaser.Scenes.Systems, data: any) => {
+      if (data?.from === "AlchTwins") {
+        ghostNpc(this, this.player.x, this.player.y);
+        demonGhost(this);
+        this.alchEvent = true; // DATABASE CHANGE HERE
+      }
     });
 
     this.physics.world.setBounds(0, 0, 2555, 1280);
@@ -171,60 +183,12 @@ export default class Main extends Phaser.Scene {
 
   update(time: number, delta: number) {
     // INTERACTION LOGIC
-    const npcs = [
-      {
-        name: "AlchTwins",
-        x: this.alchTwin.x,
-        y: this.alchTwin.y,
-        floatRect: 33,
-        floatText: 44.5,
-        scene: "AlchTwins",
-        range: 28,
-      },
-      {
-        name: "BoxGuy",
-        x: this.boxNpc.x,
-        y: this.boxNpc.y,
-        floatRect: 33,
-        floatText: 44.5,
-        scene: "BoxGuy",
-        range: 56,
-      },
-      {
-        name: "SaraOne",
-        x: this.sara.x,
-        y: this.sara.y,
-        floatRect: 33,
-        floatText: 44.5,
-        scene: "SaraOne",
-        range: 56,
-      },
-      {
-        name: "Ghost",
-        x: this.ghost.x,
-        y: this.ghost.y,
-        floatRect: 52,
-        floatText: 63.5,
-        scene: "Ghost",
-        range: 56,
-      },
-      {
-        name: "SkelMan",
-        x: this.skel.x,
-        y: this.skel.y,
-        floatRect: 40,
-        floatText: 51.5,
-        scene: "SkelMan",
-        range: 64,
-      },
-    ];
-    interactionLogic(this, npcs);
+    interactionLogic(this);
 
     // MOVEMENT AND NPC LOGIC
     playerMovement(this);
     depthSetting(this);
     pathingZombies(this, delta);
-    pathingGhost(this);
     pathingAlch2(this);
   }
 }

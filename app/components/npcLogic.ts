@@ -14,19 +14,16 @@ export const depthSetting = (scene: any) => {
   } else {
     scene.boxNpc.setDepth(7);
   }
-
-  if (scene.player.y < scene.ghost.y) {
-    scene.ghost.setDepth(12);
-  } else {
-    scene.ghost.setDepth(7);
-  }
-
   if (scene.player.y < scene.cultHead.y) {
     scene.cultHead.setDepth(12);
   } else {
     scene.cultHead.setDepth(7);
   }
-
+  if (scene.player.y < scene.ghost.y) {
+    scene.ghost.setDepth(12);
+  } else {
+    scene.ghost.setDepth(7);
+  }
   if (scene.player.y < scene.alchTwin.y) {
     scene.alchTwin.setDepth(12);
   } else {
@@ -129,19 +126,6 @@ export const pathingZombies = (scene: any, delta: number) => {
     scene.zom3.anims.play("z-walk-up", true);
   } else {
     scene.zomPatrol3 = 0;
-  }
-};
-
-export const pathingGhost = (scene: any) => {
-  const floatSpeed = 5;
-  if (scene.ghostBob <= 100) {
-    scene.ghost.setVelocityY(-floatSpeed);
-    scene.ghostBob++;
-  } else if (scene.ghostBob <= 200) {
-    scene.ghost.setVelocityY(floatSpeed);
-    scene.ghostBob++;
-  } else {
-    scene.ghostBob = 0;
   }
 };
 

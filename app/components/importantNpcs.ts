@@ -63,9 +63,16 @@ export const skelNpc = (scene: any) => {
   scene.physics.add.collider(scene.player, scene.skel);
 };
 
-export const ghostNpc = (scene: any) => {
+export const ghostNpc = (scene: any, x: number, y: number) => {
   scene.ghost = scene.physics.add
-    .sprite(128, 720, "sgr", 0)
+    .sprite(x, y, "sgr", 0)
     .setCollideWorldBounds(true)
     .setImmovable(true);
+};
+
+export const destroyGhost = (scene: any) => {
+  if (scene.ghost) {
+    scene.ghost.destroy();
+    scene.ghost = undefined;
+  }
 };

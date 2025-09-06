@@ -1,15 +1,12 @@
 import Phaser from "phaser";
-
 interface DialogueChoice {
   text: string;
   next: number; // index of next dialogue node
 }
-
 interface DialogueNode {
   text: string;
   choices?: DialogueChoice[];
 }
-
 export default class Ghost extends Phaser.Scene {
   private dialogueNodes: DialogueNode[] = [
     {
@@ -151,7 +148,6 @@ export default class Ghost extends Phaser.Scene {
       ],
     },
   ];
-
   private currentNodeIndex: number = 0;
   private dialogueText!: Phaser.GameObjects.Text;
   private choiceTexts: Phaser.GameObjects.Text[] = [];

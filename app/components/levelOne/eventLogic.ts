@@ -1,4 +1,6 @@
-export const cultHeadEvent = (scene: any) => {
+import { SceneOneState } from "./SceneOneTypes";
+
+export const cultHeadEvent = (scene: Phaser.Scene & SceneOneState) => {
   scene.tweens.add({
     targets: scene.cultHead,
     y: scene.player.y + 40,
@@ -60,5 +62,23 @@ export const cultHeadEvent = (scene: any) => {
     } else {
       scene.backgroundMusic.play();
     }
+  });
+};
+
+export const demonGhost = (scene: Phaser.Scene & SceneOneState) => {
+  scene.tweens.add({
+    targets: scene.ghost,
+    x: 128,
+    y: 715,
+    duration: 3300,
+    onComplete: () => {
+      scene.tweens.add({
+        targets: scene.ghost,
+        y: 725,
+        yoyo: true,
+        duration: 1000,
+        repeat: -1,
+      });
+    },
   });
 };

@@ -363,8 +363,8 @@ export const skelManAnimation = (scene: any) => {
   scene.anims.create({
     key: "skel-walk-left",
     frames: scene.anims.generateFrameNumbers("skel-walk", {
-      start: 35,
-      end: 27,
+      start: 27,
+      end: 35,
     }),
     frameRate: 12,
     repeat: -1,
@@ -372,8 +372,8 @@ export const skelManAnimation = (scene: any) => {
   scene.anims.create({
     key: "skel-walk-right",
     frames: scene.anims.generateFrameNumbers("skel-walk", {
-      start: 17,
-      end: 9,
+      start: 9,
+      end: 17,
     }),
     frameRate: 12,
     repeat: -1,
