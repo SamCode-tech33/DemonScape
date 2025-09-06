@@ -268,6 +268,59 @@ export const zombieAnimation = (scene: any) => {
   });
 };
 
+// ALCHEMIST ANIMATION
+export const alch2Animation = (scene: any) => {
+  scene.anims.create({
+    key: "alch-turn",
+    frames: scene.anims.generateFrameNumbers("alch-walk", {
+      frames: [
+        0, 0, 0, 9, 9, 9, 18, 18, 27, 27, 9, 9, 9, 0, 0, 0, 18, 18, 18, 27, 27,
+        9, 9, 9, 0, 0, 27, 27, 27, 18, 18, 0, 0, 9, 9, 18, 18, 18, 27, 0, 9, 9,
+        27, 27, 27, 18, 18, 9, 9, 0, 0, 0, 0, 9, 9, 9, 18, 18, 18,
+      ],
+    }),
+    duration: 48000,
+    repeat: -1,
+  });
+  scene.anims.create({
+    key: "alch-walk-up",
+    frames: scene.anims.generateFrameNumbers("alch-walk", {
+      start: 0,
+      end: 8,
+    }),
+    frameRate: 8,
+    repeat: -1,
+  });
+  scene.anims.create({
+    key: "alch-walk-left",
+    frames: scene.anims.generateFrameNumbers("alch-walk", {
+      start: 9,
+      end: 17,
+    }),
+    frameRate: 8,
+    repeat: -1,
+  });
+  scene.anims.create({
+    key: "alch-walk-down",
+    frames: scene.anims.generateFrameNumbers("alch-walk", {
+      start: 18,
+      end: 26,
+    }),
+    frameRate: 8,
+    repeat: -1,
+  });
+  scene.anims.create({
+    key: "alch-walk-right",
+    frames: scene.anims.generateFrameNumbers("alch-walk", {
+      start: 27,
+      end: 35,
+    }),
+    frameRate: 8,
+    repeat: -1,
+  });
+};
+
+// FLAME ANIMATION
 export const torchAnimation = (scene: any, torchPositions: any) => {
   scene.anims.create({
     key: "torch",
@@ -287,7 +340,7 @@ export const torchAnimation = (scene: any, torchPositions: any) => {
   });
 };
 
-export const alchAnimation = (scene: any, alchemyPositions: any) => {
+export const alchTorchAnimation = (scene: any, alchemyPositions: any) => {
   scene.anims.create({
     key: "alch",
     frames: scene.anims.generateFrameNumbers("alchemy", {
@@ -302,5 +355,27 @@ export const alchAnimation = (scene: any, alchemyPositions: any) => {
     torch.play("alch");
     torch.setDepth(6);
     return torch;
+  });
+};
+
+// SKEL MAN
+export const skelManAnimation = (scene: any) => {
+  scene.anims.create({
+    key: "skel-walk-left",
+    frames: scene.anims.generateFrameNumbers("skel-walk", {
+      start: 27,
+      end: 35,
+    }),
+    frameRate: 12,
+    repeat: -1,
+  });
+  scene.anims.create({
+    key: "skel-walk-right",
+    frames: scene.anims.generateFrameNumbers("skel-walk", {
+      start: 9,
+      end: 17,
+    }),
+    frameRate: 12,
+    repeat: -1,
   });
 };

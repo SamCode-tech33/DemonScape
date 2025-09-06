@@ -34,7 +34,7 @@ export const boxNpc = (scene: any) => {
 
 export const alchTwinsNpc = (scene: any) => {
   scene.alchTwin = scene.physics.add
-    .sprite(1580, 622, "alch-walk", 18)
+    .sprite(1614, 610, "alch-walk", 18)
     .setCollideWorldBounds(true)
     .setImmovable(true);
   scene.alchTwin
@@ -43,7 +43,7 @@ export const alchTwinsNpc = (scene: any) => {
   scene.physics.add.collider(scene.player, scene.alchTwin);
 
   scene.alchTwin2 = scene.physics.add
-    .sprite(1633, 540, "alch-walk", 35)
+    .sprite(1633, 528, "alch-walk", 35)
     .setCollideWorldBounds(true)
     .setImmovable(true);
   scene.alchTwin2
@@ -54,7 +54,7 @@ export const alchTwinsNpc = (scene: any) => {
 
 export const skelNpc = (scene: any) => {
   scene.skel = scene.physics.add
-    .sprite(1088, 432, "skel-walk", 18)
+    .sprite(1010, 448, "skel-walk", 18)
     .setCollideWorldBounds(true)
     .setImmovable(true);
   scene.skel
@@ -63,9 +63,16 @@ export const skelNpc = (scene: any) => {
   scene.physics.add.collider(scene.player, scene.skel);
 };
 
-export const ghostNpc = (scene: any) => {
+export const ghostNpc = (scene: any, x: number, y: number) => {
   scene.ghost = scene.physics.add
-    .sprite(128, 720, "sgr", 0)
+    .sprite(x, y, "sgr", 0)
     .setCollideWorldBounds(true)
     .setImmovable(true);
+};
+
+export const destroyGhost = (scene: any) => {
+  if (scene.ghost) {
+    scene.ghost.destroy();
+    scene.ghost = undefined;
+  }
 };
