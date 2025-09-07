@@ -121,7 +121,7 @@ export default class CultHead extends Phaser.Scene {
       this.input.keyboard!.once("keydown-SPACE", () => {
         this.music.stop();
         this.scene.stop();
-        this.scene.resume("SceneOne");
+        this.scene.resume("SceneOne", { from: "CultHead" });
       });
       return;
     }

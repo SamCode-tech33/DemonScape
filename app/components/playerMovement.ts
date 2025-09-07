@@ -1,4 +1,5 @@
 const playerMovement = (scene: any) => {
+  if (scene.movementDisabled) return;
   const walkSpeed = 150;
   const jumpSpeed = 200;
   const runSpeed = 300;

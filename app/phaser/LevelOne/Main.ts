@@ -20,6 +20,7 @@ import {
 import {
   cultHeadEvent,
   demonGhost,
+  walkBackCultHead,
 } from "@/app/components/levelOne/eventLogic";
 import {
   cultHeadNpc,
@@ -73,6 +74,15 @@ export default class Main extends Phaser.Scene {
   noInteraction!: Phaser.GameObjects.Text | undefined;
   activeNpc: { name: string; scene: string } | null = null;
   alchEvent: boolean = false;
+  playerStats = {
+    health: 50,
+    maxHealth: 50,
+    magic: 20,
+    maxMagic: 20,
+  };
+  redScreen!: Phaser.GameObjects.Rectangle;
+  movementDisabled: boolean = false;
+  alchSceneNum: number = 1;
 
   constructor() {
     super({ key: "SceneOne" });
@@ -161,18 +171,102 @@ export default class Main extends Phaser.Scene {
     skelManAnimation(this);
 
     //EVENTS
+
+    const flashRedScreen = () =>
+      this.add
+        .rectangle(
+          window.innerWidth,
+          window.innerHeight,
+          window.innerWidth,
+          window.innerHeight,
+          0xff0000,
+          0.4
+        )
+        .setDepth(50)
+        .setOrigin(1);
+
+    this.movementDisabled = true;
     this.time.delayedCall(700, () => {
       cultHeadEvent(this);
     });
 
     this.events.on("resume", (sys: Phaser.Scenes.Systems, data: any) => {
       if (data?.from === "AlchTwins") {
-        ghostNpc(this, this.player.x, this.player.y);
-        demonGhost(this);
-        this.alchEvent = true; // DATABASE CHANGE HERE
+        if (this.alchSceneNum === 1) {
+          this.alchSceneNum++;
+          this.movementDisabled = true;
+          ghostNpc(this, this.player.x, this.player.y);
+          demonGhost(this);
+
+          this.playerStats.health = Math.max(0, this.playerStats.health - 15);
+          this.alchEvent = true; // UPDATE DATABASE
+
+          this.player.anims.stop();
+          this.player.anims.play("pass-out", true);
+
+          this.game.events.emit("updateHUD", this.playerStats);
+
+          for (let i = 0; i < 5; i++) {
+            this.time.delayedCall(50 * i * 2, () => {
+              this.redScreen = flashRedScreen();
+              this.time.delayedCall(50, () => {
+                this.redScreen.destroy();
+              });
+            });
+          }
+
+          const passOutDuration = 2000;
+          this.time.delayedCall(passOutDuration, () => {
+            this.player.anims.play("get-up", true);
+            this.player.once(
+              Phaser.Animations.Events.ANIMATION_COMPLETE,
+              () => {
+                this.movementDisabled = false;
+                this.backgroundMusic.stop();
+                this.scene.pause("SceneOne");
+                this.scene.launch("AlchTwins", {
+                  alchSceneNum: this.alchSceneNum,
+                });
+              }
+            );
+          });
+        } else if (this.alchSceneNum === 2) {
+          this.alchSceneNum++;
+        }
+      } else if (data?.from === "CultHead") {
+        walkBackCultHead(this);
+        this.movementDisabled = true;
+        this.playerStats.health = Math.max(0, this.playerStats.health - 15);
+
+        this.player.anims.play("pass-out", true);
+
+        this.game.events.emit("updateHUD", this.playerStats);
+
+        for (let i = 0; i < 5; i++) {
+          this.time.delayedCall(50 * i * 2, () => {
+            this.redScreen = flashRedScreen();
+            this.time.delayedCall(50, () => {
+              this.redScreen.destroy();
+            });
+          });
+        }
+        const passOutDuration = 2000;
+        this.time.delayedCall(passOutDuration, () => {
+          this.player.anims.play("get-up", true);
+          this.player.once(
+            Phaser.Animations.Events.ANIMATION_COMPLETE,
+            () => (this.movementDisabled = false)
+          );
+        });
+      }
+      if (this.backgroundMusic.isPaused) {
+        this.backgroundMusic.resume();
+      } else if (!this.backgroundMusic.isPlaying) {
+        this.backgroundMusic.play();
       }
     });
 
+    this.game.events.emit("updateHUD", this.playerStats);
     this.physics.world.setBounds(0, 0, 2555, 1280);
     this.cameras.main.setZoom(2.5);
     this.cameras.main.startFollow(this.player);

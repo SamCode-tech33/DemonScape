@@ -130,7 +130,9 @@ const interactionLogic = (scene: any) => {
         ) {
           scene.backgroundMusic.pause();
           scene.scene.pause("SceneOne");
-          scene.scene.launch(scene.activeNpc.scene);
+          scene.scene.launch(scene.activeNpc.scene, {
+            alchSceneNum: scene.alchSceneNum,
+          });
           clearInteraction();
         }
       });

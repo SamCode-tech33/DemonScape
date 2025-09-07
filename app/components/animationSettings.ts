@@ -37,6 +37,28 @@ export const playerAnimation = (scene: any) => {
     repeat: -1,
   });
 
+  // PASSOUT ANIMATION
+
+  scene.anims.create({
+    key: "pass-out",
+    frames: scene.anims.generateFrameNumbers("hurt", {
+      start: 0,
+      end: 5,
+    }),
+    frameRate: 10,
+    repeat: 0,
+  });
+
+  scene.anims.create({
+    key: "get-up",
+    frames: scene.anims.generateFrameNumbers("hurt", {
+      start: 5,
+      end: 0,
+    }),
+    frameRate: 10,
+    repeat: 0,
+  });
+
   //RUNNING ANIMATION
   scene.anims.create({
     key: "run-up",

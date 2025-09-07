@@ -1,6 +1,6 @@
 const playerSprite = (scene: any, collisionGroup: any) => {
   scene.player = scene.physics.add
-    .sprite(416, 475, "idle", 4)
+    .sprite(414, 500, "idle", 4)
     .setDepth(8)
     .setCollideWorldBounds(true);
 
