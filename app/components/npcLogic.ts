@@ -65,6 +65,14 @@ export const depthSetting = (scene: any) => {
   } else {
     scene.zom3.setDepth(7);
   }
+
+  if (scene.ghostCompanion) {
+    if (scene.player.y < scene.ghostCompanion.y) {
+      scene.ghostCompanion.setDepth(12);
+    } else {
+      scene.ghostCompanion.setDepth(7);
+    }
+  }
 };
 
 export const pathingZombies = (scene: any, delta: number) => {

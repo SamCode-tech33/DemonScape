@@ -37,7 +37,7 @@ export const demonGhost = (scene: Phaser.Scene & SceneOneState) => {
     targets: scene.ghost,
     x: 128,
     y: 715,
-    duration: 3300,
+    duration: 4000,
     onComplete: () => {
       scene.tweens.add({
         targets: scene.ghost,

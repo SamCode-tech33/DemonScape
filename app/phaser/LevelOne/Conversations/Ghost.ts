@@ -230,7 +230,7 @@ export default class Ghost extends Phaser.Scene {
       this.input.keyboard!.once("keydown-SPACE", () => {
         this.music.stop();
         this.scene.stop();
-        this.scene.resume("SceneOne");
+        this.scene.resume("SceneOne", { from: "Ghost" });
       });
       return;
     }

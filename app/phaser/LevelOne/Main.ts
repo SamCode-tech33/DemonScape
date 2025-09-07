@@ -83,6 +83,8 @@ export default class Main extends Phaser.Scene {
   redScreen!: Phaser.GameObjects.Rectangle;
   movementDisabled: boolean = false;
   alchSceneNum: number = 1;
+  ghostFollow: boolean = false;
+  ghostCompanion!: Phaser.Physics.Arcade.Sprite;
 
   constructor() {
     super({ key: "SceneOne" });
@@ -185,10 +187,10 @@ export default class Main extends Phaser.Scene {
         .setDepth(50)
         .setOrigin(1);
 
-    this.movementDisabled = true;
-    this.time.delayedCall(700, () => {
-      cultHeadEvent(this);
-    });
+    // this.movementDisabled = true;
+    // this.time.delayedCall(700, () => {
+    //   cultHeadEvent(this);
+    // });
 
     this.events.on("resume", (sys: Phaser.Scenes.Systems, data: any) => {
       if (data?.from === "AlchTwins") {
@@ -258,6 +260,14 @@ export default class Main extends Phaser.Scene {
             () => (this.movementDisabled = false)
           );
         });
+      } else if (data?.from === "Ghost") {
+        this.tweens.killTweensOf(this.ghost);
+        this.ghost.destroy();
+        ghostNpc(this, 5000, 5000);
+        this.ghostCompanion = this.physics.add
+          .sprite(this.player.x, this.player.y, "sgr", 0)
+          .setCollideWorldBounds(true);
+        this.ghostFollow = true;
       }
       if (this.backgroundMusic.isPaused) {
         this.backgroundMusic.resume();
@@ -284,5 +294,42 @@ export default class Main extends Phaser.Scene {
     depthSetting(this);
     pathingZombies(this, delta);
     pathingAlch2(this);
+
+    if (this.ghostFollow && this.ghost) {
+      // pick an offset based on the player's lastDirection
+      let offsetX = 0;
+      let offsetY = 0;
+
+      switch (this.lastDirection) {
+        case "up":
+          offsetY = 56;
+          break;
+        case "down":
+          offsetY = -56;
+          break;
+        case "left":
+          offsetX = 56;
+          break;
+        case "right":
+          offsetX = -56;
+          break;
+      }
+
+      const targetX = this.player.x + offsetX;
+      const targetY = this.player.y + offsetY;
+
+      // smooth follow with delta scaling
+      const speed = 0.05 * (delta / 16.67); // ~5% per frame at 60fps
+      this.ghostCompanion.x = Phaser.Math.Linear(
+        this.ghostCompanion.x,
+        targetX,
+        speed
+      );
+      this.ghostCompanion.y = Phaser.Math.Linear(
+        this.ghostCompanion.y,
+        targetY,
+        speed
+      );
+    }
   }
 }

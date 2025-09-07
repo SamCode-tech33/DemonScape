@@ -70,7 +70,6 @@ const interactionLogic = (scene: any) => {
       break; // stop after first match
     }
   }
-
   if (npcInRange) {
     if (!scene.interactionBox && !scene.interactionKey && !scene.activeNpc) {
       scene.interactionBox = scene.add

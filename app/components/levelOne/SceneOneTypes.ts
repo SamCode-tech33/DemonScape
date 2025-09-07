@@ -33,4 +33,5 @@ export interface SceneOneState {
   interactionKey?: Phaser.GameObjects.Text;
   activeNpc: { name: string; scene: string } | null;
   movementDisabled: boolean;
+  ghostFollow: boolean;
 }
