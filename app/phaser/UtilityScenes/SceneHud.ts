@@ -33,6 +33,8 @@ export default class HudScene extends Phaser.Scene {
   }
 
   create() {
+    this.input.setTopOnly(false);
+
     /////////////////////////HEALTHBAR/MAGICBAR//////////////////////////////////////////////////////////////////////HEALTHBAR/MAGICBAR//////
 
     const radius = 8;

@@ -89,11 +89,11 @@ export default class AlchTwins extends Phaser.Scene {
       ],
     },
     {
-      text: "Seuthala: Right... so this potion rules out you being a human or angel possesion. The only remaining possibility is damage to the husk brain itself.",
+      text: "Seuthala: Right... so this potion rules out you being a human or angel possessed. The only remaining possibility is damage to the husk brain itself, or bad initial integration.",
       choices: [
         {
           text: "1) There is no damage to my mind damnit! I remember being a man. Where the hell am I?!?",
-          next: 3,
+          next: 2,
         },
         {
           text: "2) Damage? But my memories seem so real...",
@@ -106,7 +106,7 @@ export default class AlchTwins extends Phaser.Scene {
       choices: [
         {
           text: "1) continue...",
-          next: 1,
+          next: 3,
         },
       ],
     },
@@ -137,7 +137,7 @@ export default class AlchTwins extends Phaser.Scene {
       ],
     },
     {
-      text: "Seuthala: Flesh golem, be quiet... *Sigh* I'm sure I don't need to tell you this but this was a husk exchange, not a first time possesion but the meat golem perplexed a thought. If the previous demon successfully overwrote his mind, how is it possible that his mind reverted back upon your possession? This is a strange case. Meat Golem, I'll let the others know to watch you closely. Your dead if we notice anything else strange. *Her eyes look through you again* I'm sorry we can't risk infiltration.",
+      text: "Seuthala: Flesh golem, be quiet... *Sigh* I'm sure I don't need to tell you this but this was a husk exchange, not a first time possesion but the meat golem perplexed a thought. If the previous demon successfully overwrote his mind, how is it possible that his mind reverted back upon your possession? This is a strange case. Meat Golem, I'll let the others know to watch you closely. Your dead if we notice anything else strange. *Her eyes look through you again* We can't risk infiltration.",
       choices: [
         {
           text: "1) continue...",
@@ -164,7 +164,7 @@ export default class AlchTwins extends Phaser.Scene {
       ],
     },
     {
-      text: "You (thinking): Ok that did absolutely nothing to me... but even if there is just a 3% chance of this being real, I should just play along... They are gonna kill me if I don't fight these zombies... and there is no way I can run. There are too many. Screw it. I know I exist. I can feel it. I'll risk killing these zombies. If what she said is true anyways then I'm already dead. but if not... perhaps I can play along as a demon to get out of here... find someplace I can be alone to think. First things first, I got to get out of this place.",
+      text: "You (thinking): Ok that did absolutely nothing to me... but even if there is just a 3% chance of this being real, I should just play along... They are gonna kill me if I don't fight these zombies... and there is no way I can run. There are too many. Screw it. I know I exist. I can feel it. I'll risk killing these zombies. If what she said is true then I'm already dead, anyways. but if not... perhaps I can play along as a demon to get out of here... find someplace I can be alone to think. First things first, I got to get out of this place.",
       choices: [
         {
           text: "1) I'll finish this up quickly...",
@@ -180,7 +180,7 @@ export default class AlchTwins extends Phaser.Scene {
       text: "Seuthala: Great, and go talk to some of the other's while your at it. It'll help you trigger still-missing memory. What I did is not perfect.",
     },
     {
-      text: "Seuthala: ughhk sorry you see yourself act like such a bitch. What I did is not perfect... but at least you'll have bodily control. now, go talk to some of the other's while your at it. It'll help trigger your memories, pushing this pathetic meat golem's habits deeper down...",
+      text: "Seuthala: ughhk sorry that you have to see yourself act like such a bitch. What I did is not perfect... but at least you'll have bodily control. now, go talk to some of the other's while your at it. It'll help trigger your memories, pushing this pathetic meat golem's habits deeper down...",
     },
   ];
 

@@ -34,4 +34,6 @@ export interface SceneOneState {
   activeNpc: { name: string; scene: string } | null;
   movementDisabled: boolean;
   ghostFollow: boolean;
+  cultHeadSceneNum: number;
+  alchSceneNum: number;
 }

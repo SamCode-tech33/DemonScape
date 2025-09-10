@@ -9,6 +9,14 @@ const interactionLogic = (scene: any) => {
       range: 28,
     },
     {
+      name: "CultHead",
+      sprite: scene.cultHead,
+      floatRect: 33,
+      floatText: 44.5,
+      scene: "CultHead",
+      range: 28,
+    },
+    {
       name: "BoxGuy",
       sprite: scene.boxNpc,
       floatRect: 33,
@@ -129,9 +137,20 @@ const interactionLogic = (scene: any) => {
         ) {
           scene.backgroundMusic.pause();
           scene.scene.pause("SceneOne");
-          scene.scene.launch(scene.activeNpc.scene, {
-            alchSceneNum: scene.alchSceneNum,
-          });
+          if (scene.activeNpc.name === "AlchTwins") {
+            scene.scene.launch(scene.activeNpc.scene, {
+              alchSceneNum: scene.alchSceneNum,
+            });
+          } else if (scene.activeNpc.name === "CultHead") {
+            scene.scene.launch(scene.activeNpc.scene, {
+              cultHeadSceneNum: scene.cultHeadSceneNum,
+            });
+            if (scene.cultHeadSceneNum < 3) {
+              scene.cultHeadSceneNum++;
+            }
+          } else {
+            scene.scene.launch(scene.activeNpc.scene);
+          }
           clearInteraction();
         }
       });

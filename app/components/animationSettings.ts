@@ -100,10 +100,40 @@ export const playerAnimation = (scene: any) => {
 
   //JUMPING ANIMATION
   scene.anims.create({
-    key: "jump",
+    key: "static-jump-up",
     frames: scene.anims.generateFrameNumbers("jump", {
       start: 0,
       end: 4,
+    }),
+    frameRate: 8,
+    repeat: 0,
+    yoyo: true,
+  });
+  scene.anims.create({
+    key: "static-jump-left",
+    frames: scene.anims.generateFrameNumbers("jump", {
+      start: 5,
+      end: 9,
+    }),
+    frameRate: 8,
+    repeat: 0,
+    yoyo: true,
+  });
+  scene.anims.create({
+    key: "static-jump-down",
+    frames: scene.anims.generateFrameNumbers("jump", {
+      start: 10,
+      end: 14,
+    }),
+    frameRate: 8,
+    repeat: 0,
+    yoyo: true,
+  });
+  scene.anims.create({
+    key: "static-jump-right",
+    frames: scene.anims.generateFrameNumbers("jump", {
+      start: 15,
+      end: 19,
     }),
     frameRate: 8,
     repeat: 0,
@@ -148,14 +178,13 @@ export const playerAnimation = (scene: any) => {
 
   //ATTACK ANIMATION
   scene.anims.create({
-    key: "halfslash-forward",
+    key: "halfslash-up",
     frames: scene.anims.generateFrameNumbers("halfslash", {
       start: 0,
       end: 5,
     }),
     frameRate: 10,
     repeat: 0,
-    yoyo: true,
   });
   scene.anims.create({
     key: "halfslash-left",

@@ -83,6 +83,7 @@ export default class Main extends Phaser.Scene {
   redScreen!: Phaser.GameObjects.Rectangle;
   movementDisabled: boolean = false;
   alchSceneNum: number = 1;
+  cultHeadSceneNum: number = 1;
   ghostFollow: boolean = false;
   ghostCompanion!: Phaser.Physics.Arcade.Sprite;
 
@@ -94,6 +95,26 @@ export default class Main extends Phaser.Scene {
     preLoadedAssets(this);
   }
   create() {
+    this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
+      if (pointer.leftButtonDown()) {
+        this.movementDisabled = true;
+        this.player.setVelocity(0, 0);
+        this.player.anims.stop();
+        if (this.lastDirection === "up") {
+          this.player.anims.play("halfslash-up", true);
+        } else if (this.lastDirection === "left") {
+          this.player.anims.play("halfslash-left", true);
+        } else if (this.lastDirection === "down") {
+          this.player.anims.play("halfslash-down", true);
+        } else if (this.lastDirection === "right") {
+          this.player.anims.play("halfslash-right", true);
+        }
+        this.player.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+          this.movementDisabled = false;
+        });
+      }
+    });
+
     // MAP
     mapLayering(this);
 
@@ -187,10 +208,10 @@ export default class Main extends Phaser.Scene {
         .setDepth(50)
         .setOrigin(1);
 
-    // this.movementDisabled = true;
-    // this.time.delayedCall(700, () => {
-    //   cultHeadEvent(this);
-    // });
+    this.movementDisabled = true;
+    this.time.delayedCall(700, () => {
+      cultHeadEvent(this);
+    });
 
     this.events.on("resume", (sys: Phaser.Scenes.Systems, data: any) => {
       if (data?.from === "AlchTwins") {
@@ -235,8 +256,9 @@ export default class Main extends Phaser.Scene {
         } else if (this.alchSceneNum === 2) {
           this.alchSceneNum++;
         }
-      } else if (data?.from === "CultHead") {
+      } else if (data?.from === "CultHead" && this.cultHeadSceneNum === 1) {
         walkBackCultHead(this);
+        this.cultHeadSceneNum++;
         this.movementDisabled = true;
         this.playerStats.health = Math.max(0, this.playerStats.health - 15);
 

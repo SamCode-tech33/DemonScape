@@ -11,7 +11,7 @@ interface DialogueNode {
 }
 
 export default class CultHead extends Phaser.Scene {
-  private dialogueNodes: DialogueNode[] = [
+  private dialogue1Nodes: DialogueNode[] = [
     {
       text: "Cult Head: You whine like fettered swine. Why?",
       choices: [
@@ -20,7 +20,7 @@ export default class CultHead extends Phaser.Scene {
           next: 1,
         },
         {
-          text: "2) Fuck off bitch. I'll scream if I want to scream.",
+          text: "2) Who the hell are you?! I'll scream if I want to scream.",
           next: 2,
         },
       ],
@@ -39,6 +39,52 @@ export default class CultHead extends Phaser.Scene {
     },
   ];
 
+  private dialogue2Nodes: DialogueNode[] = [
+    {
+      text: "Cult Head: The potion proves the bind upon this mind is in motion. However, your negligence leaves you on the fence.",
+      choices: [
+        {
+          text: "1) You're rhyming more consistently this time.",
+          next: 1,
+        },
+        {
+          text: "2) They said you would have killed me if I had less demonic energy.",
+          next: 2,
+        },
+      ],
+    },
+    {
+      text: "Cult Head: I lament your useless comment",
+      choices: [
+        {
+          text: "1) They said you would have killed me if I had less demonic energy...",
+          next: 2,
+        },
+      ],
+    },
+    {
+      text: "Cult Head: Yes, and after you restore you connection to this brain. From thence, you best have good sense.",
+      choices: [
+        { text: "1) Continue...", next: 3 },
+        {
+          text: "2) Ooh I thought you were about to miss a rhyme that time.",
+          next: 3,
+        },
+      ],
+    },
+    {
+      text: "Cult Head: I will enjoy the melting of your brain if you fail.",
+      // no choices = end
+    },
+  ];
+
+  private dialogue3Nodes: DialogueNode[] = [
+    {
+      text: "Cult Head: I will enjoy the melting of your brain if you fail.",
+    },
+  ];
+
+  private dialogueNodes: DialogueNode[] = [];
   private currentNodeIndex: number = 0;
   private dialogueText!: Phaser.GameObjects.Text;
   private choiceTexts: Phaser.GameObjects.Text[] = [];
@@ -46,6 +92,21 @@ export default class CultHead extends Phaser.Scene {
 
   constructor() {
     super({ key: "CultHead" });
+  }
+
+  init(data: { cultHeadSceneNum: number }) {
+    console.log(data.cultHeadSceneNum);
+    switch (data.cultHeadSceneNum) {
+      case 1:
+        this.dialogueNodes = this.dialogue1Nodes;
+        break;
+      case 2:
+        this.dialogueNodes = this.dialogue2Nodes;
+        break;
+      case 3:
+        this.dialogueNodes = this.dialogue3Nodes;
+        break;
+    }
   }
 
   preload() {

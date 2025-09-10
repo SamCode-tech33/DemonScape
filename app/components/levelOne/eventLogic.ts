@@ -28,7 +28,9 @@ export const cultHeadEvent = (scene: Phaser.Scene & SceneOneState) => {
   const startConversation = () => {
     scene.backgroundMusic.stop();
     scene.scene.pause("SceneOne");
-    scene.scene.launch("CultHead");
+    scene.scene.launch("CultHead", {
+      cultHeadSceneNum: scene.cultHeadSceneNum,
+    });
   };
 };
 

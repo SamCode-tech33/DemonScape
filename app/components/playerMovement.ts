@@ -23,7 +23,7 @@ const playerMovement = (scene: any) => {
 
   if (Phaser.Input.Keyboard.JustDown(spaceKey) && !scene.isJumping) {
     scene.isJumping = true;
-    let jumpAnim = "jump";
+    let jumpAnim = "";
     let jumpDirection = () => scene.player.setVelocity(0);
     if (
       (scene.keys.right?.isDown && scene.keys.up?.isDown) ||
@@ -73,6 +73,14 @@ const playerMovement = (scene: any) => {
       jumpAnim = "jump-down";
       jumpDirection = () => scene.player.setVelocityY(jumpSpeed);
       scene.lastDirection = "down";
+    } else if (scene.lastDirection === "up") {
+      jumpAnim = "static-jump-up";
+    } else if (scene.lastDirection === "left") {
+      jumpAnim = "static-jump-left";
+    } else if (scene.lastDirection === "down") {
+      jumpAnim = "static-jump-down";
+    } else if (scene.lastDirection === "right") {
+      jumpAnim = "static-jump-right";
     }
     scene.player.anims.play(jumpAnim, true);
     jumpDirection();
