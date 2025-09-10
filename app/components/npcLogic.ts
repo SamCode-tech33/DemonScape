@@ -196,7 +196,7 @@ export const pathingAlch1 = (scene: any) => {
         npc.setFrame(point.stop);
 
         // Wait 5 seconds before moving to next point
-        scene.time.delayedCall(16000, () => {
+        scene.time.delayedCall(11000, () => {
           index = (index + 1) % pathPoints.length;
           moveToNextPoint();
         });

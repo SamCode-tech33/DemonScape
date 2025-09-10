@@ -11,7 +11,7 @@ interface DialogueNode {
 }
 
 export default class SaraOne extends Phaser.Scene {
-  private dialogueNodes: DialogueNode[] = [
+  private dialogue1Nodes: DialogueNode[] = [
     {
       text: "Sara: ughh what? I'm busy.",
       choices: [
@@ -66,7 +66,7 @@ export default class SaraOne extends Phaser.Scene {
     },
     {
       text: "Sara: Damnit, do you know how long it took me to program these soul fragments to fight... ughh fine, Maelvoth would have just killed you instead of making you drink that potion, but you have quite a lot of demonic energy, which makes it even stranger that you didn't integrate the possession correctly...",
-      choices: [{ text: "1) Continue...", next: 8 }],
+      choices: [{ text: "1) Continue...", next: 7 }],
     },
     {
       text: "Sara: Ok Mr. Nietzsche... Look, your spirit is filtered through the mind's circuits. Either you didn't properly rewrite the brain on possesion... or damnit who prepared this body for you? Right you wouldn't know...",
@@ -76,7 +76,13 @@ export default class SaraOne extends Phaser.Scene {
       text: "Sara: Maelvoth probably assumes he'll be killed by his superiors if he killed you before the final cleansing. Damn politics... I'll let you kill them, but I'm activating them. I'm sure if mere zombies are able to kill you, no one will complain... good luck.",
     },
   ];
+  private dialogue2Nodes: DialogueNode[] = [
+    {
+      text: "Sara: Go on now. Defeat my pets if you can. Be warned, they'll attack you upon your first hit.",
+    },
+  ];
 
+  private dialogueNodes: DialogueNode[] = [];
   private currentNodeIndex: number = 0;
   private dialogueText!: Phaser.GameObjects.Text;
   private choiceTexts: Phaser.GameObjects.Text[] = [];
@@ -84,6 +90,17 @@ export default class SaraOne extends Phaser.Scene {
 
   constructor() {
     super({ key: "SaraOne" });
+  }
+
+  init(data: { saraOneSceneNum: number }) {
+    switch (data.saraOneSceneNum) {
+      case 1:
+        this.dialogueNodes = this.dialogue1Nodes;
+        break;
+      case 2:
+        this.dialogueNodes = this.dialogue2Nodes;
+        break;
+    }
   }
 
   preload() {

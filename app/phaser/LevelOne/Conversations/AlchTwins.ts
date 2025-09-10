@@ -164,7 +164,7 @@ export default class AlchTwins extends Phaser.Scene {
       ],
     },
     {
-      text: "You (thinking): Ok that did absolutely nothing to me... but even if there is just a 3% chance of this being real, I should just play along... They are gonna kill me if I don't fight these zombies... and there is no way I can run. There are too many. Screw it. I know I exist. I can feel it. I'll risk killing these zombies. If what she said is true then I'm already dead, anyways. but if not... perhaps I can play along as a demon to get out of here... find someplace I can be alone to think. First things first, I got to get out of this place.",
+      text: "You (thinking): Ok that did absolutely nothing to me... but even if there is just a 3% chance of this being real, I should just play along... They are gonna kill me if I don't fight these zombies... and there is no way I can run. There are too many. Screw it. I know I exist. I can feel it. I'll risk killing these zombies. If what she said is true then I'm already dead, anyways. but if not... perhaps I can play along as a demon to get out of here... find someplace I can be alone to think.",
       choices: [
         {
           text: "1) I'll finish this up quickly...",

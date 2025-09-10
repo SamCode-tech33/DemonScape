@@ -241,10 +241,12 @@ export const playerAnimation = (scene: any) => {
   });
 };
 
+// NPC ANIMATIONS
+
 export const cultHeadAnimation = (scene: any) => {
   scene.anims.create({
-    key: "dcult-walk-up",
-    frames: scene.anims.generateFrameNumbers("dcult-walk", {
+    key: "cult-head-walk-up",
+    frames: scene.anims.generateFrameNumbers("cult-head-walk", {
       start: 0,
       end: 8,
     }),
@@ -252,8 +254,8 @@ export const cultHeadAnimation = (scene: any) => {
     repeat: -1,
   });
   scene.anims.create({
-    key: "dcult-walk-left",
-    frames: scene.anims.generateFrameNumbers("dcult-walk", {
+    key: "cult-head-walk-left",
+    frames: scene.anims.generateFrameNumbers("cult-head-walk", {
       start: 9,
       end: 17,
     }),
@@ -261,8 +263,8 @@ export const cultHeadAnimation = (scene: any) => {
     repeat: -1,
   });
   scene.anims.create({
-    key: "dcult-walk-down",
-    frames: scene.anims.generateFrameNumbers("dcult-walk", {
+    key: "cult-head-walk-down",
+    frames: scene.anims.generateFrameNumbers("cult-head-walk", {
       start: 18,
       end: 26,
     }),
@@ -270,8 +272,86 @@ export const cultHeadAnimation = (scene: any) => {
     repeat: -1,
   });
   scene.anims.create({
-    key: "dcult-walk-right",
-    frames: scene.anims.generateFrameNumbers("dcult-walk", {
+    key: "cult-head-walk-right",
+    frames: scene.anims.generateFrameNumbers("cult-head-walk", {
+      start: 27,
+      end: 35,
+    }),
+    frameRate: 10,
+    repeat: -1,
+  });
+};
+
+export const maleCultistAnimation = (scene: any) => {
+  scene.anims.create({
+    key: "cultist-male-walk-up",
+    frames: scene.anims.generateFrameNumbers("cultist-male-walk", {
+      start: 0,
+      end: 8,
+    }),
+    frameRate: 10,
+    repeat: -1,
+  });
+  scene.anims.create({
+    key: "cultist-male-walk-left",
+    frames: scene.anims.generateFrameNumbers("cultist-male-walk", {
+      start: 9,
+      end: 17,
+    }),
+    frameRate: 10,
+    repeat: -1,
+  });
+  scene.anims.create({
+    key: "cultist-male-walk-down",
+    frames: scene.anims.generateFrameNumbers("cultist-male-walk", {
+      start: 18,
+      end: 26,
+    }),
+    frameRate: 10,
+    repeat: -1,
+  });
+  scene.anims.create({
+    key: "cultist-male-walk-right",
+    frames: scene.anims.generateFrameNumbers("cultist-male-walk", {
+      start: 27,
+      end: 35,
+    }),
+    frameRate: 10,
+    repeat: -1,
+  });
+};
+
+export const femaleCultistAnimation = (scene: any) => {
+  scene.anims.create({
+    key: "cultist-female-walk-up",
+    frames: scene.anims.generateFrameNumbers("cultist-female-walk", {
+      start: 0,
+      end: 8,
+    }),
+    frameRate: 10,
+    repeat: -1,
+  });
+  scene.anims.create({
+    key: "cultist-female-walk-left",
+    frames: scene.anims.generateFrameNumbers("cultist-female-walk", {
+      start: 9,
+      end: 17,
+    }),
+    frameRate: 10,
+    repeat: -1,
+  });
+  scene.anims.create({
+    key: "cultist-female-walk-down",
+    frames: scene.anims.generateFrameNumbers("cultist-female-walk", {
+      start: 18,
+      end: 26,
+    }),
+    frameRate: 10,
+    repeat: -1,
+  });
+  scene.anims.create({
+    key: "cultist-female-walk-right",
+    frames: scene.anims.generateFrameNumbers("cultist-female-walk", {
       start: 27,
       end: 35,
     }),
