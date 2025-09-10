@@ -32,4 +32,8 @@ export interface SceneOneState {
   interactionBox?: Phaser.GameObjects.Rectangle;
   interactionKey?: Phaser.GameObjects.Text;
   activeNpc: { name: string; scene: string } | null;
+  movementDisabled: boolean;
+  ghostFollow: boolean;
+  cultHeadSceneNum: number;
+  alchSceneNum: number;
 }

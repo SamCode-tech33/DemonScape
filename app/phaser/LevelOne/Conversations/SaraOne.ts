@@ -29,7 +29,7 @@ export default class SaraOne extends Phaser.Scene {
       text: "Sara: tch that bitch whore... She's jealous of my skill. Damnit. acting like that... your husk is probably short-circuiting your conciousness...",
       choices: [
         {
-          text: "1) Excuse me, my conciousness? What does that mean?",
+          text: "1) Excuse me, my conciousness? Oh... yeah that alchemist mentioned there was a bad integration or husk damage.",
           next: 3,
         },
         {
@@ -42,7 +42,7 @@ export default class SaraOne extends Phaser.Scene {
       text: "Sara: Yeah I don't care about any of that. Damnit your husk is probably short-circuiting your conciousness...",
       choices: [
         {
-          text: "1) Excuse me, my conciousness? What does that mean?",
+          text: "1) Excuse me, my conciousness? Oh... yeah that alchemist mentioned there was a bad integration or husk damage.",
           next: 3,
         },
         {
@@ -52,7 +52,7 @@ export default class SaraOne extends Phaser.Scene {
       ],
     },
     {
-      text: "Sara: Your spirit is filtered through the mind's circuits. Either you didn't properly rewrite the brain on possesion... or damnit who prepared this body for you? Right you wouldn't know...",
+      text: "Sara: *She smirks* Oh so she probably gave you temporary control back... pathetic that you messed up something so basic.",
       choices: [{ text: "1) Continue...", next: 5 }],
     },
     {
@@ -65,16 +65,12 @@ export default class SaraOne extends Phaser.Scene {
       ],
     },
     {
-      text: "Sara: Damnit, do you know how long it took me to program these retard soul fragments to fight... ughh fine, Maelvoth would have just killed you instead of making you drink that potion, but you have quite a lot of demonic energy, which makes it even stranger that you didn't integrate the possession correctly...",
+      text: "Sara: Damnit, do you know how long it took me to program these soul fragments to fight... ughh fine, Maelvoth would have just killed you instead of making you drink that potion, but you have quite a lot of demonic energy, which makes it even stranger that you didn't integrate the possession correctly...",
       choices: [{ text: "1) Continue...", next: 8 }],
     },
     {
       text: "Sara: Ok Mr. Nietzsche... Look, your spirit is filtered through the mind's circuits. Either you didn't properly rewrite the brain on possesion... or damnit who prepared this body for you? Right you wouldn't know...",
-      choices: [{ text: "1) Continue...", next: 7 }],
-    },
-    {
-      text: "Sara: Damnit, do you know how long it took me to program these retard soul fragments to fight... ughh fine, Maelvoth would have just killed you instead of making you drink that potion, but you have quite a lot of demonic energy, which makes it even stranger that you didn't integrate the possession correctly...",
-      choices: [{ text: "1) Continue...", next: 8 }],
+      choices: [{ text: "1) Continue...", next: 5 }],
     },
     {
       text: "Sara: Maelvoth probably assumes he'll be killed by his superiors if he killed you before the final cleansing. Damn politics... I'll let you kill them, but I'm activating them. I'm sure if mere zombies are able to kill you, no one will complain... good luck.",

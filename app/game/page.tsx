@@ -8,7 +8,7 @@ const CanvasOne = dynamic(() => import("../canvases/CanvasOne"), {
 
 export default function GamePage() {
   return (
-    <main className="flex items-center justify-center h-screen">
+    <main className="flex items-center justify-center h-screen pointer-events-none">
       <CanvasOne />
     </main>
   );

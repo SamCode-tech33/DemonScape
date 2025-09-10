@@ -23,6 +23,11 @@ export default function CanvasOne() {
       height: window.innerHeight,
       parent: "gameCanvas",
       transparent: true,
+      input: {
+        keyboard: true,
+        mouse: true,
+        touch: true,
+      },
       physics: {
         default: "arcade",
         arcade: { gravity: { y: 0, x: 0 }, debug: false },
