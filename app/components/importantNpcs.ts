@@ -1,6 +1,6 @@
 export const cultHeadNpc = (scene: any) => {
   scene.cultHead = scene.physics.add
-    .sprite(320, 222, "dcult-walk", 18)
+    .sprite(320, 222, "cult-head-walk", 18)
     .setCollideWorldBounds(true)
     .setImmovable(true);
   scene.cultHead

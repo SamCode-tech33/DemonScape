@@ -77,44 +77,97 @@ const preLoadedAssets = (scene: any) => {
     frameHeight: 64,
   });
 
-  // DEMONS
-  scene.load.spritesheet("dcult-walk", "assets/npc/demon-cultists/walk.png", {
+  // CULT HEAD
+  scene.load.spritesheet("cult-head-walk", "assets/npc/cult-head/walk.png", {
     frameWidth: 64,
     frameHeight: 64,
   });
-  scene.load.spritesheet("dcult-sit", "assets/npc/demon-cultists/sit.png", {
+  scene.load.spritesheet("cult-head-sit", "assets/npc/cult-head/sit.png", {
     frameWidth: 64,
     frameHeight: 64,
   });
   scene.load.spritesheet(
-    "dcult-spell",
-    "assets/npc/demon-cultists/spellcast.png",
+    "cult-head-spell",
+    "assets/npc/cult-head/spellcast.png",
     {
       frameWidth: 64,
       frameHeight: 64,
     }
   );
-  scene.load.spritesheet("dcult-emote", "assets/npc/demon-cultists/emote.png", {
+  scene.load.spritesheet("cult-head-emote", "assets/npc/cult-head/emote.png", {
     frameWidth: 64,
     frameHeight: 64,
   });
 
-  scene.load.spritesheet("w-dcult-walk", "assets/npc/femDemon/walk.png", {
-    frameWidth: 64,
-    frameHeight: 64,
-  });
-  scene.load.spritesheet("w-dcult-sit", "assets/npc/femDemon/sit.png", {
-    frameWidth: 64,
-    frameHeight: 64,
-  });
-  scene.load.spritesheet("w-dcult-spell", "assets/npc/femDemon/spellcast.png", {
-    frameWidth: 64,
-    frameHeight: 64,
-  });
-  scene.load.spritesheet("w-dcult-emote", "assets/npc/femDemon/emote.png", {
-    frameWidth: 64,
-    frameHeight: 64,
-  });
+  // FEMALE CULTISTS
+
+  scene.load.spritesheet(
+    "cultist-female-walk",
+    "assets/npc/cultist-female/walk.png",
+    {
+      frameWidth: 64,
+      frameHeight: 64,
+    }
+  );
+  scene.load.spritesheet(
+    "cultist-female-sit",
+    "assets/npc/cultist-female/sit.png",
+    {
+      frameWidth: 64,
+      frameHeight: 64,
+    }
+  );
+  scene.load.spritesheet(
+    "cultist-female-spell",
+    "assets/npc/cultist-female/spellcast.png",
+    {
+      frameWidth: 64,
+      frameHeight: 64,
+    }
+  );
+  scene.load.spritesheet(
+    "cultist-female-emote",
+    "assets/npc/cultist-female/emote.png",
+    {
+      frameWidth: 64,
+      frameHeight: 64,
+    }
+  );
+
+  // MALE CULTISTS
+
+  scene.load.spritesheet(
+    "cultist-male-walk",
+    "assets/npc/cultist-male/walk.png",
+    {
+      frameWidth: 64,
+      frameHeight: 64,
+    }
+  );
+  scene.load.spritesheet(
+    "cultist-male-sit",
+    "assets/npc/cultist-male/sit.png",
+    {
+      frameWidth: 64,
+      frameHeight: 64,
+    }
+  );
+  scene.load.spritesheet(
+    "cultist-male-spell",
+    "assets/npc/cultist-male/spellcast.png",
+    {
+      frameWidth: 64,
+      frameHeight: 64,
+    }
+  );
+  scene.load.spritesheet(
+    "cultist-male-emote",
+    "assets/npc/cultist-male/emote.png",
+    {
+      frameWidth: 64,
+      frameHeight: 64,
+    }
+  );
 
   // SARA
   scene.load.spritesheet("sara-walk", "assets/npc/sara/walk.png", {

@@ -16,11 +16,14 @@ import {
   alch2Animation,
   alchTorchAnimation,
   skelManAnimation,
+  maleCultistAnimation,
+  femaleCultistAnimation,
 } from "@/app/components/animationSettings";
 import {
   cultHeadEvent,
   demonGhost,
   walkBackCultHead,
+  fillerNpcs,
 } from "@/app/components/levelOne/eventLogic";
 import {
   cultHeadNpc,
@@ -40,6 +43,12 @@ import preLoadedAssets from "@/app/components/levelOne/preLoadedAssets";
 import type { WASDAndArrowKeys } from "@/app/components/demonScapeTypes";
 import keySettings from "@/app/components/keySettings";
 import { zombies } from "@/app/components/enemyNpcs";
+import {
+  Alch2Dialogue,
+  girlsLeftWallDialogue,
+  guysAlterDialogue,
+  hallwayGirlsDialogue,
+} from "@/app/components/levelOne/floatingDialogue";
 
 export default class Main extends Phaser.Scene {
   player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
@@ -86,6 +95,9 @@ export default class Main extends Phaser.Scene {
   cultHeadSceneNum: number = 1;
   ghostFollow: boolean = false;
   ghostCompanion!: Phaser.Physics.Arcade.Sprite;
+  saraOneSceneNum: number = 1;
+  chatBubbleAlch2!: Phaser.GameObjects.Rectangle | undefined;
+  chatTextAlch2!: Phaser.GameObjects.Text | undefined;
 
   constructor() {
     super({ key: "SceneOne" });
@@ -139,22 +151,7 @@ export default class Main extends Phaser.Scene {
     ghostNpc(this, 5000, 5000);
 
     // FILLER NPCS
-    const cultMemberPositions = [
-      { x: 128, y: 336 },
-      { x: 224, y: 336 },
-      { x: 416, y: 336 },
-      { x: 512, y: 336 },
-      { x: 128, y: 400 },
-      { x: 224, y: 400 },
-      { x: 416, y: 400 },
-      { x: 512, y: 400 },
-      { x: 128, y: 464 },
-      { x: 224, y: 464 },
-      { x: 512, y: 464 },
-      { x: 208, y: 192 },
-      { x: 432, y: 192 },
-    ];
-    demonCultMembers(this, cultMemberPositions);
+    demonCultMembers(this);
 
     // ENEMIES
     zombies(this);
@@ -188,6 +185,8 @@ export default class Main extends Phaser.Scene {
     playerAnimation(this);
     zombieAnimation(this);
     cultHeadAnimation(this);
+    maleCultistAnimation(this);
+    femaleCultistAnimation(this);
     torchAnimation(this, torchPositions);
     alchTorchAnimation(this, alchemyPositions);
     alch2Animation(this);
@@ -212,6 +211,7 @@ export default class Main extends Phaser.Scene {
     this.time.delayedCall(700, () => {
       cultHeadEvent(this);
     });
+    Alch2Dialogue(this);
 
     this.events.on("resume", (sys: Phaser.Scenes.Systems, data: any) => {
       if (data?.from === "AlchTwins") {
@@ -255,6 +255,10 @@ export default class Main extends Phaser.Scene {
           });
         } else if (this.alchSceneNum === 2) {
           this.alchSceneNum++;
+          fillerNpcs(this);
+          hallwayGirlsDialogue(this);
+          guysAlterDialogue(this);
+          girlsLeftWallDialogue(this);
         }
       } else if (data?.from === "CultHead" && this.cultHeadSceneNum === 1) {
         walkBackCultHead(this);
