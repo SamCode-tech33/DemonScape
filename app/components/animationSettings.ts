@@ -217,26 +217,38 @@ export const playerAnimation = (scene: any) => {
   // BACK TO IDLE ANIMATION
   scene.anims.create({
     key: "idle-up",
-    frames: [{ key: "walk", frame: 0 }],
-    frameRate: 1,
+    frames: scene.anims.generateFrameNumbers("idle", {
+      start: 0,
+      end: 1,
+    }),
+    frameRate: 0.75,
     repeat: -1,
   });
   scene.anims.create({
     key: "idle-left",
-    frames: [{ key: "walk", frame: 9 }],
-    frameRate: 1,
-    repeat: -1,
-  });
-  scene.anims.create({
-    key: "idle-right",
-    frames: [{ key: "walk", frame: 27 }],
-    frameRate: 1,
+    frames: scene.anims.generateFrameNumbers("idle", {
+      start: 2,
+      end: 3,
+    }),
+    frameRate: 0.75,
     repeat: -1,
   });
   scene.anims.create({
     key: "idle-down",
-    frames: [{ key: "walk", frame: 18 }],
-    frameRate: 1,
+    frames: scene.anims.generateFrameNumbers("idle", {
+      start: 4,
+      end: 5,
+    }),
+    frameRate: 0.75,
+    repeat: -1,
+  });
+  scene.anims.create({
+    key: "idle-right",
+    frames: scene.anims.generateFrameNumbers("idle", {
+      start: 6,
+      end: 7,
+    }),
+    frameRate: 0.75,
     repeat: -1,
   });
 };
@@ -360,6 +372,7 @@ export const femaleCultistAnimation = (scene: any) => {
   });
 };
 
+// ZOMBIE WALK
 export const zombieAnimation = (scene: any) => {
   scene.anims.create({
     key: "z-walk-up",
@@ -396,6 +409,44 @@ export const zombieAnimation = (scene: any) => {
     }),
     frameRate: 10,
     repeat: -1,
+  });
+
+  // HALFSLASH
+  scene.anims.create({
+    key: "z-halfslash-up",
+    frames: scene.anims.generateFrameNumbers("zHalfslash", {
+      start: 0,
+      end: 5,
+    }),
+    frameRate: 6,
+    repeat: 0,
+  });
+  scene.anims.create({
+    key: "z-halfslash-left",
+    frames: scene.anims.generateFrameNumbers("zHalfslash", {
+      start: 7,
+      end: 12,
+    }),
+    frameRate: 6,
+    repeat: 0,
+  });
+  scene.anims.create({
+    key: "z-halfslash-down",
+    frames: scene.anims.generateFrameNumbers("zHalfslash", {
+      start: 14,
+      end: 19,
+    }),
+    frameRate: 6,
+    repeat: 0,
+  });
+  scene.anims.create({
+    key: "z-halfslash-right",
+    frames: scene.anims.generateFrameNumbers("zHalfslash", {
+      start: 21,
+      end: 26,
+    }),
+    frameRate: 6,
+    repeat: 0,
   });
 };
 
@@ -471,6 +522,7 @@ export const torchAnimation = (scene: any, torchPositions: any) => {
   });
 };
 
+// TORCHES
 export const alchTorchAnimation = (scene: any, alchemyPositions: any) => {
   scene.anims.create({
     key: "alch",

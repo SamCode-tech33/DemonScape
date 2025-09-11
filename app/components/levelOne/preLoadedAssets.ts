@@ -186,7 +186,7 @@ const preLoadedAssets = (scene: any) => {
   });
 
   // ZOMBIES
-  scene.load.spritesheet("zHit", "assets/enemies/zombie/slash.png", {
+  scene.load.spritesheet("zHalfslash", "assets/enemies/zombie/halfslash.png", {
     frameWidth: 64,
     frameHeight: 64,
   });

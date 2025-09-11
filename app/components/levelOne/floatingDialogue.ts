@@ -51,7 +51,7 @@ export const hallwayGirlsDialogue = (scene: any) => {
   ];
   let count = 0;
   scene.time.delayedCall(4000, () =>
-    convo(scene, participants, lines, count, 48, 48, 43, 43)
+    convo(scene, participants, lines, count, 48, 48, 43, 43, false)
   );
 };
 
@@ -72,8 +72,8 @@ export const guysAlterDialogue = (scene: any) => {
     "Yeah...",
   ];
   let count = 0;
-  scene.time.delayedCall(4000, () =>
-    convo(scene, participants, lines, count, 48, 48, 43, 43)
+  scene.time.delayedCall(8000, () =>
+    convo(scene, participants, lines, count, 48, 48, 43, 43, false)
   );
 };
 
@@ -94,9 +94,79 @@ export const girlsLeftWallDialogue = (scene: any) => {
     "Yeah...",
   ];
   let count = 0;
-  scene.time.delayedCall(5500, () =>
-    convo(scene, participants, lines, count, -16, 16, -21, 12)
+  scene.time.delayedCall(12000, () =>
+    convo(scene, participants, lines, count, -16, 16, -21, 12, false)
   );
+};
+
+export const threeMenGroup = (scene: any) => {
+  const npcs = scene.npcs.getChildren() as Phaser.Physics.Arcade.Sprite[];
+  const participants = [npcs[5], npcs[8], npcs[9]];
+  const lines: string[] = [
+    "And you are absolutely sure?",
+    "YES, It had to have been a human who killed my last husk.",
+    "It makes sense. A Light-Bleached would have also fried your spirit.",
+    "Were you blind drunk?! There's no way a Human could take you.",
+    "I was also surprised, humans can't even kill zombies.",
+    "Either you're hiding your incompetence, or the Humans are getting help...",
+  ];
+  let count = 0;
+  scene.time.delayedCall(16000, () =>
+    convo(scene, participants, lines, count, 48, 48, 43, 45, true)
+  );
+};
+
+export const singleTriggerDialogue = (scene: any) => {
+  const npcs = scene.npcs.getChildren() as Phaser.Physics.Arcade.Sprite[];
+  const targets = [npcs[7], npcs[11], npcs[10], npcs[12]];
+  let npcInRange: any | null;
+  let line: string = "";
+  for (const npc of targets) {
+    if (
+      Math.abs(scene.player.x - npc.x) < 88 &&
+      Math.abs(scene.player.y - npc.y) < 88
+    ) {
+      npcInRange = npc;
+      break;
+    }
+  }
+
+  if (npcInRange === targets[0]) {
+    line =
+      "I'm afraid to talk to anyone. What if they find out who I am... Best start fresh. I'll flee town tonight. I'm dead either way...";
+  } else if (npcInRange === targets[1]) {
+    line =
+      "It's you! The pussy! We're watching you until Maelvoth says otherwise. I'll kill you if I have to. Get your head right.";
+  } else if (npcInRange === targets[2]) {
+    line =
+      "Um.. Maelvoth, I know our town is short on husks, but I'm male. Can I please have the body of the demon who lost his cool earlier?...";
+  } else if (npcInRange === targets[3]) {
+    line =
+      "YOU ARE NOT ALLOWED TO LEAVE UNTIL MAELVOTH GIVES THE ALL CLEAR. DO NOT APPROACH.";
+  }
+  if (npcInRange) {
+    if (!scene.approachBox && !scene.approachText) {
+      scene.approachBox = scene.add
+        .graphics()
+        .fillStyle(0x000000, 0.6)
+        .fillRoundedRect(npcInRange.x - 48, npcInRange.y - 60, 104, 40, 6)
+        .setDepth(50);
+      scene.approachText = scene.add
+        .text(npcInRange.x - 43, npcInRange.y - 55, line, {
+          fontSize: "5px",
+          color: "#ffffff",
+          resolution: 3,
+          wordWrap: { width: 100 },
+        })
+        .setDepth(50);
+    }
+  } else if (scene.approachBox && scene.approachText) {
+    scene.approachBox.destroy();
+    scene.approachText.destroy();
+    scene.approachBox = undefined;
+    scene.approachText = undefined;
+    npcInRange = null;
+  }
 };
 
 const convo = (
@@ -107,9 +177,23 @@ const convo = (
   boxOffsetX: number,
   boxOffsetY: number,
   textOffsetX: number,
-  textOffsetY: number
+  textOffsetY: number,
+  group: boolean
 ) => {
-  const npc = participants[count % 2];
+  let npc: any;
+
+  if (group) {
+    if (count === 0 || count === 3) {
+      npc = participants[0];
+    } else if (count === 1 || count === 4) {
+      npc = participants[1];
+    } else {
+      npc = participants[2];
+    }
+  } else {
+    npc = participants[count % 2];
+  }
+
   const line = lines[count];
   if (!npc || !line) {
     count = 0;
@@ -122,7 +206,8 @@ const convo = (
         boxOffsetX,
         boxOffsetY,
         textOffsetX,
-        textOffsetY
+        textOffsetY,
+        group
       )
     );
     return;
@@ -154,7 +239,8 @@ const convo = (
       boxOffsetX,
       boxOffsetY,
       textOffsetX,
-      textOffsetY
+      textOffsetY,
+      group
     )
   );
 };

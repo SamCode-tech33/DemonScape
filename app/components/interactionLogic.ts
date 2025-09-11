@@ -128,13 +128,6 @@ const interactionLogic = (scene: any) => {
           .setDepth(50);
       }
 
-      if (scene.interactionKey) {
-        scene.interactionKey.setPosition(
-          npcInRange.sprite.x,
-          npcInRange.sprite.y - npcInRange.floatText
-        );
-      }
-
       scene.activeNpc = { name: npcInRange.name, scene: npcInRange.scene };
 
       scene.input.keyboard!.on("keydown-E", () => {
@@ -177,13 +170,13 @@ const interactionLogic = (scene: any) => {
     }
     if (scene.interactionKey) {
       scene.interactionKey.setPosition(
-        npcInRange.sprite.x - 6,
+        npcInRange.sprite.x - 5.5,
         npcInRange.sprite.y - npcInRange.floatText
       );
     }
     if (scene.noInteraction) {
       scene.noInteraction.setPosition(
-        npcInRange.sprite.x - 6,
+        npcInRange.sprite.x - 5.5,
         npcInRange.sprite.y - npcInRange.floatText
       );
     }

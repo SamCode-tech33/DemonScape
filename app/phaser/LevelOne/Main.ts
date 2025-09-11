@@ -48,6 +48,8 @@ import {
   girlsLeftWallDialogue,
   guysAlterDialogue,
   hallwayGirlsDialogue,
+  singleTriggerDialogue,
+  threeMenGroup,
 } from "@/app/components/levelOne/floatingDialogue";
 
 export default class Main extends Phaser.Scene {
@@ -98,6 +100,8 @@ export default class Main extends Phaser.Scene {
   saraOneSceneNum: number = 1;
   chatBubbleAlch2!: Phaser.GameObjects.Rectangle | undefined;
   chatTextAlch2!: Phaser.GameObjects.Text | undefined;
+  approachBox!: Phaser.GameObjects.Rectangle | undefined;
+  approachText!: Phaser.GameObjects.Text | undefined;
 
   constructor() {
     super({ key: "SceneOne" });
@@ -213,6 +217,9 @@ export default class Main extends Phaser.Scene {
     });
     Alch2Dialogue(this);
 
+    // this.scene.pause("SceneOne");
+    // this.scene.launch("ZombieCombat");
+
     this.events.on("resume", (sys: Phaser.Scenes.Systems, data: any) => {
       if (data?.from === "AlchTwins") {
         if (this.alchSceneNum === 1) {
@@ -259,6 +266,7 @@ export default class Main extends Phaser.Scene {
           hallwayGirlsDialogue(this);
           guysAlterDialogue(this);
           girlsLeftWallDialogue(this);
+          threeMenGroup(this);
         }
       } else if (data?.from === "CultHead" && this.cultHeadSceneNum === 1) {
         walkBackCultHead(this);
@@ -314,6 +322,9 @@ export default class Main extends Phaser.Scene {
   update(time: number, delta: number) {
     // INTERACTION LOGIC
     interactionLogic(this);
+    if (this.alchEvent) {
+      singleTriggerDialogue(this);
+    }
 
     // MOVEMENT AND NPC LOGIC
     playerMovement(this);
