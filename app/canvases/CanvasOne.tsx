@@ -10,6 +10,7 @@ import BoxGuy from "../phaser/LevelOne/Conversations/BoxGuy";
 import SaraOne from "../phaser/LevelOne/Conversations/SaraOne";
 import Ghost from "../phaser/LevelOne/Conversations/Ghost";
 import SkelMan from "../phaser/LevelOne/Conversations/SkelMan";
+import ZombieCombat from "../phaser/LevelOne/Combat/ZombieCombat";
 
 export default function CanvasOne() {
   const gameRef = useRef<Phaser.Game | null>(null);
@@ -41,6 +42,7 @@ export default function CanvasOne() {
         SaraOne,
         Ghost,
         SkelMan,
+        ZombieCombat,
       ],
       scale: {
         mode: Phaser.Scale.RESIZE,
