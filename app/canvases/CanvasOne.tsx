@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import Phaser from "phaser";
 import Main from "../phaser/LevelOne/Main";
-import SceneHud from "../phaser/UtilityScenes/SceneHud";
+import SceneHud from "../phaser/UtilityScenes/HudScene";
 import CultHead from "../phaser/LevelOne/Conversations/CultHead";
 import AlchTwins from "../phaser/LevelOne/Conversations/AlchTwins";
 import BoxGuy from "../phaser/LevelOne/Conversations/BoxGuy";

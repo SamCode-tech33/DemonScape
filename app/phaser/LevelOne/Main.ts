@@ -91,6 +91,13 @@ export default class Main extends Phaser.Scene {
     magic: 20,
     maxMagic: 20,
   };
+  enemyStats = {
+    enemyPresence: false,
+    health: 20,
+    maxHealth: 20,
+    magic: 1,
+    maxMagic: 1,
+  };
   redScreen!: Phaser.GameObjects.Rectangle;
   movementDisabled: boolean = false;
   alchSceneNum: number = 1;
@@ -217,9 +224,6 @@ export default class Main extends Phaser.Scene {
     });
     Alch2Dialogue(this);
 
-    // this.scene.pause("SceneOne");
-    // this.scene.launch("ZombieCombat");
-
     this.events.on("resume", (sys: Phaser.Scenes.Systems, data: any) => {
       if (data?.from === "AlchTwins") {
         if (this.alchSceneNum === 1) {
@@ -229,12 +233,14 @@ export default class Main extends Phaser.Scene {
           demonGhost(this);
 
           this.playerStats.health = Math.max(0, this.playerStats.health - 15);
-          this.alchEvent = true; // UPDATE DATABASE
-
+          this.alchEvent = true;
           this.player.anims.stop();
           this.player.anims.play("pass-out", true);
 
-          this.game.events.emit("updateHUD", this.playerStats);
+          this.scene.launch("HudScene", {
+            player: this.playerStats,
+            enemy: this.enemyStats,
+          });
 
           for (let i = 0; i < 5; i++) {
             this.time.delayedCall(50 * i * 2, () => {
@@ -276,7 +282,10 @@ export default class Main extends Phaser.Scene {
 
         this.player.anims.play("pass-out", true);
 
-        this.game.events.emit("updateHUD", this.playerStats);
+        this.scene.launch("HudScene", {
+          player: this.playerStats,
+          enemy: this.enemyStats,
+        });
 
         for (let i = 0; i < 5; i++) {
           this.time.delayedCall(50 * i * 2, () => {
@@ -310,7 +319,79 @@ export default class Main extends Phaser.Scene {
       }
     });
 
-    this.game.events.emit("updateHUD", this.playerStats);
+    this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
+      if (pointer.leftButtonDown()) {
+        const dist = Phaser.Math.Distance.Between(
+          this.player.x,
+          this.player.y,
+          this.zom1.x,
+          this.zom1.y
+        );
+
+        if (dist < 32) {
+          // adjust threshold for "near"
+          this.time.delayedCall(600, () => {
+            this.scene.pause("SceneOne");
+            this.backgroundMusic.stop();
+            this.scene.start("ZombieCombat");
+          });
+        }
+      }
+    });
+
+    this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
+      if (pointer.leftButtonDown()) {
+        const dist = Phaser.Math.Distance.Between(
+          this.player.x,
+          this.player.y,
+          this.zom2.x,
+          this.zom2.y
+        );
+
+        if (dist < 32) {
+          // adjust threshold for "near"
+          this.time.delayedCall(600, () => {
+            this.scene.pause("SceneOne");
+            this.backgroundMusic.stop();
+            this.scene.start("ZombieCombat");
+          });
+        }
+      }
+    });
+
+    this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
+      if (pointer.leftButtonDown()) {
+        const dist = Phaser.Math.Distance.Between(
+          this.player.x,
+          this.player.y,
+          this.zom3.x,
+          this.zom3.y
+        );
+
+        if (dist < 32) {
+          // adjust threshold for "near"
+          this.time.delayedCall(300, () => {
+            this.scene.pause("SceneOne");
+            this.backgroundMusic.stop();
+            this.scene.launch("ZombieCombat");
+          });
+        }
+      }
+    });
+
+    // HUD UPDATES
+    this.scene.launch("HudScene", {
+      player: this.playerStats,
+      enemy: {
+        enemyPresence: false,
+        health: 0,
+        maxHealth: 0,
+        magic: 0,
+        maxMagic: 0,
+      },
+    });
+
+    // CAMERA
     this.physics.world.setBounds(0, 0, 2555, 1280);
     this.cameras.main.setZoom(2.5);
     this.cameras.main.startFollow(this.player);
