@@ -69,6 +69,10 @@ const preLoadedAssets = (scene: any) => {
     frameWidth: 64,
     frameHeight: 64,
   });
+  scene.load.spritesheet("slash", "assets/player/slash.png", {
+    frameWidth: 64,
+    frameHeight: 64,
+  });
 
   // NPCS
   // GHOST

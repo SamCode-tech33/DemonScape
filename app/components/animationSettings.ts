@@ -172,7 +172,23 @@ export const playerAnimation = (scene: any) => {
       start: 15,
       end: 19,
     }),
+    frameRate: 16,
+    repeat: 0,
+  });
+  scene.anims.create({
+    key: "jump-attack",
+    frames: scene.anims.generateFrameNumbers("jump", {
+      frames: [16, 17, 18],
+    }),
     frameRate: 8,
+    repeat: 0,
+  });
+  scene.anims.create({
+    key: "jump-off",
+    frames: scene.anims.generateFrameNumbers("jump", {
+      frames: [1],
+    }),
+    frameRate: 12,
     repeat: 0,
   });
 
@@ -210,7 +226,7 @@ export const playerAnimation = (scene: any) => {
       start: 21,
       end: 26,
     }),
-    frameRate: 8,
+    frameRate: 16,
     repeat: 0,
   });
 
@@ -250,6 +266,28 @@ export const playerAnimation = (scene: any) => {
     }),
     frameRate: 0.75,
     repeat: -1,
+  });
+
+  // DODGE
+  scene.anims.create({
+    key: "dodge",
+    frames: scene.anims.generateFrameNumbers("emote", {
+      start: 9,
+      end: 11,
+    }),
+    frameRate: 7,
+    repeat: 0,
+  });
+
+  // DODGE
+  scene.anims.create({
+    key: "parry",
+    frames: scene.anims.generateFrameNumbers("slash", {
+      start: 18,
+      end: 23,
+    }),
+    frameRate: 18,
+    repeat: 0,
   });
 };
 

@@ -1,14 +1,57 @@
 import Phaser from "phaser";
-import { zombieAnimation } from "@/app/components/animationSettings";
+import {
+  zombieAnimation,
+  playerAnimation,
+} from "@/app/components/animationSettings";
+import {
+  enemyAttack,
+  playerBaseAttack,
+  playerJumpAttack,
+  playerUI,
+} from "@/app/components/combatLogic";
+
+interface PlayerStats {
+  health: number;
+  maxHealth: number;
+  magic: number;
+  maxMagic: number;
+}
 
 export default class ZombieCombat extends Phaser.Scene {
   music!: Phaser.Sound.BaseSound;
   player!: Phaser.Physics.Arcade.Sprite;
   enemy!: Phaser.Physics.Arcade.Sprite;
   playerTurn: boolean = false;
+  playerAttack: boolean = false;
+  attackVectorBase: Phaser.GameObjects.Graphics | undefined;
+  attackVectorSpecial: Phaser.GameObjects.Graphics | undefined;
+  attackVectorBaseText: Phaser.GameObjects.Text | undefined;
+  attackVectorSpecialText: Phaser.GameObjects.Text | undefined;
+  qte: Phaser.GameObjects.Graphics | undefined;
+  qteText: Phaser.GameObjects.Text | undefined;
+  playerStats = {
+    health: 50,
+    maxHealth: 50,
+    magic: 20,
+    maxMagic: 20,
+  };
+  enemyStats = {
+    enemyPresence: true,
+    health: 20,
+    maxHealth: 20,
+    magic: 1,
+    maxMagic: 1,
+  };
 
   constructor() {
     super({ key: "ZombieCombat" });
+  }
+
+  init(data: PlayerStats) {
+    this.playerStats.health = data.health ?? 50;
+    this.playerStats.maxHealth = data.maxHealth ?? 50;
+    this.playerStats.magic = data.magic ?? 20;
+    this.playerStats.maxMagic = data.maxMagic ?? 20;
   }
 
   preload() {
@@ -33,6 +76,12 @@ export default class ZombieCombat extends Phaser.Scene {
   }
 
   create() {
+    this.scene.bringToTop("HudScene");
+    this.scene.launch("HudScene", {
+      player: this.playerStats,
+      enemy: this.enemyStats,
+    });
+
     const portrait = this.add
       .image(this.scale.width / 2, this.scale.height / 2, "ZombieCombatBG")
       .setOrigin(0.5);
@@ -44,6 +93,7 @@ export default class ZombieCombat extends Phaser.Scene {
     this.music.play();
 
     zombieAnimation(this);
+    playerAnimation(this);
 
     this.player = this.physics.add
       .sprite(600, 600, "player-combat-idle", 6)
@@ -76,39 +126,50 @@ export default class ZombieCombat extends Phaser.Scene {
     });
 
     this.player.anims.play("player-combat-idle-right");
-
     this.enemy.anims.play("zombie-combat-idle-left");
 
-    this.enemy.scene.tweens.add({
-      targets: this.enemy,
-      x: this.player.x + 140,
-      ease: "Linear",
-      duration: 2000,
-      onStart: () => {
-        this.enemy.anims.stop();
-        this.enemy.anims.play("z-walk-left", true);
-        console.log("Tween started: Enemy moving to player");
-      },
-      onComplete: () => {
-        this.enemy.anims.stop();
-        this.enemy.anims.play("z-halfslash-left");
-        this.enemy.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
-          this.tweens.add({
-            targets: this.enemy,
-            x: 1150,
-            duration: 2000,
-            onStart: () => {
-              this.enemy.anims.play("z-walk-right", true);
-            },
-            onComplete: () => {
-              this.enemy.anims.stop();
-              this.enemy.anims.play("zombie-combat-idle-left");
-            },
-          });
-        });
-      },
+    this.time.delayedCall(1000, () => enemyAttack(this));
+    playerUI(this);
+
+    this.input.keyboard!.on("keydown-E", () => {
+      if (this.playerTurn && !this.playerAttack) {
+        playerBaseAttack(this);
+      }
+    });
+    this.input.keyboard!.on("keydown-Q", () => {
+      if (this.playerTurn && !this.playerAttack) {
+        playerJumpAttack(this);
+      }
     });
   }
 
-  update() {}
+  update() {
+    if (this.player.y < this.enemy.y) {
+      this.enemy.setDepth(12);
+    } else {
+      this.enemy.setDepth(7);
+    }
+
+    if (this.playerStats.health < 1) {
+      this.scene.stop("ZombieCombat");
+      this.music.stop();
+      this.enemyStats.enemyPresence = false;
+      this.scene.launch("HudScene", {
+        player: this.playerStats,
+        enemy: this.enemyStats,
+      });
+      this.scene.resume("SceneOne");
+    }
+
+    if (this.enemyStats.health < 1) {
+      this.scene.stop("ZombieCombat");
+      this.music.stop();
+      this.enemyStats.enemyPresence = false;
+      this.scene.launch("HudScene", {
+        player: this.playerStats,
+        enemy: this.enemyStats,
+      });
+      this.scene.resume("SceneOne");
+    }
+  }
 }
