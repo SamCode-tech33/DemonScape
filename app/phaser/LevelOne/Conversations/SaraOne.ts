@@ -10,6 +10,13 @@ interface DialogueNode {
   choices?: DialogueChoice[];
 }
 
+interface PlayerStats {
+  health: number;
+  maxHealth: number;
+  magic: number;
+  maxMagic: number;
+}
+
 export default class SaraOne extends Phaser.Scene {
   private dialogue1Nodes: DialogueNode[] = [
     {
@@ -81,18 +88,35 @@ export default class SaraOne extends Phaser.Scene {
       text: "Sara: Go on now. Defeat my pets if you can. Be warned, they'll attack you upon your first hit.",
     },
   ];
+  private dialogue3Nodes: DialogueNode[] = [
+    {
+      text: "Sara: Hehehe, I forgot to mention there is... one more *Sara Winks at you* Careful though, he's an angry boy.",
+    },
+  ];
+  private dialogue4Nodes: DialogueNode[] = [
+    {
+      text: "Sara: Wow, you beat them. Ok you've only proven your stronger than a human... wow and you had to waste my pets for it... *Sigh* anyways, you probably felt demonic energy enter your body as you fought. Go report to Maelvoth that you've gained full control again. Leave me be.",
+    },
+  ];
 
   private dialogueNodes: DialogueNode[] = [];
   private currentNodeIndex: number = 0;
   private dialogueText!: Phaser.GameObjects.Text;
   private choiceTexts: Phaser.GameObjects.Text[] = [];
   private music!: Phaser.Sound.BaseSound;
+  private bossFight: boolean = false;
+  playerStats = {
+    health: 50,
+    maxHealth: 50,
+    magic: 20,
+    maxMagic: 20,
+  };
 
   constructor() {
     super({ key: "SaraOne" });
   }
 
-  init(data: { saraOneSceneNum: number }) {
+  init(data: { saraOneSceneNum: number; playerStats: PlayerStats }) {
     switch (data.saraOneSceneNum) {
       case 1:
         this.dialogueNodes = this.dialogue1Nodes;
@@ -100,7 +124,18 @@ export default class SaraOne extends Phaser.Scene {
       case 2:
         this.dialogueNodes = this.dialogue2Nodes;
         break;
+      case 3:
+        this.dialogueNodes = this.dialogue3Nodes;
+        this.bossFight = true;
+        break;
+      case 4:
+        this.dialogueNodes = this.dialogue4Nodes;
+        break;
     }
+    this.playerStats.health = data.playerStats.health ?? 50;
+    this.playerStats.maxHealth = data.playerStats.maxHealth ?? 50;
+    this.playerStats.magic = data.playerStats.magic ?? 50;
+    this.playerStats.maxMagic = data.playerStats.maxMagic ?? 50;
   }
 
   preload() {
@@ -175,9 +210,25 @@ export default class SaraOne extends Phaser.Scene {
         }
       );
       this.input.keyboard!.once("keydown-SPACE", () => {
-        this.music.stop();
-        this.scene.stop();
-        this.scene.resume("SceneOne");
+        if (this.bossFight === true) {
+          this.music.stop();
+          this.scene.launch("ZombieCombat", {
+            playerStats: this.playerStats,
+            enemy: {
+              enemyPresence: true,
+              health: 40,
+              maxHealth: 40,
+              magic: 10,
+              maxMagic: 10,
+            },
+          });
+          this.scene.stop("SaraOne");
+          this.bossFight = false;
+        } else {
+          this.music.stop();
+          this.scene.stop();
+          this.scene.resume("SceneOne");
+        }
       });
       return;
     }

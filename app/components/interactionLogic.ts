@@ -151,6 +151,7 @@ const interactionLogic = (scene: any) => {
           } else if (scene.activeNpc.name === "SaraOne") {
             scene.scene.launch(scene.activeNpc.scene, {
               saraOneSceneNum: scene.saraOneSceneNum,
+              playerStats: scene.playerStats,
             });
             if (scene.saraOneSceneNum < 2) {
               scene.saraOneSceneNum++;

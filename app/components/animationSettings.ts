@@ -418,7 +418,7 @@ export const zombieAnimation = (scene: any) => {
       start: 0,
       end: 8,
     }),
-    frameRate: 10,
+    frameRate: 5,
     repeat: -1,
   });
   scene.anims.create({
@@ -427,7 +427,7 @@ export const zombieAnimation = (scene: any) => {
       start: 9,
       end: 17,
     }),
-    frameRate: 10,
+    frameRate: 5,
     repeat: -1,
   });
   scene.anims.create({
@@ -436,7 +436,7 @@ export const zombieAnimation = (scene: any) => {
       start: 18,
       end: 26,
     }),
-    frameRate: 10,
+    frameRate: 5,
     repeat: -1,
   });
   scene.anims.create({
@@ -445,7 +445,7 @@ export const zombieAnimation = (scene: any) => {
       start: 27,
       end: 35,
     }),
-    frameRate: 10,
+    frameRate: 5,
     repeat: -1,
   });
 
@@ -484,6 +484,36 @@ export const zombieAnimation = (scene: any) => {
       end: 26,
     }),
     frameRate: 6,
+    repeat: 0,
+  });
+  // PARRY
+  scene.anims.create({
+    key: "z-parry-left",
+    frames: scene.anims.generateFrameNumbers("z-slash", {
+      start: 6,
+      end: 11,
+    }),
+    frameRate: 18,
+    repeat: 0,
+  });
+  // JUMP
+  scene.anims.create({
+    key: "z-jump-left",
+    frames: scene.anims.generateFrameNumbers("z-jump", {
+      start: 6,
+      end: 11,
+    }),
+    frameRate: 18,
+    repeat: 0,
+  });
+  // PASSOUT
+  scene.anims.create({
+    key: "z-pass-out",
+    frames: scene.anims.generateFrameNumbers("z-hurt", {
+      start: 0,
+      end: 5,
+    }),
+    frameRate: 4,
     repeat: 0,
   });
 };

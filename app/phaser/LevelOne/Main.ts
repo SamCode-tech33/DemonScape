@@ -2,7 +2,9 @@ import Phaser from "phaser";
 import playerMovement from "@/app/components/playerMovement";
 import {
   depthSetting,
-  pathingZombies,
+  pathingZombie1,
+  pathingZombie2,
+  pathingZombie3,
   pathingAlch2,
   pathingAlch1,
   pathingSkel,
@@ -52,6 +54,12 @@ import {
   threeMenGroup,
 } from "@/app/components/levelOne/floatingDialogue";
 
+interface PlayerStats {
+  health: number;
+  maxHealth: number;
+  magic: number;
+  maxMagic: number;
+}
 export default class Main extends Phaser.Scene {
   player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   keys!: WASDAndArrowKeys;
@@ -95,8 +103,8 @@ export default class Main extends Phaser.Scene {
     enemyPresence: false,
     health: 20,
     maxHealth: 20,
-    magic: 1,
-    maxMagic: 1,
+    magic: 2,
+    maxMagic: 2,
   };
   redScreen!: Phaser.GameObjects.Rectangle;
   movementDisabled: boolean = false;
@@ -109,6 +117,8 @@ export default class Main extends Phaser.Scene {
   chatTextAlch2!: Phaser.GameObjects.Text | undefined;
   approachBox!: Phaser.GameObjects.Rectangle | undefined;
   approachText!: Phaser.GameObjects.Text | undefined;
+  zomNum: number = 0;
+  zomDeathCount: number = 0;
 
   constructor() {
     super({ key: "SceneOne" });
@@ -311,6 +321,82 @@ export default class Main extends Phaser.Scene {
           .sprite(this.player.x, this.player.y, "sgr", 0)
           .setCollideWorldBounds(true);
         this.ghostFollow = true;
+      } else if (data?.from === "ZombieCombat") {
+        this.enemyStats.enemyPresence = false;
+        this.playerStats.health = data.playerStats.health ?? 50;
+        this.playerStats.maxHealth = data.playerStats.maxHealth ?? 50;
+        this.playerStats.magic = data.playerStats.magic ?? 20;
+        this.playerStats.maxMagic = data.playerStats.maxMagic ?? 20;
+        if (this.zomNum === 1) {
+          this.tweens.killTweensOf(this.zom1);
+          this.zomDeathCount += 1;
+          this.zom1.anims.play("z-pass-out");
+          this.zom1.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+            this.zom1.destroy();
+            if (this.zomDeathCount === 3) {
+              this.saraOneSceneNum += 1;
+              this.backgroundMusic.pause();
+              this.scene.pause("SceneOne");
+              this.scene.launch("SaraOne", {
+                saraOneSceneNum: this.saraOneSceneNum,
+                playerStats: this.playerStats,
+              });
+            }
+          });
+        } else if (this.zomNum === 2) {
+          this.tweens.killTweensOf(this.zom2);
+          this.zomDeathCount += 1;
+          this.zom2.anims.play("z-pass-out");
+          this.zom2.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+            this.zom2.destroy();
+            if (this.zomDeathCount === 3) {
+              this.saraOneSceneNum += 1;
+              this.backgroundMusic.pause();
+              this.scene.pause("SceneOne");
+              this.scene.launch("SaraOne", {
+                saraOneSceneNum: this.saraOneSceneNum,
+                playerStats: this.playerStats,
+              });
+            }
+          });
+        } else if (this.zomNum === 3) {
+          this.tweens.killTweensOf(this.zom3);
+          this.zomDeathCount += 1;
+          this.zom3.anims.play("z-pass-out");
+          this.zom3.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+            this.zom3.destroy();
+            if (this.zomDeathCount === 3) {
+              this.saraOneSceneNum += 1;
+              this.backgroundMusic.pause();
+              this.scene.pause("SceneOne");
+              this.scene.launch("SaraOne", {
+                saraOneSceneNum: this.saraOneSceneNum,
+                playerStats: this.playerStats,
+              });
+            }
+          });
+        }
+      } else if (data?.from === "ZombieCombat-loss") {
+        this.player.anims.stop();
+        this.player.anims.play("pass-out");
+        this.player.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+          this.time.delayedCall(100, () => {
+            this.backgroundMusic.stop();
+            this.scene.launch("HudScene", {
+              player: this.playerStats,
+              enemy: {
+                enemyPresence: false,
+                health: 0,
+                maxHealth: 0,
+                magic: 0,
+                maxMagic: 0,
+              },
+            });
+            this.scene.restart();
+          });
+        });
+      } else if (data?.from === "ZombieCombat-boss") {
+        this.saraOneSceneNum += 1;
       }
       if (this.backgroundMusic.isPaused) {
         this.backgroundMusic.resume();
@@ -320,7 +406,7 @@ export default class Main extends Phaser.Scene {
     });
 
     this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
-      if (pointer.leftButtonDown()) {
+      if (pointer.leftButtonDown() && this.saraOneSceneNum === 2) {
         const dist = Phaser.Math.Distance.Between(
           this.player.x,
           this.player.y,
@@ -329,18 +415,23 @@ export default class Main extends Phaser.Scene {
         );
 
         if (dist < 32) {
+          this.enemyStats.enemyPresence = true;
           // adjust threshold for "near"
           this.time.delayedCall(600, () => {
+            this.zomNum = 1;
             this.scene.pause("SceneOne");
             this.backgroundMusic.stop();
-            this.scene.start("ZombieCombat");
+            this.scene.launch("ZombieCombat", {
+              playerStats: this.playerStats,
+              enemy: this.enemyStats,
+            });
           });
         }
       }
     });
 
     this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
-      if (pointer.leftButtonDown()) {
+      if (pointer.leftButtonDown() && this.saraOneSceneNum === 2) {
         const dist = Phaser.Math.Distance.Between(
           this.player.x,
           this.player.y,
@@ -349,18 +440,23 @@ export default class Main extends Phaser.Scene {
         );
 
         if (dist < 32) {
+          this.enemyStats.enemyPresence = true;
           // adjust threshold for "near"
           this.time.delayedCall(600, () => {
+            this.zomNum = 2;
             this.scene.pause("SceneOne");
             this.backgroundMusic.stop();
-            this.scene.start("ZombieCombat");
+            this.scene.launch("ZombieCombat", {
+              playerStats: this.playerStats,
+              enemy: this.enemyStats,
+            });
           });
         }
       }
     });
 
     this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
-      if (pointer.leftButtonDown()) {
+      if (pointer.leftButtonDown() && this.saraOneSceneNum === 2) {
         const dist = Phaser.Math.Distance.Between(
           this.player.x,
           this.player.y,
@@ -369,11 +465,16 @@ export default class Main extends Phaser.Scene {
         );
 
         if (dist < 32) {
+          this.enemyStats.enemyPresence = true;
           // adjust threshold for "near"
           this.time.delayedCall(300, () => {
+            this.zomNum = 3;
             this.scene.pause("SceneOne");
             this.backgroundMusic.stop();
-            this.scene.launch("ZombieCombat");
+            this.scene.launch("ZombieCombat", {
+              playerStats: this.playerStats,
+              enemy: this.enemyStats,
+            });
           });
         }
       }
@@ -398,6 +499,9 @@ export default class Main extends Phaser.Scene {
     // PATROLS
     pathingAlch1(this);
     pathingSkel(this);
+    pathingZombie1(this);
+    pathingZombie2(this);
+    pathingZombie3(this);
   }
 
   update(time: number, delta: number) {
@@ -410,7 +514,6 @@ export default class Main extends Phaser.Scene {
     // MOVEMENT AND NPC LOGIC
     playerMovement(this);
     depthSetting(this);
-    pathingZombies(this, delta);
     pathingAlch2(this);
 
     if (this.ghostFollow && this.ghost) {

@@ -75,66 +75,151 @@ export const depthSetting = (scene: any) => {
   }
 };
 
-export const pathingZombies = (scene: any, delta: number) => {
-  const zombieSpeed = 28;
-  scene.zomPatrol1 += delta / 1000;
-  scene.zomPatrol2 += delta / 1000;
-  scene.zomPatrol3 += delta / 1000;
+export const pathingZombie1 = (scene: any) => {
+  const patrolRight = () => {
+    scene.tweens.add({
+      targets: scene.zom1,
+      x: 550,
+      duration: 18000,
+      ease: "Linear",
+      onStart: () => scene.zom1.anims.play("z-walk-right", true),
+      onComplete: patrolDown,
+    });
+  };
 
-  // ZOMBIE 1
-  if (scene.zomPatrol1 <= 14.4) {
-    // 14.4 seconds
-    scene.zom1.setVelocity(zombieSpeed, 0);
-    scene.zom1.anims.play("z-walk-right", true);
-  } else if (scene.zomPatrol1 <= 16.4) {
-    // 2 seconds
-    scene.zom1.setVelocity(0, zombieSpeed);
-    scene.zom1.anims.play("z-walk-down", true);
-  } else if (scene.zomPatrol1 <= 30.8) {
-    // 14.4 seconds
-    scene.zom1.setVelocity(-zombieSpeed, 0);
-    scene.zom1.anims.play("z-walk-left", true);
-  } else if (scene.zomPatrol1 <= 32.8) {
-    // 2 seconds
-    scene.zom1.setVelocity(0, -zombieSpeed);
-    scene.zom1.anims.play("z-walk-up", true);
-  } else {
-    scene.zomPatrol1 = 0;
-  }
+  const patrolDown = () => {
+    scene.tweens.add({
+      targets: scene.zom1,
+      y: 922,
+      duration: 6000,
+      ease: "Linear",
+      onStart: () => scene.zom1.anims.play("z-walk-down", true),
+      onComplete: patrolLeft,
+    });
+  };
 
-  // ZOMBIE 2
-  if (scene.zomPatrol2 <= 8.8) {
-    scene.zom2.setVelocity(zombieSpeed, 0);
-    scene.zom2.anims.play("z-walk-right", true);
-  } else if (scene.zomPatrol2 <= 11.2) {
-    scene.zom2.setVelocity(0, -zombieSpeed);
-    scene.zom2.anims.play("z-walk-up", true);
-  } else if (scene.zomPatrol2 <= 20) {
-    scene.zom2.setVelocity(-zombieSpeed, 0);
-    scene.zom2.anims.play("z-walk-left", true);
-  } else if (scene.zomPatrol2 <= 22.4) {
-    scene.zom2.setVelocity(0, zombieSpeed);
-    scene.zom2.anims.play("z-walk-down", true);
-  } else {
-    scene.zomPatrol2 = 0;
-  }
+  const patrolLeft = () => {
+    scene.tweens.add({
+      targets: scene.zom1,
+      x: 128,
+      duration: 18000,
+      ease: "Linear",
+      onStart: () => scene.zom1.anims.play("z-walk-left", true),
+      onComplete: patrolUp,
+    });
+  };
 
-  // ZOMBIE 3
-  if (scene.zomPatrol3 <= 10) {
-    scene.zom3.setVelocity(zombieSpeed, 0);
-    scene.zom3.anims.play("z-walk-right", true);
-  } else if (scene.zomPatrol3 <= 11.6) {
-    scene.zom3.setVelocity(0, zombieSpeed);
-    scene.zom3.anims.play("z-walk-down", true);
-  } else if (scene.zomPatrol3 <= 21.6) {
-    scene.zom3.setVelocity(-zombieSpeed, 0);
-    scene.zom3.anims.play("z-walk-left", true);
-  } else if (scene.zomPatrol3 <= 23.2) {
-    scene.zom3.setVelocity(0, -zombieSpeed);
-    scene.zom3.anims.play("z-walk-up", true);
-  } else {
-    scene.zomPatrol3 = 0;
-  }
+  const patrolUp = () => {
+    scene.tweens.add({
+      targets: scene.zom1,
+      y: 862,
+      duration: 6000,
+      ease: "Linear",
+      onStart: () => scene.zom1.anims.play("z-walk-up", true),
+      onComplete: patrolRight,
+    });
+  };
+
+  // start the patrol
+  patrolRight();
+};
+
+export const pathingZombie2 = (scene: any) => {
+  const patrolRight = () => {
+    scene.tweens.add({
+      targets: scene.zom2,
+      x: 400,
+      duration: 20000,
+      ease: "Linear",
+      onStart: () => scene.zom2.anims.play("z-walk-right", true),
+      onComplete: patrolDown,
+    });
+  };
+
+  const patrolDown = () => {
+    scene.tweens.add({
+      targets: scene.zom2,
+      y: 928,
+      duration: 6000,
+      ease: "Linear",
+      onStart: () => scene.zom2.anims.play("z-walk-up", true),
+      onComplete: patrolLeft,
+    });
+  };
+
+  const patrolLeft = () => {
+    scene.tweens.add({
+      targets: scene.zom2,
+      x: 128,
+      duration: 20000,
+      ease: "Linear",
+      onStart: () => scene.zom2.anims.play("z-walk-left", true),
+      onComplete: patrolUp,
+    });
+  };
+
+  const patrolUp = () => {
+    scene.tweens.add({
+      targets: scene.zom2,
+      y: 988,
+      duration: 6000,
+      ease: "Linear",
+      onStart: () => scene.zom2.anims.play("z-walk-down", true),
+      onComplete: patrolRight,
+    });
+  };
+
+  // start the patrol
+  patrolRight();
+};
+
+export const pathingZombie3 = (scene: any) => {
+  const patrolRight = () => {
+    scene.tweens.add({
+      targets: scene.zom3,
+      x: 450,
+      duration: 22000,
+      ease: "Linear",
+      onStart: () => scene.zom3.anims.play("z-walk-right", true),
+      onComplete: patrolDown,
+    });
+  };
+
+  const patrolDown = () => {
+    scene.tweens.add({
+      targets: scene.zom3,
+      y: 1085,
+      duration: 6000,
+      ease: "Linear",
+      onStart: () => scene.zom3.anims.play("z-walk-down", true),
+      onComplete: patrolLeft,
+    });
+  };
+
+  const patrolLeft = () => {
+    scene.tweens.add({
+      targets: scene.zom3,
+      x: 150,
+      duration: 22000,
+      ease: "Linear",
+      onStart: () => scene.zom3.anims.play("z-walk-left", true),
+      onComplete: patrolUp,
+    });
+  };
+
+  const patrolUp = () => {
+    scene.tweens.add({
+      targets: scene.zom3,
+      y: 1040,
+      duration: 6000,
+      ease: "Linear",
+      onStart: () => scene.zom3.anims.play("z-walk-up", true),
+      onComplete: patrolRight,
+    });
+  };
+
+  // start the patrol
+  patrolRight();
 };
 
 export const pathingSkel = (scene: any) => {

@@ -198,6 +198,18 @@ const preLoadedAssets = (scene: any) => {
     frameWidth: 64,
     frameHeight: 64,
   });
+  scene.load.spritesheet("z-slash", "assets/enemies/zombie/slash.png", {
+    frameWidth: 64,
+    frameHeight: 64,
+  });
+  scene.load.spritesheet("z-jump", "assets/enemies/zombie/jump.png", {
+    frameWidth: 64,
+    frameHeight: 64,
+  });
+  scene.load.spritesheet("z-hurt", "assets/enemies/zombie/hurt.png", {
+    frameWidth: 64,
+    frameHeight: 64,
+  });
 
   // SKELETON
   scene.load.spritesheet("skel-walk", "assets/npc/skelMan/walk.png", {
