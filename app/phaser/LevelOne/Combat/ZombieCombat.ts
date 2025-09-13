@@ -17,6 +17,14 @@ interface PlayerStats {
   maxMagic: number;
 }
 
+interface EnemyStats {
+  enemyPresence: boolean;
+  health: number;
+  maxHealth: number;
+  magic: number;
+  maxMagic: number;
+}
+
 export default class ZombieCombat extends Phaser.Scene {
   music!: Phaser.Sound.BaseSound;
   player!: Phaser.Physics.Arcade.Sprite;
@@ -29,29 +37,28 @@ export default class ZombieCombat extends Phaser.Scene {
   attackVectorSpecialText: Phaser.GameObjects.Text | undefined;
   qte: Phaser.GameObjects.Graphics | undefined;
   qteText: Phaser.GameObjects.Text | undefined;
-  playerStats = {
-    health: 50,
-    maxHealth: 50,
-    magic: 20,
-    maxMagic: 20,
-  };
-  enemyStats = {
-    enemyPresence: true,
-    health: 20,
-    maxHealth: 20,
-    magic: 1,
-    maxMagic: 1,
-  };
+  playerStats!: PlayerStats;
+  enemyStats!: EnemyStats;
 
   constructor() {
     super({ key: "ZombieCombat" });
   }
 
-  init(data: PlayerStats) {
-    this.playerStats.health = data.health ?? 50;
-    this.playerStats.maxHealth = data.maxHealth ?? 50;
-    this.playerStats.magic = data.magic ?? 20;
-    this.playerStats.maxMagic = data.maxMagic ?? 20;
+  init(data: { playerStats: PlayerStats; enemy: EnemyStats }) {
+    this.playerStats = {
+      health: data.playerStats.health ?? 50,
+      maxHealth: data.playerStats.maxHealth ?? 50,
+      magic: data.playerStats.magic ?? 20,
+      maxMagic: data.playerStats.maxMagic ?? 20,
+    };
+
+    this.enemyStats = {
+      enemyPresence: data.enemy.enemyPresence ?? true,
+      health: data.enemy.health ?? 20,
+      maxHealth: data.enemy.maxHealth ?? 20,
+      magic: data.enemy.magic ?? 2,
+      maxMagic: data.enemy.maxMagic ?? 2,
+    };
   }
 
   preload() {
@@ -141,6 +148,10 @@ export default class ZombieCombat extends Phaser.Scene {
         playerJumpAttack(this);
       }
     });
+    if (this.enemyStats.maxHealth === 40) {
+      this.enemy.clearTint();
+      this.enemy.setTint(0xff0000);
+    }
   }
 
   update() {
@@ -154,22 +165,46 @@ export default class ZombieCombat extends Phaser.Scene {
       this.scene.stop("ZombieCombat");
       this.music.stop();
       this.enemyStats.enemyPresence = false;
+      this.playerAttack = false;
+      this.playerTurn = false;
       this.scene.launch("HudScene", {
         player: this.playerStats,
         enemy: this.enemyStats,
       });
-      this.scene.resume("SceneOne");
+      this.scene.resume("SceneOne", {
+        from: "ZombieCombat-loss",
+        playerStats: this.playerStats,
+      });
     }
 
-    if (this.enemyStats.health < 1) {
+    if (this.enemyStats.health < 1 && this.enemyStats.maxHealth === 40) {
       this.scene.stop("ZombieCombat");
       this.music.stop();
       this.enemyStats.enemyPresence = false;
+      this.playerAttack = false;
+      this.playerTurn = false;
       this.scene.launch("HudScene", {
         player: this.playerStats,
         enemy: this.enemyStats,
       });
-      this.scene.resume("SceneOne");
+      this.scene.resume("SceneOne", {
+        from: "ZombieCombat-boss",
+        playerStats: this.playerStats,
+      });
+    } else if (this.enemyStats.health < 1) {
+      this.scene.stop("ZombieCombat");
+      this.music.stop();
+      this.enemyStats.enemyPresence = false;
+      this.playerAttack = false;
+      this.playerTurn = false;
+      this.scene.launch("HudScene", {
+        player: this.playerStats,
+        enemy: this.enemyStats,
+      });
+      this.scene.resume("SceneOne", {
+        from: "ZombieCombat",
+        playerStats: this.playerStats,
+      });
     }
   }
 }
