@@ -378,21 +378,13 @@ export default class Main extends Phaser.Scene {
         }
       } else if (data?.from === "ZombieCombat-loss") {
         this.player.anims.stop();
+        this.movementDisabled = true;
         this.player.anims.play("pass-out");
         this.player.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
           this.time.delayedCall(100, () => {
-            this.backgroundMusic.stop();
-            this.scene.launch("HudScene", {
-              player: this.playerStats,
-              enemy: {
-                enemyPresence: false,
-                health: 0,
-                maxHealth: 0,
-                magic: 0,
-                maxMagic: 0,
-              },
-            });
-            this.scene.restart();
+            this.scene.stop("SceneOne");
+            this.scene.stop("HudScene");
+            this.scene.start("SceneOne");
           });
         });
       } else if (data?.from === "ZombieCombat-boss") {

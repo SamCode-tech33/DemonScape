@@ -151,6 +151,7 @@ export default class ZombieCombat extends Phaser.Scene {
     if (this.enemyStats.maxHealth === 40) {
       this.enemy.clearTint();
       this.enemy.setTint(0xff0000);
+      this.enemy.setScale(7);
     }
   }
 
