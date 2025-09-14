@@ -96,6 +96,28 @@ export default class SaraOne extends Phaser.Scene {
   private dialogue4Nodes: DialogueNode[] = [
     {
       text: "Sara: Wow, you beat them. Ok you've only proven your stronger than a human... wow and you had to waste my pets for it... *Sigh* anyways, you probably felt demonic energy enter your body as you fought. Go report to Maelvoth that you've gained full control again. Leave me be.",
+      choices: [
+        {
+          text: "1) Yes... I am um in control fully once again.",
+          next: 1,
+        },
+        {
+          text: "2) What the hell was that last one. Were you trying to kill me?!",
+          next: 2,
+        },
+      ],
+    },
+    {
+      text: "Sara: ...I hope you remember how to fight. Heheheh you actually jumped on his head, moron. unbelievable we are saving you. At least learn some magic sheesh, find a scroll or something.",
+    },
+    {
+      text: "Sara: Yes, and if you had died to a mere Zombie, no one would have cared.",
+      choices: [
+        {
+          text: "1) Continue...",
+          next: 1,
+        },
+      ],
     },
   ];
 

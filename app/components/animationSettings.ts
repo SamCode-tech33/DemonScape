@@ -172,6 +172,15 @@ export const playerAnimation = (scene: any) => {
       start: 15,
       end: 19,
     }),
+    frameRate: 8,
+    repeat: 0,
+  });
+  scene.anims.create({
+    key: "jump-right-attack",
+    frames: scene.anims.generateFrameNumbers("jump", {
+      start: 15,
+      end: 19,
+    }),
     frameRate: 16,
     repeat: 0,
   });
@@ -519,17 +528,23 @@ export const zombieAnimation = (scene: any) => {
 };
 
 // ALCHEMIST ANIMATION
-export const alch2Animation = (scene: any) => {
+export const alchTwinsAnimation = (scene: any) => {
   scene.anims.create({
-    key: "alch-turn",
-    frames: scene.anims.generateFrameNumbers("alch-walk", {
-      frames: [
-        0, 0, 0, 9, 9, 9, 18, 18, 27, 27, 9, 9, 9, 0, 0, 0, 18, 18, 18, 27, 27,
-        9, 9, 9, 0, 0, 27, 27, 27, 18, 18, 0, 0, 9, 9, 18, 18, 18, 27, 0, 9, 9,
-        27, 27, 27, 18, 18, 9, 9, 0, 0, 0, 0, 9, 9, 9, 18, 18, 18,
-      ],
+    key: "alch-idle-right",
+    frames: scene.anims.generateFrameNumbers("alch-idle", {
+      start: 6,
+      end: 7,
     }),
-    duration: 48000,
+    frameRate: 8,
+    repeat: -1,
+  });
+  scene.anims.create({
+    key: "alch-idle-down",
+    frames: scene.anims.generateFrameNumbers("alch-idle", {
+      start: 4,
+      end: 5,
+    }),
+    frameRate: 8,
     repeat: -1,
   });
   scene.anims.create({

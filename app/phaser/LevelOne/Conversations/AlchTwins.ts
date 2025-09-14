@@ -286,7 +286,7 @@ export default class AlchTwins extends Phaser.Scene {
       );
       this.input.keyboard!.once("keydown-SPACE", () => {
         this.music.stop();
-        this.scene.stop();
+        this.scene.stop("AlchTwins");
         this.scene.resume("SceneOne", { from: "AlchTwins" });
       });
       return;

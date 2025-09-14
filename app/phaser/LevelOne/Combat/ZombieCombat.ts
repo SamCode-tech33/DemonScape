@@ -173,7 +173,7 @@ export default class ZombieCombat extends Phaser.Scene {
         enemy: this.enemyStats,
       });
       this.scene.resume("SceneOne", {
-        from: "ZombieCombat-loss",
+        from: "PlayerDeath",
         playerStats: this.playerStats,
       });
     }

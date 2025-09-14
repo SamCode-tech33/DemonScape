@@ -122,6 +122,7 @@ export default class HudScene extends Phaser.Scene {
     this.enemyMagicBar = this.add.graphics().setScrollFactor(0);
 
     this.enemyHealthBarBg.fillStyle(0x555555, 1);
+    this.enemyHealthBarBg.lineStyle(2, 0xffd700, 1);
     this.enemyHealthBarBg.fillRoundedRect(
       screenWidth - 32 - 272,
       24,
@@ -129,7 +130,6 @@ export default class HudScene extends Phaser.Scene {
       30,
       radius
     );
-    this.enemyHealthBarBg.lineStyle(2, 0xff0000, 1);
     this.enemyHealthBarBg.strokeRoundedRect(
       screenWidth - 32 - 272,
       24,
@@ -138,6 +138,7 @@ export default class HudScene extends Phaser.Scene {
       radius
     );
 
+    this.enemyMagicBarBg.lineStyle(2, 0xc0c0c0, 1);
     this.enemyMagicBarBg.fillStyle(0x555555, 1);
     this.enemyMagicBarBg.fillRoundedRect(
       screenWidth - 340 - 272,
@@ -146,7 +147,6 @@ export default class HudScene extends Phaser.Scene {
       30,
       radius
     );
-    this.enemyMagicBarBg.lineStyle(2, 0x00ffff, 1);
     this.enemyMagicBarBg.strokeRoundedRect(
       screenWidth - 340 - 272,
       24,
@@ -157,7 +157,7 @@ export default class HudScene extends Phaser.Scene {
 
     this.enemyHealthText = this.add
       .text(
-        screenWidth - 32 - 272 + 8,
+        screenWidth - 32 - 242,
         28,
         `HP: ${this.enemyHealth}/${this.enemyMaxHealth}`,
         { fontSize: "20px", color: "#fff" }
@@ -166,7 +166,7 @@ export default class HudScene extends Phaser.Scene {
 
     this.enemyMagicText = this.add
       .text(
-        screenWidth - 340 - 272 + 8,
+        screenWidth - 340 - 242,
         28,
         `MP: ${this.enemyMagic}/${this.enemyMaxMagic}`,
         { fontSize: "20px", color: "#fff" }
@@ -207,7 +207,7 @@ export default class HudScene extends Phaser.Scene {
       this.enemyHealthBar.clear();
       this.enemyHealthBar.fillStyle(0xff0000, 1);
       this.enemyHealthBar.fillRoundedRect(
-        screenWidth - 32 - 268 * (this.enemyHealth / this.enemyMaxHealth) - 4,
+        screenWidth - 32 - 266 * (this.enemyHealth / this.enemyMaxHealth) - 4,
         25,
         268 * (this.enemyHealth / this.enemyMaxHealth),
         28,
@@ -215,9 +215,9 @@ export default class HudScene extends Phaser.Scene {
       );
 
       this.enemyMagicBar.clear();
-      this.enemyMagicBar.fillStyle(0x00ffff, 1);
+      this.enemyMagicBar.fillStyle(0x0000ff, 1);
       this.enemyMagicBar.fillRoundedRect(
-        screenWidth - 340 - 268 * (this.enemyMagic / this.enemyMaxMagic) - 4,
+        screenWidth - 340 - 266 * (this.enemyMagic / this.enemyMaxMagic) - 4,
         25,
         268 * (this.enemyMagic / this.enemyMaxMagic),
         28,

@@ -15,7 +15,7 @@ import {
   zombieAnimation,
   torchAnimation,
   cultHeadAnimation,
-  alch2Animation,
+  alchTwinsAnimation,
   alchTorchAnimation,
   skelManAnimation,
   maleCultistAnimation,
@@ -64,8 +64,6 @@ export default class Main extends Phaser.Scene {
   player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   keys!: WASDAndArrowKeys;
   spaceKey!: Phaser.Input.Keyboard.Key;
-  sword!: Phaser.Physics.Arcade.Group;
-  magic!: Phaser.Physics.Arcade.Group;
   cultHead!: Phaser.Physics.Arcade.Sprite;
   alchTwin!: Phaser.Physics.Arcade.Sprite;
   alchTwin2!: Phaser.Physics.Arcade.Sprite;
@@ -81,17 +79,19 @@ export default class Main extends Phaser.Scene {
   backgroundMusic!: Phaser.Sound.BaseSound;
   void!: number;
   isJumping = false;
-  lastDirection: string = "down";
-  zomPatrol1!: 0;
-  zomPatrol2!: 0;
-  zomPatrol3!: 0;
-  ghostBob!: 0;
   animatedTorches: Phaser.GameObjects.Sprite[] = [];
   animatedAlchemy: Phaser.GameObjects.Sprite[] = [];
   interactionBox!: Phaser.GameObjects.Rectangle | undefined;
   interactionKey!: Phaser.GameObjects.Text | undefined;
   noInteraction!: Phaser.GameObjects.Text | undefined;
   activeNpc: { name: string; scene: string } | null = null;
+  redScreen!: Phaser.GameObjects.Rectangle;
+  ghostCompanion!: Phaser.Physics.Arcade.Sprite;
+  saraOneSceneNum: number = 1;
+  chatBubbleAlch2!: Phaser.GameObjects.Rectangle | undefined;
+  chatTextAlch2!: Phaser.GameObjects.Text | undefined;
+  approachBox!: Phaser.GameObjects.Rectangle | undefined;
+  approachText!: Phaser.GameObjects.Text | undefined;
   alchEvent: boolean = false;
   playerStats = {
     health: 50,
@@ -106,48 +106,46 @@ export default class Main extends Phaser.Scene {
     magic: 2,
     maxMagic: 2,
   };
-  redScreen!: Phaser.GameObjects.Rectangle;
-  movementDisabled: boolean = false;
+  zomNum: number = 0;
+  zomDeathCount: number = 0;
   alchSceneNum: number = 1;
   cultHeadSceneNum: number = 1;
   ghostFollow: boolean = false;
-  ghostCompanion!: Phaser.Physics.Arcade.Sprite;
-  saraOneSceneNum: number = 1;
-  chatBubbleAlch2!: Phaser.GameObjects.Rectangle | undefined;
-  chatTextAlch2!: Phaser.GameObjects.Text | undefined;
-  approachBox!: Phaser.GameObjects.Rectangle | undefined;
-  approachText!: Phaser.GameObjects.Text | undefined;
-  zomNum: number = 0;
-  zomDeathCount: number = 0;
+  lastDirection: string = "down";
+  movementDisabled: boolean = false;
 
   constructor() {
     super({ key: "SceneOne" });
+  }
+
+  init() {
+    this.alchEvent = false;
+    this.playerStats = {
+      health: 50,
+      maxHealth: 50,
+      magic: 20,
+      maxMagic: 20,
+    };
+    this.enemyStats = {
+      enemyPresence: false,
+      health: 20,
+      maxHealth: 20,
+      magic: 2,
+      maxMagic: 2,
+    };
+    this.zomNum = 0;
+    this.zomDeathCount = 0;
+    this.alchSceneNum = 1;
+    this.cultHeadSceneNum = 1;
+    this.ghostFollow = false;
+    this.lastDirection = "down";
+    this.movementDisabled = false;
   }
 
   preload() {
     preLoadedAssets(this);
   }
   create() {
-    this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
-      if (pointer.leftButtonDown()) {
-        this.movementDisabled = true;
-        this.player.setVelocity(0, 0);
-        this.player.anims.stop();
-        if (this.lastDirection === "up") {
-          this.player.anims.play("halfslash-up", true);
-        } else if (this.lastDirection === "left") {
-          this.player.anims.play("halfslash-left", true);
-        } else if (this.lastDirection === "down") {
-          this.player.anims.play("halfslash-down", true);
-        } else if (this.lastDirection === "right") {
-          this.player.anims.play("halfslash-right", true);
-        }
-        this.player.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
-          this.movementDisabled = false;
-        });
-      }
-    });
-
     // MAP
     mapLayering(this);
 
@@ -210,7 +208,7 @@ export default class Main extends Phaser.Scene {
     femaleCultistAnimation(this);
     torchAnimation(this, torchPositions);
     alchTorchAnimation(this, alchemyPositions);
-    alch2Animation(this);
+    alchTwinsAnimation(this);
     skelManAnimation(this);
 
     //EVENTS
@@ -218,22 +216,24 @@ export default class Main extends Phaser.Scene {
     const flashRedScreen = () =>
       this.add
         .rectangle(
-          window.innerWidth,
-          window.innerHeight,
+          this.player.x,
+          this.player.y,
           window.innerWidth,
           window.innerHeight,
           0xff0000,
-          0.4
+          0.3
         )
         .setDepth(50)
-        .setOrigin(1);
-
-    this.movementDisabled = true;
-    this.time.delayedCall(700, () => {
-      cultHeadEvent(this);
-    });
+        .setOrigin(0.5);
+    if (this.cultHeadSceneNum === 1) {
+      this.movementDisabled = true;
+      this.time.delayedCall(700, () => {
+        cultHeadEvent(this);
+      });
+    }
     Alch2Dialogue(this);
 
+    this.events.off("resume"); // listeners stack through reset so always turn off resume before setting it.
     this.events.on("resume", (sys: Phaser.Scenes.Systems, data: any) => {
       if (data?.from === "AlchTwins") {
         if (this.alchSceneNum === 1) {
@@ -260,7 +260,6 @@ export default class Main extends Phaser.Scene {
               });
             });
           }
-
           const passOutDuration = 2000;
           this.time.delayedCall(passOutDuration, () => {
             this.player.anims.play("get-up", true);
@@ -284,35 +283,57 @@ export default class Main extends Phaser.Scene {
           girlsLeftWallDialogue(this);
           threeMenGroup(this);
         }
-      } else if (data?.from === "CultHead" && this.cultHeadSceneNum === 1) {
-        walkBackCultHead(this);
-        this.cultHeadSceneNum++;
-        this.movementDisabled = true;
-        this.playerStats.health = Math.max(0, this.playerStats.health - 15);
+      } else if (data?.from === "CultHead") {
+        if (this.cultHeadSceneNum === 1) {
+          walkBackCultHead(this);
+          this.cultHeadSceneNum++;
+          this.movementDisabled = true;
+          this.playerStats.health = Math.max(0, this.playerStats.health - 15);
 
-        this.player.anims.play("pass-out", true);
+          this.player.anims.play("pass-out", true);
 
-        this.scene.launch("HudScene", {
-          player: this.playerStats,
-          enemy: this.enemyStats,
-        });
-
-        for (let i = 0; i < 5; i++) {
-          this.time.delayedCall(50 * i * 2, () => {
-            this.redScreen = flashRedScreen();
-            this.time.delayedCall(50, () => {
-              this.redScreen.destroy();
-            });
+          this.scene.launch("HudScene", {
+            player: this.playerStats,
+            enemy: this.enemyStats,
           });
-        }
-        const passOutDuration = 2000;
-        this.time.delayedCall(passOutDuration, () => {
-          this.player.anims.play("get-up", true);
-          this.player.once(
-            Phaser.Animations.Events.ANIMATION_COMPLETE,
-            () => (this.movementDisabled = false)
+
+          for (let i = 0; i < 5; i++) {
+            this.time.delayedCall(50 * i * 2, () => {
+              this.redScreen = flashRedScreen();
+              this.time.delayedCall(50, () => {
+                this.redScreen.destroy();
+              });
+            });
+          }
+          const passOutDuration = 2000;
+          this.time.delayedCall(passOutDuration, () => {
+            this.player.anims.play("get-up", true);
+            this.player.once(
+              Phaser.Animations.Events.ANIMATION_COMPLETE,
+              () => (this.movementDisabled = false)
+            );
+          });
+        } else if (this.cultHeadSceneNum === 4) {
+          (this.npcs.getChildren() as Phaser.Physics.Arcade.Sprite[]).forEach(
+            (npc, i) => {
+              if (i === 12) {
+                this.tweens.add({
+                  targets: npc,
+                  x: 722,
+                  y: 115,
+                  duration: 1000,
+                  onStart: () => {
+                    npc.anims.play("cultist-male-walk-right", true);
+                  },
+                  onComplete: () => {
+                    npc.anims.stop();
+                    npc.setFrame(9);
+                  },
+                });
+              }
+            }
           );
-        });
+        }
       } else if (data?.from === "Ghost") {
         this.tweens.killTweensOf(this.ghost);
         this.ghost.destroy();
@@ -327,44 +348,24 @@ export default class Main extends Phaser.Scene {
         this.playerStats.maxHealth = data.playerStats.maxHealth ?? 50;
         this.playerStats.magic = data.playerStats.magic ?? 20;
         this.playerStats.maxMagic = data.playerStats.maxMagic ?? 20;
-        if (this.zomNum === 1) {
-          this.tweens.killTweensOf(this.zom1);
+
+        // Map zomNum to corresponding sprite
+        const zomMap: Record<number, Phaser.Physics.Arcade.Sprite> = {
+          1: this.zom1,
+          2: this.zom2,
+          3: this.zom3,
+        };
+
+        const zom = zomMap[this.zomNum];
+        if (zom) {
+          this.tweens.killTweensOf(zom);
           this.zomDeathCount += 1;
-          this.zom1.anims.play("z-pass-out");
-          this.zom1.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
-            this.zom1.destroy();
-            if (this.zomDeathCount === 3) {
-              this.saraOneSceneNum += 1;
-              this.backgroundMusic.pause();
-              this.scene.pause("SceneOne");
-              this.scene.launch("SaraOne", {
-                saraOneSceneNum: this.saraOneSceneNum,
-                playerStats: this.playerStats,
-              });
-            }
-          });
-        } else if (this.zomNum === 2) {
-          this.tweens.killTweensOf(this.zom2);
-          this.zomDeathCount += 1;
-          this.zom2.anims.play("z-pass-out");
-          this.zom2.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
-            this.zom2.destroy();
-            if (this.zomDeathCount === 3) {
-              this.saraOneSceneNum += 1;
-              this.backgroundMusic.pause();
-              this.scene.pause("SceneOne");
-              this.scene.launch("SaraOne", {
-                saraOneSceneNum: this.saraOneSceneNum,
-                playerStats: this.playerStats,
-              });
-            }
-          });
-        } else if (this.zomNum === 3) {
-          this.tweens.killTweensOf(this.zom3);
-          this.zomDeathCount += 1;
-          this.zom3.anims.play("z-pass-out");
-          this.zom3.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
-            this.zom3.destroy();
+          zom.anims.play("z-pass-out");
+
+          zom.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+            this.time.delayedCall(500, () => zom.destroy());
+            this.time.delayedCall(520, () => zom.setPosition(-9999, -9999));
+
             if (this.zomDeathCount === 3) {
               this.saraOneSceneNum += 1;
               this.backgroundMusic.pause();
@@ -376,19 +377,43 @@ export default class Main extends Phaser.Scene {
             }
           });
         }
-      } else if (data?.from === "ZombieCombat-loss") {
+      } else if (data?.from === "PlayerDeath") {
         this.player.anims.stop();
         this.movementDisabled = true;
         this.player.anims.play("pass-out");
+        for (let i = 0; i < 5; i++) {
+          this.time.delayedCall(50 * i * 2, () => {
+            this.redScreen = flashRedScreen();
+            this.time.delayedCall(50, () => {
+              this.redScreen.destroy();
+            });
+          });
+        }
         this.player.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
-          this.time.delayedCall(100, () => {
+          this.time.delayedCall(500, () => {
+            this.backgroundMusic.stop();
             this.scene.stop("SceneOne");
             this.scene.stop("HudScene");
-            this.scene.start("SceneOne");
+            this.scene.launch("GameOver");
           });
         });
       } else if (data?.from === "ZombieCombat-boss") {
-        this.saraOneSceneNum += 1;
+        const zomBoss = this.add
+          .sprite(this.player.x, this.player.y - 50, "zWalk", 18)
+          .setScale(2)
+          .clearTint()
+          .setTint(0xff0000);
+        if (this.player.y < zomBoss.y) {
+          zomBoss.setDepth(12);
+        } else {
+          zomBoss.setDepth(7);
+        }
+        this.saraOneSceneNum++;
+        this.cultHeadSceneNum++;
+        zomBoss.anims.play("z-pass-out");
+        zomBoss.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+          this.time.delayedCall(500, () => zomBoss.destroy());
+        });
       }
       if (this.backgroundMusic.isPaused) {
         this.backgroundMusic.resume();
@@ -398,19 +423,25 @@ export default class Main extends Phaser.Scene {
     });
 
     this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
-      if (pointer.leftButtonDown() && this.saraOneSceneNum === 2) {
+      if (!pointer.leftButtonDown() || this.saraOneSceneNum !== 2) return;
+      const zombies = [
+        { sprite: this.zom1, num: 1 },
+        { sprite: this.zom2, num: 2 },
+        { sprite: this.zom3, num: 3 },
+      ];
+
+      for (const { sprite, num } of zombies) {
         const dist = Phaser.Math.Distance.Between(
           this.player.x,
           this.player.y,
-          this.zom1.x,
-          this.zom1.y
+          sprite.x,
+          sprite.y
         );
 
         if (dist < 32) {
           this.enemyStats.enemyPresence = true;
-          // adjust threshold for "near"
-          this.time.delayedCall(600, () => {
-            this.zomNum = 1;
+          this.time.delayedCall(500, () => {
+            this.zomNum = num;
             this.scene.pause("SceneOne");
             this.backgroundMusic.stop();
             this.scene.launch("ZombieCombat", {
@@ -418,56 +449,7 @@ export default class Main extends Phaser.Scene {
               enemy: this.enemyStats,
             });
           });
-        }
-      }
-    });
-
-    this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
-      if (pointer.leftButtonDown() && this.saraOneSceneNum === 2) {
-        const dist = Phaser.Math.Distance.Between(
-          this.player.x,
-          this.player.y,
-          this.zom2.x,
-          this.zom2.y
-        );
-
-        if (dist < 32) {
-          this.enemyStats.enemyPresence = true;
-          // adjust threshold for "near"
-          this.time.delayedCall(600, () => {
-            this.zomNum = 2;
-            this.scene.pause("SceneOne");
-            this.backgroundMusic.stop();
-            this.scene.launch("ZombieCombat", {
-              playerStats: this.playerStats,
-              enemy: this.enemyStats,
-            });
-          });
-        }
-      }
-    });
-
-    this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
-      if (pointer.leftButtonDown() && this.saraOneSceneNum === 2) {
-        const dist = Phaser.Math.Distance.Between(
-          this.player.x,
-          this.player.y,
-          this.zom3.x,
-          this.zom3.y
-        );
-
-        if (dist < 32) {
-          this.enemyStats.enemyPresence = true;
-          // adjust threshold for "near"
-          this.time.delayedCall(300, () => {
-            this.zomNum = 3;
-            this.scene.pause("SceneOne");
-            this.backgroundMusic.stop();
-            this.scene.launch("ZombieCombat", {
-              playerStats: this.playerStats,
-              enemy: this.enemyStats,
-            });
-          });
+          break;
         }
       }
     });
@@ -499,14 +481,16 @@ export default class Main extends Phaser.Scene {
   update(time: number, delta: number) {
     // INTERACTION LOGIC
     interactionLogic(this);
-    if (this.alchEvent) {
-      singleTriggerDialogue(this);
+    if (this.alchEvent && this.cultHeadSceneNum === 4) {
+      singleTriggerDialogue(this, true);
+    } else {
+      singleTriggerDialogue(this, false);
     }
 
     // MOVEMENT AND NPC LOGIC
     playerMovement(this);
     depthSetting(this);
-    pathingAlch2(this);
+    pathingAlch2(this, 0);
 
     if (this.ghostFollow && this.ghost) {
       // pick an offset based on the player's lastDirection

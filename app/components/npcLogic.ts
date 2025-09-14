@@ -249,8 +249,8 @@ export const pathingSkel = (scene: any) => {
   moveToNextPoint();
 };
 
-export const pathingAlch2 = (scene: any) => {
-  scene.alchTwin2.anims.play("alch-turn", true);
+export const pathingAlch2 = (scene: any, index: number) => {
+  scene.alchTwin2.anims.play("alch-idle-right", true);
 };
 
 export const pathingAlch1 = (scene: any) => {
