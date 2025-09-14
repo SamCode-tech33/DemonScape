@@ -222,6 +222,10 @@ const preLoadedAssets = (scene: any) => {
     frameWidth: 64,
     frameHeight: 64,
   });
+  scene.load.spritesheet("alch-idle", "assets/npc/alchemists/idle.png", {
+    frameWidth: 64,
+    frameHeight: 64,
+  });
 };
 
 export default preLoadedAssets;

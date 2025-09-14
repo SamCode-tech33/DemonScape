@@ -129,7 +129,7 @@ export const playerJumpAttack = (scene: any) => {
     duration: 400,
     onStart: () => {
       scene.player.anims.stop();
-      scene.player.anims.play("jump-right", true);
+      scene.player.anims.play("jump-right-attack", true);
     },
     onComplete: () => {
       scene.tweens.add({

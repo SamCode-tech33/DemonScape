@@ -84,6 +84,28 @@ export default class CultHead extends Phaser.Scene {
     },
   ];
 
+  private dialogue4Nodes: DialogueNode[] = [
+    {
+      text: "Cult Head: Ah, the zombie groans have fell to silence after your swift violence. *He peers deeply into your eyes* So have you regained your wits?",
+      choices: [
+        {
+          text: "1) No! I am telling you I am a Human!",
+          next: 1,
+        },
+        {
+          text: "2) (Lie) Yes, of course. I am in complete control now.",
+          next: 2,
+        },
+      ],
+    },
+    {
+      text: "Cult Head: A pity...",
+    },
+    {
+      text: "Cult Head: Then leave. We have much to prepare for this eve.",
+    },
+  ];
+
   private dialogueNodes: DialogueNode[] = [];
   private currentNodeIndex: number = 0;
   private dialogueText!: Phaser.GameObjects.Text;
@@ -105,6 +127,9 @@ export default class CultHead extends Phaser.Scene {
         break;
       case 3:
         this.dialogueNodes = this.dialogue3Nodes;
+        break;
+      case 4:
+        this.dialogueNodes = this.dialogue4Nodes;
         break;
     }
   }
@@ -179,10 +204,18 @@ export default class CultHead extends Phaser.Scene {
           wordWrap: { width: this.scale.width - 300 },
         }
       );
+
       this.input.keyboard!.once("keydown-SPACE", () => {
         this.music.stop();
+
+        // Determine how to resume SceneOne based on current node
+        const resumeData =
+          this.currentNodeIndex === 1
+            ? { from: "PlayerDeath" } // node 1 → loss
+            : { from: "CultHead" }; // other nodes → normal
+
         this.scene.stop();
-        this.scene.resume("SceneOne", { from: "CultHead" });
+        this.scene.resume("SceneOne", resumeData);
       });
       return;
     }

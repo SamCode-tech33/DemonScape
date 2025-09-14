@@ -116,7 +116,7 @@ export const threeMenGroup = (scene: any) => {
   );
 };
 
-export const singleTriggerDialogue = (scene: any) => {
+export const singleTriggerDialogue = (scene: any, levelFinish: boolean) => {
   const npcs = scene.npcs.getChildren() as Phaser.Physics.Arcade.Sprite[];
   const targets = [npcs[7], npcs[11], npcs[10], npcs[12]];
   let npcInRange: any | null;
@@ -140,17 +140,23 @@ export const singleTriggerDialogue = (scene: any) => {
   } else if (npcInRange === targets[2]) {
     line =
       "Um.. Maelvoth, I know our town is short on husks, but I'm male. Can I please have the body of the demon who lost his cool earlier?...";
+  } else if (npcInRange === targets[3] && levelFinish) {
+    line =
+      "Hehe unfortunate we didn't get to kill you. Good luck out there. Cause some mayhem before the Cleansing yeah?";
   } else if (npcInRange === targets[3]) {
     line =
       "YOU ARE NOT ALLOWED TO LEAVE UNTIL MAELVOTH GIVES THE ALL CLEAR. DO NOT APPROACH.";
   }
   if (npcInRange) {
-    if (!scene.approachBox && !scene.approachText) {
+    if (!scene.approachBox) {
       scene.approachBox = scene.add
         .graphics()
         .fillStyle(0x000000, 0.6)
         .fillRoundedRect(npcInRange.x - 48, npcInRange.y - 60, 104, 40, 6)
         .setDepth(50);
+    }
+
+    if (!scene.approachText) {
       scene.approachText = scene.add
         .text(npcInRange.x - 43, npcInRange.y - 55, line, {
           fontSize: "5px",
@@ -159,6 +165,8 @@ export const singleTriggerDialogue = (scene: any) => {
           wordWrap: { width: 100 },
         })
         .setDepth(50);
+    } else {
+      scene.approachText.setText(line);
     }
   } else if (scene.approachBox && scene.approachText) {
     scene.approachBox.destroy();

@@ -19,6 +19,14 @@
   }
 }
 
+@font-face {
+  font-family: "Mostean";
+  src: url("/assets/fonts/mostean.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   --dkClr: #181818;
