@@ -1,24 +1,6 @@
-import Phaser from "phaser";
-
-interface DialogueChoice {
-  text: string;
-  next: number; // index of next dialogue node
-}
-
-interface DialogueNode {
-  text: string;
-  choices?: DialogueChoice[];
-}
-
-interface PlayerStats {
-  health: number;
-  maxHealth: number;
-  magic: number;
-  maxMagic: number;
-}
-
+import { PlayerStats, DialogueNode } from "@/app/components/demonScapeTypes";
 export default class SaraOne extends Phaser.Scene {
-  private dialogue1Nodes: DialogueNode[] = [
+  public dialogue1Nodes: DialogueNode[] = [
     {
       text: "Sara: ughh what? I'm busy.",
       choices: [
@@ -83,17 +65,17 @@ export default class SaraOne extends Phaser.Scene {
       text: "Sara: Maelvoth probably assumes he'll be killed by his superiors if he killed you before the final cleansing. Damn politics... I'll let you kill them, but I'm activating them. I'm sure if mere zombies are able to kill you, no one will complain... good luck.",
     },
   ];
-  private dialogue2Nodes: DialogueNode[] = [
+  public dialogue2Nodes: DialogueNode[] = [
     {
       text: "Sara: Go on now. Defeat my pets if you can. Be warned, they'll attack you upon your first hit.",
     },
   ];
-  private dialogue3Nodes: DialogueNode[] = [
+  public dialogue3Nodes: DialogueNode[] = [
     {
       text: "Sara: Hehehe, I forgot to mention there is... one more *Sara Winks at you* Careful though, he's an angry boy.",
     },
   ];
-  private dialogue4Nodes: DialogueNode[] = [
+  public dialogue4Nodes: DialogueNode[] = [
     {
       text: "Sara: Wow, you beat them. Ok you've only proven your stronger than a human... wow and you had to waste my pets for it... *Sigh* anyways, you probably felt demonic energy enter your body as you fought. Go report to Maelvoth that you've gained full control again. Leave me be.",
       choices: [
@@ -121,18 +103,13 @@ export default class SaraOne extends Phaser.Scene {
     },
   ];
 
-  private dialogueNodes: DialogueNode[] = [];
-  private currentNodeIndex: number = 0;
-  private dialogueText!: Phaser.GameObjects.Text;
-  private choiceTexts: Phaser.GameObjects.Text[] = [];
-  private music!: Phaser.Sound.BaseSound;
-  private bossFight: boolean = false;
-  playerStats = {
-    health: 50,
-    maxHealth: 50,
-    magic: 20,
-    maxMagic: 20,
-  };
+  public dialogueNodes: DialogueNode[] = [];
+  public currentNodeIndex: number = 0;
+  public dialogueText!: Phaser.GameObjects.Text;
+  public choiceTexts: Phaser.GameObjects.Text[] = [];
+  public music!: Phaser.Sound.BaseSound;
+  public bossFight: boolean = false;
+  playerStats!: PlayerStats;
 
   constructor() {
     super({ key: "SaraOne" });

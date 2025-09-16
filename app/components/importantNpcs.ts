@@ -1,4 +1,6 @@
-export const cultHeadNpc = (scene: any) => {
+import { SceneOneState } from "./levelOne/SceneOneTypes";
+
+export const cultHeadNpc = (scene: Phaser.Scene & SceneOneState) => {
   scene.cultHead = scene.physics.add
     .sprite(320, 222, "cult-head-walk", 18)
     .setCollideWorldBounds(true)
@@ -9,7 +11,7 @@ export const cultHeadNpc = (scene: any) => {
   scene.physics.add.collider(scene.player, scene.cultHead);
 };
 
-export const saraNpc = (scene: any) => {
+export const saraNpc = (scene: Phaser.Scene & SceneOneState) => {
   scene.sara = scene.physics.add
     .sprite(208, 824, "sara-sit", 6)
     .setCollideWorldBounds(true)
@@ -20,7 +22,7 @@ export const saraNpc = (scene: any) => {
   scene.physics.add.collider(scene.player, scene.sara);
 };
 
-export const boxNpc = (scene: any) => {
+export const boxNpc = (scene: Phaser.Scene & SceneOneState) => {
   scene.boxNpc = scene.physics.add
     .sprite(1364, 532, "infoGuy-sit", 11)
     .setDepth(33)
@@ -32,7 +34,7 @@ export const boxNpc = (scene: any) => {
   scene.physics.add.collider(scene.player, scene.boxNpc);
 };
 
-export const alchTwinsNpc = (scene: any) => {
+export const alchTwinsNpc = (scene: Phaser.Scene & SceneOneState) => {
   scene.alchTwin = scene.physics.add
     .sprite(1614, 610, "alch-walk", 18)
     .setCollideWorldBounds(true)
@@ -52,7 +54,7 @@ export const alchTwinsNpc = (scene: any) => {
   scene.physics.add.collider(scene.player, scene.alchTwin2);
 };
 
-export const skelNpc = (scene: any) => {
+export const skelNpc = (scene: Phaser.Scene & SceneOneState) => {
   scene.skel = scene.physics.add
     .sprite(1010, 448, "skel-walk", 18)
     .setCollideWorldBounds(true)
@@ -63,14 +65,18 @@ export const skelNpc = (scene: any) => {
   scene.physics.add.collider(scene.player, scene.skel);
 };
 
-export const ghostNpc = (scene: any, x: number, y: number) => {
+export const ghostNpc = (
+  scene: Phaser.Scene & SceneOneState,
+  x: number,
+  y: number
+) => {
   scene.ghost = scene.physics.add
     .sprite(x, y, "sgr", 0)
     .setCollideWorldBounds(true)
     .setImmovable(true);
 };
 
-export const destroyGhost = (scene: any) => {
+export const destroyGhost = (scene: Phaser.Scene & SceneOneState) => {
   if (scene.ghost) {
     scene.ghost.destroy();
     scene.ghost = undefined;

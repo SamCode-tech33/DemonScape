@@ -1,4 +1,6 @@
-export const mapLayering = (scene: any) => {
+import { SceneOneState } from "./SceneOneTypes";
+
+export const mapLayering = (scene: Phaser.Scene & SceneOneState) => {
   const map = scene.make.tilemap({ key: "map" });
   const tiledMap = map.addTilesetImage(
     "level1-master-tileset",
@@ -31,7 +33,7 @@ export const mapLayering = (scene: any) => {
   fireLayer && fireLayer.setDepth(23);
 };
 
-export const collisions = (scene: any) => {
+export const collisions = (scene: Phaser.Scene & SceneOneState) => {
   const map = scene.make.tilemap({ key: "map" });
   const collisionLayer = map.getObjectLayer("collision");
   const collisionGroup = scene.physics.add.staticGroup();

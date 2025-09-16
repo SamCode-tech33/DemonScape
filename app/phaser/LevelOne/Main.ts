@@ -1,4 +1,3 @@
-import Phaser from "phaser";
 import playerMovement from "@/app/components/playerMovement";
 import {
   depthSetting,
@@ -42,7 +41,11 @@ import {
   collisions,
 } from "@/app/components/levelOne/mapLayeringAndCollision";
 import preLoadedAssets from "@/app/components/levelOne/preLoadedAssets";
-import type { WASDAndArrowKeys } from "@/app/components/demonScapeTypes";
+import type {
+  WASDAndArrowKeys,
+  PlayerStats,
+  EnemyStats,
+} from "@/app/components/demonScapeTypes";
 import keySettings from "@/app/components/keySettings";
 import { zombies } from "@/app/components/enemyNpcs";
 import {
@@ -53,66 +56,49 @@ import {
   singleTriggerDialogue,
   threeMenGroup,
 } from "@/app/components/levelOne/floatingDialogue";
-
-interface PlayerStats {
-  health: number;
-  maxHealth: number;
-  magic: number;
-  maxMagic: number;
-}
-export default class Main extends Phaser.Scene {
-  player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
-  keys!: WASDAndArrowKeys;
-  spaceKey!: Phaser.Input.Keyboard.Key;
-  cultHead!: Phaser.Physics.Arcade.Sprite;
-  alchTwin!: Phaser.Physics.Arcade.Sprite;
-  alchTwin2!: Phaser.Physics.Arcade.Sprite;
-  npcs!: Phaser.Physics.Arcade.Group;
-  boxNpc!: Phaser.Physics.Arcade.Sprite;
-  sara!: Phaser.Physics.Arcade.Sprite;
-  ghost!: Phaser.GameObjects.Sprite;
-  skel!: Phaser.Physics.Arcade.Sprite;
-  zom1!: Phaser.Physics.Arcade.Sprite;
-  zom2!: Phaser.Physics.Arcade.Sprite;
-  zom3!: Phaser.Physics.Arcade.Sprite;
-  controls!: Phaser.GameObjects.Text;
-  backgroundMusic!: Phaser.Sound.BaseSound;
-  void!: number;
-  isJumping = false;
-  animatedTorches: Phaser.GameObjects.Sprite[] = [];
-  animatedAlchemy: Phaser.GameObjects.Sprite[] = [];
-  interactionBox!: Phaser.GameObjects.Rectangle | undefined;
-  interactionKey!: Phaser.GameObjects.Text | undefined;
-  noInteraction!: Phaser.GameObjects.Text | undefined;
-  activeNpc: { name: string; scene: string } | null = null;
-  redScreen!: Phaser.GameObjects.Rectangle;
-  ghostCompanion!: Phaser.Physics.Arcade.Sprite;
-  saraOneSceneNum: number = 1;
-  chatBubbleAlch2!: Phaser.GameObjects.Rectangle | undefined;
-  chatTextAlch2!: Phaser.GameObjects.Text | undefined;
-  approachBox!: Phaser.GameObjects.Rectangle | undefined;
-  approachText!: Phaser.GameObjects.Text | undefined;
-  alchEvent: boolean = false;
-  playerStats = {
-    health: 50,
-    maxHealth: 50,
-    magic: 20,
-    maxMagic: 20,
-  };
-  enemyStats = {
-    enemyPresence: false,
-    health: 20,
-    maxHealth: 20,
-    magic: 2,
-    maxMagic: 2,
-  };
-  zomNum: number = 0;
-  zomDeathCount: number = 0;
-  alchSceneNum: number = 1;
-  cultHeadSceneNum: number = 1;
-  ghostFollow: boolean = false;
-  lastDirection: string = "down";
-  movementDisabled: boolean = false;
+import { SceneOneState } from "@/app/components/levelOne/SceneOneTypes";
+export default class Main extends Phaser.Scene implements SceneOneState {
+  public player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+  public keys!: WASDAndArrowKeys;
+  public spaceKey!: Phaser.Input.Keyboard.Key;
+  public cultHead!: Phaser.Physics.Arcade.Sprite;
+  public alchTwin!: Phaser.Physics.Arcade.Sprite;
+  public alchTwin2!: Phaser.Physics.Arcade.Sprite;
+  public npcs!: Phaser.Physics.Arcade.Group;
+  public boxNpc!: Phaser.Physics.Arcade.Sprite;
+  public sara!: Phaser.Physics.Arcade.Sprite;
+  public ghost!: Phaser.GameObjects.Sprite;
+  public skel!: Phaser.Physics.Arcade.Sprite;
+  public zom1!: Phaser.Physics.Arcade.Sprite;
+  public zom2!: Phaser.Physics.Arcade.Sprite;
+  public zom3!: Phaser.Physics.Arcade.Sprite;
+  public controls!: Phaser.GameObjects.Text;
+  public backgroundMusic!: Phaser.Sound.BaseSound;
+  public void!: number;
+  public isJumping = false;
+  public animatedTorches: Phaser.GameObjects.Sprite[] = [];
+  public animatedAlchemy: Phaser.GameObjects.Sprite[] = [];
+  public interactionBox!: Phaser.GameObjects.Graphics | undefined;
+  public interactionKey!: Phaser.GameObjects.Text | undefined;
+  public noInteraction!: Phaser.GameObjects.Text | undefined;
+  public activeNpc: { name: string; scene: string } | null = null;
+  public redScreen!: Phaser.GameObjects.Rectangle;
+  public ghostCompanion!: Phaser.Physics.Arcade.Sprite;
+  public saraOneSceneNum: number = 1;
+  public chatBubbleAlch2!: Phaser.GameObjects.Graphics | undefined;
+  public chatTextAlch2!: Phaser.GameObjects.Text | undefined;
+  public approachBox!: Phaser.GameObjects.Graphics | undefined;
+  public approachText!: Phaser.GameObjects.Text | undefined;
+  public alchEvent: boolean = false;
+  public playerStats!: PlayerStats;
+  public enemyStats!: EnemyStats;
+  public zomNum: number = 0;
+  public zomDeathCount: number = 0;
+  public alchSceneNum: number = 1;
+  public cultHeadSceneNum: number = 1;
+  public ghostFollow: boolean = false;
+  public lastDirection: string = "down";
+  public movementDisabled: boolean = false;
 
   constructor() {
     super({ key: "SceneOne" });

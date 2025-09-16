@@ -1,17 +1,7 @@
-import Phaser from "phaser";
-
-interface DialogueChoice {
-  text: string;
-  next: number; // index of next dialogue node
-}
-
-interface DialogueNode {
-  text: string;
-  choices?: DialogueChoice[];
-}
+import { DialogueNode } from "@/app/components/demonScapeTypes";
 
 export default class CultHead extends Phaser.Scene {
-  private dialogue1Nodes: DialogueNode[] = [
+  public dialogue1Nodes: DialogueNode[] = [
     {
       text: "Cult Head: You whine like fettered swine. Why?",
       choices: [
@@ -39,7 +29,7 @@ export default class CultHead extends Phaser.Scene {
     },
   ];
 
-  private dialogue2Nodes: DialogueNode[] = [
+  public dialogue2Nodes: DialogueNode[] = [
     {
       text: "Cult Head: The potion proves the bind upon this mind is in motion. However, your negligence leaves you on the fence.",
       choices: [
@@ -78,13 +68,13 @@ export default class CultHead extends Phaser.Scene {
     },
   ];
 
-  private dialogue3Nodes: DialogueNode[] = [
+  public dialogue3Nodes: DialogueNode[] = [
     {
       text: "Cult Head: I will enjoy the melting of your brain if you fail.",
     },
   ];
 
-  private dialogue4Nodes: DialogueNode[] = [
+  public dialogue4Nodes: DialogueNode[] = [
     {
       text: "Cult Head: Ah, the zombie groans have fell to silence after your swift violence. *He peers deeply into your eyes* So have you regained your wits?",
       choices: [
@@ -106,11 +96,11 @@ export default class CultHead extends Phaser.Scene {
     },
   ];
 
-  private dialogueNodes: DialogueNode[] = [];
-  private currentNodeIndex: number = 0;
-  private dialogueText!: Phaser.GameObjects.Text;
-  private choiceTexts: Phaser.GameObjects.Text[] = [];
-  private music!: Phaser.Sound.BaseSound;
+  public dialogueNodes: DialogueNode[] = [];
+  public currentNodeIndex: number = 0;
+  public dialogueText!: Phaser.GameObjects.Text;
+  public choiceTexts: Phaser.GameObjects.Text[] = [];
+  public music!: Phaser.Sound.BaseSound;
 
   constructor() {
     super({ key: "CultHead" });

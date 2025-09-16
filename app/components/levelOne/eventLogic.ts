@@ -34,7 +34,7 @@ export const cultHeadEvent = (scene: Phaser.Scene & SceneOneState) => {
   };
 };
 
-export const walkBackCultHead = (scene: any) => {
+export const walkBackCultHead = (scene: Phaser.Scene & SceneOneState) => {
   scene.tweens.add({
     targets: scene.cultHead,
     x: 320,
@@ -77,7 +77,7 @@ export const demonGhost = (scene: Phaser.Scene & SceneOneState) => {
   });
 };
 
-export const fillerNpcs = (scene: any) => {
+export const fillerNpcs = (scene: Phaser.Scene & SceneOneState) => {
   const pathing = [
     { x: 48, y: 260, key: "cultist-female-walk-left", frame: 18, male: false },
     { x: 48, y: 290, key: "cultist-female-walk-left", frame: 0, male: false },

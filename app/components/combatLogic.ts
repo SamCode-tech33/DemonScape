@@ -1,4 +1,6 @@
-export const enemyAttack = (scene: any) => {
+import { CombatSceneState } from "./combatSceneTypes";
+
+export const enemyAttack = (scene: Phaser.Scene & CombatSceneState) => {
   scene.playerTurn = false;
   hideTimerUI(scene);
   if (scene.playerAttack) {
@@ -47,7 +49,7 @@ export const enemyAttack = (scene: any) => {
   }
 };
 
-export const playerBaseAttack = (scene: any) => {
+export const playerBaseAttack = (scene: Phaser.Scene & CombatSceneState) => {
   scene.playerAttack = true;
   playerUI(scene);
   qteUI(scene);
@@ -65,12 +67,11 @@ export const playerBaseAttack = (scene: any) => {
       scene.player.anims.play("halfslash-right");
 
       // === QTE SETUP ===
-      // Create a flag to track if damage was triggered
       let qteSuccess = false;
 
       // Open QTE window shortly before animation ends
       const qteWindow = scene.time.delayedCall(220, () => {
-        const spaceKey = scene.input.keyboard.addKey(
+        const spaceKey = scene.input.keyboard!.addKey(
           Phaser.Input.Keyboard.KeyCodes.SPACE
         );
 
@@ -117,7 +118,7 @@ export const playerBaseAttack = (scene: any) => {
   });
 };
 
-export const playerJumpAttack = (scene: any) => {
+export const playerJumpAttack = (scene: Phaser.Scene & CombatSceneState) => {
   scene.playerAttack = true;
   playerUI(scene);
   qteUI(scene);
@@ -142,12 +143,11 @@ export const playerJumpAttack = (scene: any) => {
           scene.player.anims.play("jump-attack");
 
           // === QTE SETUP ===
-          // Create a flag to track if damage was triggered
           let qteSuccess = false;
 
           // Open QTE window shortly before animation ends
           const qteWindow = scene.time.delayedCall(0, () => {
-            const spaceKey = scene.input.keyboard.addKey(
+            const spaceKey = scene.input.keyboard!.addKey(
               Phaser.Input.Keyboard.KeyCodes.SPACE
             );
 
@@ -214,7 +214,76 @@ export const playerJumpAttack = (scene: any) => {
   });
 };
 
-const showPlayerUI = (scene: any) => {
+export const timerUI = (scene: Phaser.Scene & CombatSceneState) => {
+  scene.timerValue = 12.0; // seconds with milliseconds
+  scene.timerText = scene.add
+    .text(
+      scene.player.x,
+      scene.player.y - 420,
+      `Time to Strike: ${scene.timerValue.toFixed(2)}`,
+      {
+        fontSize: "24px",
+        color: "#FFFF00",
+      }
+    )
+    .setOrigin(0.5)
+    .setDepth(52);
+
+  // Timer update event
+  scene.timerEvent = scene.time.addEvent({
+    delay: 50, // update every 50ms
+    loop: true,
+    callback: () => {
+      if (scene.timerValue > 0 && scene.timerText) {
+        scene.timerValue -= 0.05; // decrease 50ms per tick
+        scene.timerText.setText(
+          `Time to Strike: ${Math.max(scene.timerValue, 0).toFixed(2)}`
+        );
+      } else if (scene.timerEvent) {
+        scene.timerEvent.remove();
+      }
+    },
+  });
+};
+
+export const playerUI = (scene: Phaser.Scene & CombatSceneState) => {
+  if (scene.playerTurn && !scene.playerAttack) {
+    showPlayerUI(scene);
+    hideDefenseUI(scene);
+  } else if (!scene.playerTurn) {
+    showDefenseUI(scene);
+    hidePlayerUI(scene);
+  } else {
+    hidePlayerUI(scene);
+  }
+};
+
+export const qteUI = (scene: Phaser.Scene & CombatSceneState) => {
+  if (scene.playerAttack) {
+    scene.qte = scene.add
+      .graphics()
+      .fillStyle(0x000000, 0.6)
+      .lineStyle(3, 0xff0000, 1)
+      .fillRoundedRect(scene.enemy.x + 150, scene.enemy.y - 300, 64, 64, 24)
+      .strokeRoundedRect(scene.enemy.x + 150, scene.enemy.y - 300, 64, 64, 24)
+      .setDepth(50);
+
+    scene.qteText = scene.add
+      .text(scene.enemy.x + 150 + 32, scene.enemy.y - 300 + 32, "␣", {
+        fontSize: "32px",
+        color: "#FF0000",
+      })
+      .setOrigin(0.5)
+      .setDepth(51);
+  } else {
+    scene.qte?.destroy();
+    scene.qteText?.destroy();
+    scene.qte = undefined;
+    scene.qte = undefined;
+  }
+};
+
+const showPlayerUI = (scene: Phaser.Scene & CombatSceneState) => {
   if (!scene.attackVectorBase) {
     scene.attackVectorBase = scene.add
       .graphics()
@@ -262,39 +331,7 @@ const showPlayerUI = (scene: any) => {
   }
 };
 
-export const timerUI = (scene: any) => {
-  scene.timerValue = 12.0; // seconds with milliseconds
-  scene.timerText = scene.add
-    .text(
-      scene.player.x,
-      scene.player.y - 420,
-      `Time to Strike: ${scene.timerValue.toFixed(2)}`,
-      {
-        fontSize: "24px",
-        color: "#FFFF00",
-      }
-    )
-    .setOrigin(0.5)
-    .setDepth(52);
-
-  // Timer update event
-  scene.timerEvent = scene.time.addEvent({
-    delay: 50, // update every 50ms
-    loop: true,
-    callback: () => {
-      if (scene.timerValue > 0) {
-        scene.timerValue -= 0.05; // decrease 50ms per tick
-        scene.timerText.setText(
-          `Time to Strike: ${Math.max(scene.timerValue, 0).toFixed(2)}`
-        );
-      } else {
-        scene.timerEvent.remove();
-      }
-    },
-  });
-};
-
-const hidePlayerUI = (scene: any) => {
+const hidePlayerUI = (scene: Phaser.Scene & CombatSceneState) => {
   scene.attackVectorBase?.destroy();
   scene.attackVectorSpecial?.destroy();
   scene.attackVectorBaseText?.destroy();
@@ -305,51 +342,14 @@ const hidePlayerUI = (scene: any) => {
   scene.attackVectorSpecialText = undefined;
 };
 
-const hideTimerUI = (scene: any) => {
+const hideTimerUI = (scene: Phaser.Scene & CombatSceneState) => {
   scene.timerEvent?.destroy();
   scene.timerText?.destroy();
   scene.timerEvent = undefined;
   scene.timerText = undefined;
 };
 
-export const playerUI = (scene: any) => {
-  if (scene.playerTurn && !scene.playerAttack) {
-    showPlayerUI(scene);
-    hideDefenseUI(scene);
-  } else if (!scene.playerTurn) {
-    showDefenseUI(scene);
-    hidePlayerUI(scene);
-  } else {
-    hidePlayerUI(scene);
-  }
-};
-
-export const qteUI = (scene: any) => {
-  if (scene.playerAttack) {
-    scene.qte = scene.add
-      .graphics()
-      .fillStyle(0x000000, 0.6)
-      .lineStyle(3, 0xff0000, 1)
-      .fillRoundedRect(scene.enemy.x + 150, scene.enemy.y - 300, 64, 64, 24)
-      .strokeRoundedRect(scene.enemy.x + 150, scene.enemy.y - 300, 64, 64, 24)
-      .setDepth(50);
-
-    scene.qteText = scene.add
-      .text(scene.enemy.x + 150 + 32, scene.enemy.y - 300 + 32, "␣", {
-        fontSize: "32px",
-        color: "#FF0000",
-      })
-      .setOrigin(0.5)
-      .setDepth(51);
-  } else {
-    scene.qte?.destroy();
-    scene.qteText?.destroy();
-    scene.qte = undefined;
-    scene.qte = undefined;
-  }
-};
-
-const showDefenseUI = (scene: any) => {
+const showDefenseUI = (scene: Phaser.Scene & CombatSceneState) => {
   if (!scene.dodge) {
     scene.dodge = scene.add
       .graphics()
@@ -397,7 +397,7 @@ const showDefenseUI = (scene: any) => {
   }
 };
 
-const hideDefenseUI = (scene: any) => {
+const hideDefenseUI = (scene: Phaser.Scene & CombatSceneState) => {
   scene.dodge?.destroy();
   scene.parry?.destroy();
   scene.dodgeText?.destroy();
@@ -408,7 +408,7 @@ const hideDefenseUI = (scene: any) => {
   scene.parry = undefined;
 };
 
-const enemyAttackBasic = (scene: any) => {
+const enemyAttackBasic = (scene: Phaser.Scene & CombatSceneState) => {
   scene.enemy.scene.tweens.add({
     targets: scene.enemy,
     x: scene.player.x + 150,
@@ -426,10 +426,10 @@ const enemyAttackBasic = (scene: any) => {
       let dodgeSuccess = false;
       let parrySuccess = false;
 
-      const fKey = scene.input.keyboard.addKey(
+      const fKey = scene.input.keyboard!.addKey(
         Phaser.Input.Keyboard.KeyCodes.F
       );
-      const rKey = scene.input.keyboard.addKey(
+      const rKey = scene.input.keyboard!.addKey(
         Phaser.Input.Keyboard.KeyCodes.R
       );
 
@@ -506,7 +506,7 @@ const enemyAttackBasic = (scene: any) => {
   });
 };
 
-const playerParried = (scene: any) => {
+const playerParried = (scene: Phaser.Scene & CombatSceneState) => {
   scene.tweens.add({
     targets: scene.player,
     y: 600,

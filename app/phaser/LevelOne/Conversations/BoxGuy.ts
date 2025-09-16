@@ -1,17 +1,7 @@
-import Phaser from "phaser";
-
-interface DialogueChoice {
-  text: string;
-  next: number; // index of next dialogue node
-}
-
-interface DialogueNode {
-  text: string;
-  choices?: DialogueChoice[];
-}
+import { DialogueNode } from "@/app/components/demonScapeTypes";
 
 export default class BoxGuy extends Phaser.Scene {
-  private dialogueNodes: DialogueNode[] = [
+  public dialogueNodes: DialogueNode[] = [
     {
       text: "Box Guy: Man I am so high right now..... and an erotic view lies before me...*His smirk grows in intensity* a beautiful day indeed.",
       choices: [
@@ -157,10 +147,10 @@ export default class BoxGuy extends Phaser.Scene {
     },
   ];
 
-  private currentNodeIndex: number = 0;
-  private dialogueText!: Phaser.GameObjects.Text;
-  private choiceTexts: Phaser.GameObjects.Text[] = [];
-  private music!: Phaser.Sound.BaseSound;
+  public currentNodeIndex: number = 0;
+  public dialogueText!: Phaser.GameObjects.Text;
+  public choiceTexts: Phaser.GameObjects.Text[] = [];
+  public music!: Phaser.Sound.BaseSound;
 
   constructor() {
     super({ key: "BoxGuy" });

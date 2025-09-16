@@ -1,4 +1,6 @@
-export const demonCultMembers = (scene: any) => {
+import { SceneOneState } from "./levelOne/SceneOneTypes";
+
+export const demonCultMembers = (scene: Phaser.Scene & SceneOneState) => {
   const cultMemberPositions = [
     { x: 128, y: 336, key: "cultist-female-sit", frame: 0 },
     { x: 224, y: 336, key: "cultist-female-sit", frame: 0 },

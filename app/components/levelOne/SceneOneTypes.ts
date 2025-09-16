@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { WASDAndArrowKeys } from "../demonScapeTypes";
+import { WASDAndArrowKeys, PlayerStats, EnemyStats } from "../demonScapeTypes";
 
 export interface SceneOneState {
   player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
@@ -11,7 +11,7 @@ export interface SceneOneState {
   npcs: Phaser.Physics.Arcade.Group;
   boxNpc: Phaser.Physics.Arcade.Sprite;
   sara: Phaser.Physics.Arcade.Sprite;
-  ghost: Phaser.GameObjects.Sprite;
+  ghost: Phaser.GameObjects.Sprite | undefined;
   skel: Phaser.Physics.Arcade.Sprite;
   zom1: Phaser.Physics.Arcade.Sprite;
   zom2: Phaser.Physics.Arcade.Sprite;
@@ -20,14 +20,27 @@ export interface SceneOneState {
   backgroundMusic: Phaser.Sound.BaseSound;
   void: number;
   isJumping: boolean;
-  lastDirection: string;
   animatedTorches: Phaser.GameObjects.Sprite[];
   animatedAlchemy: Phaser.GameObjects.Sprite[];
-  interactionBox?: Phaser.GameObjects.Rectangle;
-  interactionKey?: Phaser.GameObjects.Text;
+  interactionBox: Phaser.GameObjects.Graphics | undefined;
+  interactionKey: Phaser.GameObjects.Text | undefined;
+  noInteraction: Phaser.GameObjects.Text | undefined;
   activeNpc: { name: string; scene: string } | null;
-  movementDisabled: boolean;
-  ghostFollow: boolean;
-  cultHeadSceneNum: number;
+  redScreen: Phaser.GameObjects.Rectangle;
+  ghostCompanion: Phaser.Physics.Arcade.Sprite;
+  saraOneSceneNum: number;
+  chatBubbleAlch2: Phaser.GameObjects.Graphics | undefined;
+  chatTextAlch2: Phaser.GameObjects.Text | undefined;
+  approachBox: Phaser.GameObjects.Graphics | undefined;
+  approachText: Phaser.GameObjects.Text | undefined;
+  alchEvent: boolean;
+  playerStats: PlayerStats;
+  enemyStats: EnemyStats;
+  zomNum: number;
+  zomDeathCount: number;
   alchSceneNum: number;
+  cultHeadSceneNum: number;
+  ghostFollow: boolean;
+  lastDirection: string;
+  movementDisabled: boolean;
 }

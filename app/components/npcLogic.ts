@@ -1,4 +1,6 @@
-export const depthSetting = (scene: any) => {
+import { SceneOneState } from "./levelOne/SceneOneTypes";
+
+export const depthSetting = (scene: Phaser.Scene & SceneOneState) => {
   (scene.npcs.getChildren() as Phaser.Physics.Arcade.Sprite[]).forEach(
     (npc) => {
       if (scene.player.y < npc.y) {
@@ -19,9 +21,9 @@ export const depthSetting = (scene: any) => {
   } else {
     scene.cultHead.setDepth(7);
   }
-  if (scene.player.y < scene.ghost.y) {
+  if (scene.ghost && scene.player.y < scene.ghost.y) {
     scene.ghost.setDepth(12);
-  } else {
+  } else if (scene.ghost) {
     scene.ghost.setDepth(7);
   }
   if (scene.player.y < scene.alchTwin.y) {
@@ -75,7 +77,7 @@ export const depthSetting = (scene: any) => {
   }
 };
 
-export const pathingZombie1 = (scene: any) => {
+export const pathingZombie1 = (scene: Phaser.Scene & SceneOneState) => {
   const patrolRight = () => {
     scene.tweens.add({
       targets: scene.zom1,
@@ -124,7 +126,7 @@ export const pathingZombie1 = (scene: any) => {
   patrolRight();
 };
 
-export const pathingZombie2 = (scene: any) => {
+export const pathingZombie2 = (scene: Phaser.Scene & SceneOneState) => {
   const patrolRight = () => {
     scene.tweens.add({
       targets: scene.zom2,
@@ -173,7 +175,7 @@ export const pathingZombie2 = (scene: any) => {
   patrolRight();
 };
 
-export const pathingZombie3 = (scene: any) => {
+export const pathingZombie3 = (scene: Phaser.Scene & SceneOneState) => {
   const patrolRight = () => {
     scene.tweens.add({
       targets: scene.zom3,
@@ -222,7 +224,7 @@ export const pathingZombie3 = (scene: any) => {
   patrolRight();
 };
 
-export const pathingSkel = (scene: any) => {
+export const pathingSkel = (scene: Phaser.Scene & SceneOneState) => {
   const moveToNextPoint = () => {
     scene.tweens.add({
       targets: scene.skel,
@@ -249,11 +251,14 @@ export const pathingSkel = (scene: any) => {
   moveToNextPoint();
 };
 
-export const pathingAlch2 = (scene: any, index: number) => {
+export const pathingAlch2 = (
+  scene: Phaser.Scene & SceneOneState,
+  index: number
+) => {
   scene.alchTwin2.anims.play("alch-idle-right", true);
 };
 
-export const pathingAlch1 = (scene: any) => {
+export const pathingAlch1 = (scene: Phaser.Scene & SceneOneState) => {
   const pathPoints = [
     { x: 1488, y: 440, anim: "alch-walk-up", duration: 4000, stop: 0 },
     { x: 1550, y: 610, anim: "alch-walk-down", duration: 4000, stop: 18 },

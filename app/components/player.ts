@@ -1,4 +1,9 @@
-const playerSprite = (scene: any, collisionGroup: any) => {
+import { SceneOneState } from "./levelOne/SceneOneTypes";
+
+const playerSprite = (
+  scene: Phaser.Scene & SceneOneState,
+  collisionGroup: any
+) => {
   scene.player = scene.physics.add
     .sprite(414, 500, "idle", 4)
     .setDepth(8)
