@@ -1,4 +1,6 @@
-export const playerAnimation = (scene: any) => {
+import { SceneOneState } from "./levelOne/SceneOneTypes";
+
+export const playerAnimation = (scene: Phaser.Scene & SceneOneState) => {
   //WALKING ANIMATION
   scene.anims.create({
     key: "walk-up",
@@ -208,7 +210,7 @@ export const playerAnimation = (scene: any) => {
       start: 0,
       end: 5,
     }),
-    frameRate: 10,
+    frameRate: 12,
     repeat: 0,
   });
   scene.anims.create({
@@ -217,7 +219,7 @@ export const playerAnimation = (scene: any) => {
       start: 7,
       end: 12,
     }),
-    frameRate: 10,
+    frameRate: 12,
     repeat: 0,
   });
   scene.anims.create({
@@ -226,7 +228,7 @@ export const playerAnimation = (scene: any) => {
       start: 14,
       end: 19,
     }),
-    frameRate: 8,
+    frameRate: 12,
     repeat: 0,
   });
   scene.anims.create({
@@ -235,7 +237,7 @@ export const playerAnimation = (scene: any) => {
       start: 21,
       end: 26,
     }),
-    frameRate: 16,
+    frameRate: 12,
     repeat: 0,
   });
 
@@ -276,33 +278,11 @@ export const playerAnimation = (scene: any) => {
     frameRate: 0.75,
     repeat: -1,
   });
-
-  // DODGE
-  scene.anims.create({
-    key: "dodge",
-    frames: scene.anims.generateFrameNumbers("emote", {
-      start: 9,
-      end: 11,
-    }),
-    frameRate: 7,
-    repeat: 0,
-  });
-
-  // DODGE
-  scene.anims.create({
-    key: "parry",
-    frames: scene.anims.generateFrameNumbers("slash", {
-      start: 18,
-      end: 23,
-    }),
-    frameRate: 18,
-    repeat: 0,
-  });
 };
 
 // NPC ANIMATIONS
 
-export const cultHeadAnimation = (scene: any) => {
+export const cultHeadAnimation = (scene: Phaser.Scene & SceneOneState) => {
   scene.anims.create({
     key: "cult-head-walk-up",
     frames: scene.anims.generateFrameNumbers("cult-head-walk", {
@@ -341,7 +321,7 @@ export const cultHeadAnimation = (scene: any) => {
   });
 };
 
-export const maleCultistAnimation = (scene: any) => {
+export const maleCultistAnimation = (scene: Phaser.Scene & SceneOneState) => {
   scene.anims.create({
     key: "cultist-male-walk-up",
     frames: scene.anims.generateFrameNumbers("cultist-male-walk", {
@@ -380,7 +360,7 @@ export const maleCultistAnimation = (scene: any) => {
   });
 };
 
-export const femaleCultistAnimation = (scene: any) => {
+export const femaleCultistAnimation = (scene: Phaser.Scene & SceneOneState) => {
   scene.anims.create({
     key: "cultist-female-walk-up",
     frames: scene.anims.generateFrameNumbers("cultist-female-walk", {
@@ -420,7 +400,7 @@ export const femaleCultistAnimation = (scene: any) => {
 };
 
 // ZOMBIE WALK
-export const zombieAnimation = (scene: any) => {
+export const zombieAnimation = (scene: Phaser.Scene & SceneOneState) => {
   scene.anims.create({
     key: "z-walk-up",
     frames: scene.anims.generateFrameNumbers("zWalk", {
@@ -495,40 +475,10 @@ export const zombieAnimation = (scene: any) => {
     frameRate: 6,
     repeat: 0,
   });
-  // PARRY
-  scene.anims.create({
-    key: "z-parry-left",
-    frames: scene.anims.generateFrameNumbers("z-slash", {
-      start: 6,
-      end: 11,
-    }),
-    frameRate: 18,
-    repeat: 0,
-  });
-  // JUMP
-  scene.anims.create({
-    key: "z-jump-left",
-    frames: scene.anims.generateFrameNumbers("z-jump", {
-      start: 6,
-      end: 11,
-    }),
-    frameRate: 18,
-    repeat: 0,
-  });
-  // PASSOUT
-  scene.anims.create({
-    key: "z-pass-out",
-    frames: scene.anims.generateFrameNumbers("z-hurt", {
-      start: 0,
-      end: 5,
-    }),
-    frameRate: 4,
-    repeat: 0,
-  });
 };
 
 // ALCHEMIST ANIMATION
-export const alchTwinsAnimation = (scene: any) => {
+export const alchTwinsAnimation = (scene: Phaser.Scene & SceneOneState) => {
   scene.anims.create({
     key: "alch-idle-right",
     frames: scene.anims.generateFrameNumbers("alch-idle", {
@@ -586,7 +536,10 @@ export const alchTwinsAnimation = (scene: any) => {
 };
 
 // FLAME ANIMATION
-export const torchAnimation = (scene: any, torchPositions: any) => {
+export const torchAnimation = (
+  scene: Phaser.Scene & SceneOneState,
+  torchPositions: any
+) => {
   scene.anims.create({
     key: "torch",
     frames: scene.anims.generateFrameNumbers("torch", { start: 0, end: 2 }),
@@ -606,7 +559,10 @@ export const torchAnimation = (scene: any, torchPositions: any) => {
 };
 
 // TORCHES
-export const alchTorchAnimation = (scene: any, alchemyPositions: any) => {
+export const alchTorchAnimation = (
+  scene: Phaser.Scene & SceneOneState,
+  alchemyPositions: any
+) => {
   scene.anims.create({
     key: "alch",
     frames: scene.anims.generateFrameNumbers("alchemy", {
@@ -625,7 +581,7 @@ export const alchTorchAnimation = (scene: any, alchemyPositions: any) => {
 };
 
 // SKEL MAN
-export const skelManAnimation = (scene: any) => {
+export const skelManAnimation = (scene: Phaser.Scene & SceneOneState) => {
   scene.anims.create({
     key: "skel-walk-left",
     frames: scene.anims.generateFrameNumbers("skel-walk", {

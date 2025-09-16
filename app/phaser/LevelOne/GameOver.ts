@@ -1,5 +1,4 @@
 import localFont from "next/font/local";
-
 const mostean = localFont({
   src: "../../../public/assets/fonts/mostean.otf",
   weight: "700",

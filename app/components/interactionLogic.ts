@@ -1,5 +1,8 @@
-const interactionLogic = (scene: any) => {
-  const npcs = [
+import { SceneOneState } from "./levelOne/SceneOneTypes";
+import { NpcsInteraction, NpcInRange } from "./demonScapeTypes";
+
+const interactionLogic = (scene: Phaser.Scene & SceneOneState) => {
+  const npcs: NpcsInteraction = [
     {
       name: "AlchTwins",
       sprite: scene.alchTwin,
@@ -49,13 +52,7 @@ const interactionLogic = (scene: any) => {
       range: 64,
     },
   ];
-  let npcInRange: {
-    name: string;
-    sprite: Phaser.GameObjects.Sprite | Phaser.Physics.Arcade.Sprite;
-    floatRect: number;
-    floatText: number;
-    scene: string;
-  } | null = null;
+  let npcInRange: NpcInRange = null;
 
   const clearInteraction = () => {
     scene.interactionBox?.destroy();
@@ -71,6 +68,7 @@ const interactionLogic = (scene: any) => {
   // Find the first NPC the player is close enough to
   for (const npc of npcs) {
     if (
+      npc.sprite &&
       Math.abs(scene.player.x - npc.sprite.x) < npc.range &&
       Math.abs(scene.player.y - npc.sprite.y) < npc.range
     ) {
@@ -78,7 +76,7 @@ const interactionLogic = (scene: any) => {
       break; // stop after first match
     }
   }
-  if (npcInRange) {
+  if (npcInRange?.sprite) {
     if (!scene.interactionBox && !scene.interactionKey && !scene.activeNpc) {
       scene.interactionBox = scene.add
         .graphics()

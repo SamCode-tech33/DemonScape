@@ -1,17 +1,4 @@
-interface EnemyStats {
-  enemyPresence: boolean;
-  health: number;
-  maxHealth: number;
-  magic: number;
-  maxMagic: number;
-}
-
-interface PlayerStats {
-  health: number;
-  maxHealth: number;
-  magic: number;
-  maxMagic: number;
-}
+import { PlayerStats, EnemyStats } from "@/app/components/demonScapeTypes";
 
 export default class HudScene extends Phaser.Scene {
   // Player

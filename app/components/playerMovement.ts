@@ -1,4 +1,6 @@
-const playerMovement = (scene: any) => {
+import { SceneOneState } from "./levelOne/SceneOneTypes";
+
+const playerMovement = (scene: Phaser.Scene & SceneOneState) => {
   if (scene.movementDisabled) return;
   const walkSpeed = 150;
   const jumpSpeed = 200;

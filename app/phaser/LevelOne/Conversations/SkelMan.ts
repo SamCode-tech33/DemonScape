@@ -1,17 +1,6 @@
-import Phaser from "phaser";
-
-interface DialogueChoice {
-  text: string;
-  next: number; // index of next dialogue node
-}
-
-interface DialogueNode {
-  text: string;
-  choices?: DialogueChoice[];
-}
-
+import { DialogueNode } from "@/app/components/demonScapeTypes";
 export default class SkelMan extends Phaser.Scene {
-  private dialogueNodes: DialogueNode[] = [
+  public dialogueNodes: DialogueNode[] = [
     {
       text: "Fedora Skeleton: WAAAAAAZZZZZZZUUUUUPPPPPPPP?",
       choices: [
@@ -79,10 +68,10 @@ export default class SkelMan extends Phaser.Scene {
     },
   ];
 
-  private currentNodeIndex: number = 0;
-  private dialogueText!: Phaser.GameObjects.Text;
-  private choiceTexts: Phaser.GameObjects.Text[] = [];
-  private music!: Phaser.Sound.BaseSound;
+  public currentNodeIndex: number = 0;
+  public dialogueText!: Phaser.GameObjects.Text;
+  public choiceTexts: Phaser.GameObjects.Text[] = [];
+  public music!: Phaser.Sound.BaseSound;
 
   constructor() {
     super({ key: "SkelMan" });

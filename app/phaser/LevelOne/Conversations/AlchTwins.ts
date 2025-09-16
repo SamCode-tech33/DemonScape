@@ -1,17 +1,7 @@
-import Phaser from "phaser";
-
-interface DialogueChoice {
-  text: string;
-  next: number; // index of next dialogue node
-}
-
-interface DialogueNode {
-  text: string;
-  choices?: DialogueChoice[];
-}
+import { DialogueNode } from "@/app/components/demonScapeTypes";
 
 export default class AlchTwins extends Phaser.Scene {
-  private dialogue1Nodes: DialogueNode[] = [
+  public dialogue1Nodes: DialogueNode[] = [
     {
       text: "Seuthala: *Seuthala rolls her eyes at you* Yes? Do you need something?",
       choices: [
@@ -74,7 +64,7 @@ export default class AlchTwins extends Phaser.Scene {
     },
   ];
 
-  private dialogue2Nodes: DialogueNode[] = [
+  public dialogue2Nodes: DialogueNode[] = [
     {
       text: "Seuthala: Ah so you didn't die... congratulations Maelvoth was being paranoid. So, do you remember anything?",
       choices: [
@@ -184,17 +174,17 @@ export default class AlchTwins extends Phaser.Scene {
     },
   ];
 
-  private dialogue3Nodes: DialogueNode[] = [
+  public dialogue3Nodes: DialogueNode[] = [
     {
       text: "Seuthala: Run along.",
     },
   ];
 
-  private currentNodeIndex: number = 0;
-  private dialogueText!: Phaser.GameObjects.Text;
-  private choiceTexts: Phaser.GameObjects.Text[] = [];
-  private music!: Phaser.Sound.BaseSound;
-  private dialogueNodes: DialogueNode[] = [];
+  public currentNodeIndex: number = 0;
+  public dialogueText!: Phaser.GameObjects.Text;
+  public choiceTexts: Phaser.GameObjects.Text[] = [];
+  public music!: Phaser.Sound.BaseSound;
+  public dialogueNodes: DialogueNode[] = [];
 
   constructor() {
     super({ key: "AlchTwins" });

@@ -1,31 +1,19 @@
-import Phaser from "phaser";
 import {
-  zombieAnimation,
-  playerAnimation,
-} from "@/app/components/animationSettings";
+  zombieCombatAnimation,
+  playerCombatAnimation,
+} from "@/app/components/combatAnimationSettings";
 import {
   enemyAttack,
   playerBaseAttack,
   playerJumpAttack,
   playerUI,
 } from "@/app/components/combatLogic";
-
-interface PlayerStats {
-  health: number;
-  maxHealth: number;
-  magic: number;
-  maxMagic: number;
-}
-
-interface EnemyStats {
-  enemyPresence: boolean;
-  health: number;
-  maxHealth: number;
-  magic: number;
-  maxMagic: number;
-}
-
-export default class ZombieCombat extends Phaser.Scene {
+import { PlayerStats, EnemyStats } from "@/app/components/demonScapeTypes";
+import { CombatSceneState } from "@/app/components/combatSceneTypes";
+export default class ZombieCombat
+  extends Phaser.Scene
+  implements CombatSceneState
+{
   music!: Phaser.Sound.BaseSound;
   player!: Phaser.Physics.Arcade.Sprite;
   enemy!: Phaser.Physics.Arcade.Sprite;
@@ -39,6 +27,13 @@ export default class ZombieCombat extends Phaser.Scene {
   qteText: Phaser.GameObjects.Text | undefined;
   playerStats!: PlayerStats;
   enemyStats!: EnemyStats;
+  timerValue!: number;
+  timerText: Phaser.GameObjects.Text | undefined;
+  timerEvent: Phaser.Time.TimerEvent | undefined;
+  dodge: Phaser.GameObjects.Graphics | undefined;
+  dodgeText: Phaser.GameObjects.Text | undefined;
+  parry: Phaser.GameObjects.Graphics | undefined;
+  parryText: Phaser.GameObjects.Text | undefined;
 
   constructor() {
     super({ key: "ZombieCombat" });
@@ -99,38 +94,18 @@ export default class ZombieCombat extends Phaser.Scene {
     this.music = this.sound.add("dungeon-combat", { loop: true, volume: 1 });
     this.music.play();
 
-    zombieAnimation(this);
-    playerAnimation(this);
+    zombieCombatAnimation(this);
+    playerCombatAnimation(this);
 
     this.player = this.physics.add
       .sprite(600, 600, "player-combat-idle", 6)
       .setDepth(8)
       .setScale(5.5);
 
-    this.anims.create({
-      key: "player-combat-idle-right",
-      frames: this.anims.generateFrameNumbers("player-combat-idle", {
-        start: 6,
-        end: 7,
-      }),
-      frameRate: 3,
-      repeat: -1,
-    });
-
     this.enemy = this.physics.add
       .sprite(1150, 600, "zombie-combat-idle", 2)
       .setDepth(8)
       .setScale(5.5);
-
-    this.anims.create({
-      key: "zombie-combat-idle-left",
-      frames: this.anims.generateFrameNumbers("zombie-combat-idle", {
-        start: 2,
-        end: 3,
-      }),
-      frameRate: 1.5,
-      repeat: -1,
-    });
 
     this.player.anims.play("player-combat-idle-right");
     this.enemy.anims.play("zombie-combat-idle-left");

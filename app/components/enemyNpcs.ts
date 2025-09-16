@@ -1,4 +1,6 @@
-export const zombies = (scene: any) => {
+import { SceneOneState } from "./levelOne/SceneOneTypes";
+
+export const zombies = (scene: Phaser.Scene & SceneOneState) => {
   scene.zom1 = scene.physics.add
     .sprite(128, 862, "zWalk", 27)
     .setDepth(7)

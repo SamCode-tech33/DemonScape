@@ -1,4 +1,6 @@
-export const Alch2Dialogue = (scene: any) => {
+import { SceneOneState } from "./SceneOneTypes";
+
+export const Alch2Dialogue = (scene: Phaser.Scene & SceneOneState) => {
   scene.time.addEvent({
     delay: 7000,
     loop: true,
@@ -37,7 +39,7 @@ export const Alch2Dialogue = (scene: any) => {
   });
 };
 
-export const hallwayGirlsDialogue = (scene: any) => {
+export const hallwayGirlsDialogue = (scene: Phaser.Scene & SceneOneState) => {
   const npcs = scene.npcs.getChildren() as Phaser.Physics.Arcade.Sprite[];
   const participants = [npcs[4], npcs[6]];
   const lines: string[] = [
@@ -55,7 +57,7 @@ export const hallwayGirlsDialogue = (scene: any) => {
   );
 };
 
-export const guysAlterDialogue = (scene: any) => {
+export const guysAlterDialogue = (scene: Phaser.Scene & SceneOneState) => {
   const npcs = scene.npcs.getChildren() as Phaser.Physics.Arcade.Sprite[];
   const participants = [npcs[2], npcs[3]];
   const lines: string[] = [
@@ -77,7 +79,7 @@ export const guysAlterDialogue = (scene: any) => {
   );
 };
 
-export const girlsLeftWallDialogue = (scene: any) => {
+export const girlsLeftWallDialogue = (scene: Phaser.Scene & SceneOneState) => {
   const npcs = scene.npcs.getChildren() as Phaser.Physics.Arcade.Sprite[];
   const participants = [npcs[0], npcs[1]];
   const lines: string[] = [
@@ -99,7 +101,7 @@ export const girlsLeftWallDialogue = (scene: any) => {
   );
 };
 
-export const threeMenGroup = (scene: any) => {
+export const threeMenGroup = (scene: Phaser.Scene & SceneOneState) => {
   const npcs = scene.npcs.getChildren() as Phaser.Physics.Arcade.Sprite[];
   const participants = [npcs[5], npcs[8], npcs[9]];
   const lines: string[] = [
@@ -116,7 +118,10 @@ export const threeMenGroup = (scene: any) => {
   );
 };
 
-export const singleTriggerDialogue = (scene: any, levelFinish: boolean) => {
+export const singleTriggerDialogue = (
+  scene: Phaser.Scene & SceneOneState,
+  levelFinish: boolean
+) => {
   const npcs = scene.npcs.getChildren() as Phaser.Physics.Arcade.Sprite[];
   const targets = [npcs[7], npcs[11], npcs[10], npcs[12]];
   let npcInRange: any | null;
@@ -178,7 +183,7 @@ export const singleTriggerDialogue = (scene: any, levelFinish: boolean) => {
 };
 
 const convo = (
-  scene: any,
+  scene: Phaser.Scene & SceneOneState,
   participants: any,
   lines: string[],
   count: number,
