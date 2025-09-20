@@ -126,15 +126,19 @@ export default class SaraOne extends Phaser.Scene {
       case 3:
         this.dialogueNodes = this.dialogue3Nodes;
         this.bossFight = true;
+
+        this.playerStats = {
+          health: data.playerStats.health ?? 50,
+          maxHealth: data.playerStats.maxHealth ?? 50,
+          magic: data.playerStats.magic ?? 20,
+          maxMagic: data.playerStats.maxMagic ?? 20,
+        };
+
         break;
       case 4:
         this.dialogueNodes = this.dialogue4Nodes;
         break;
     }
-    this.playerStats.health = data.playerStats.health ?? 50;
-    this.playerStats.maxHealth = data.playerStats.maxHealth ?? 50;
-    this.playerStats.magic = data.playerStats.magic ?? 50;
-    this.playerStats.maxMagic = data.playerStats.maxMagic ?? 50;
   }
 
   preload() {
