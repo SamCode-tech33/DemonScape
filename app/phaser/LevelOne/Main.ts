@@ -396,7 +396,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
           zomBoss.setDepth(7);
         }
         this.saraOneSceneNum++;
-        this.cultHeadSceneNum++;
+        this.cultHeadSceneNum = 4;
         zomBoss.anims.play("z-pass-out");
         zomBoss.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
           this.time.delayedCall(500, () => zomBoss.destroy());
