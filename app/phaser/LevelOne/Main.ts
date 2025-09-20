@@ -84,7 +84,6 @@ export default class Main extends Phaser.Scene implements SceneOneState {
   public activeNpc: { name: string; scene: string } | null = null;
   public redScreen!: Phaser.GameObjects.Rectangle;
   public ghostCompanion!: Phaser.Physics.Arcade.Sprite;
-  public saraOneSceneNum: number = 1;
   public chatBubbleAlch2!: Phaser.GameObjects.Graphics | undefined;
   public chatTextAlch2!: Phaser.GameObjects.Text | undefined;
   public approachBox!: Phaser.GameObjects.Graphics | undefined;
@@ -95,6 +94,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
   public zomNum: number = 0;
   public zomDeathCount: number = 0;
   public alchSceneNum: number = 1;
+  public saraOneSceneNum: number = 1;
   public cultHeadSceneNum: number = 1;
   public ghostFollow: boolean = false;
   public lastDirection: string = "down";
@@ -122,6 +122,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
     this.zomNum = 0;
     this.zomDeathCount = 0;
     this.alchSceneNum = 1;
+    this.saraOneSceneNum = 1;
     this.cultHeadSceneNum = 1;
     this.ghostFollow = false;
     this.lastDirection = "down";
