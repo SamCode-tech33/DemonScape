@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig = {
-  basePath: "/game",
+  basePath: "/",
 };
 
 export default nextConfig;
