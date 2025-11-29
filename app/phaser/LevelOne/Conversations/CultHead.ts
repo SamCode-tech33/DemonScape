@@ -101,6 +101,7 @@ export default class CultHead extends Phaser.Scene {
   public dialogueText!: Phaser.GameObjects.Text;
   public choiceTexts: Phaser.GameObjects.Text[] = [];
   public music!: Phaser.Sound.BaseSound;
+  public cultHeadVoice!: Phaser.Sound.BaseSound;
 
   constructor() {
     super({ key: "CultHead" });
@@ -127,6 +128,7 @@ export default class CultHead extends Phaser.Scene {
   preload() {
     this.load.image("cultHeadConvo", "/assets/conversations/cultHead.png");
     this.load.audio("cultHeadMusic", "/assets/music/morbid.mp3");
+    this.load.audio("cultHeadVoice", "/assets/sfx/cultHeadVoice.mp3");
   }
 
   create() {
@@ -156,6 +158,8 @@ export default class CultHead extends Phaser.Scene {
     this.music = this.sound.add("cultHeadMusic", { loop: true, volume: 1 });
     this.music.play();
 
+    this.cultHeadVoice = this.sound.add("cultHeadVoice", { volume: 2 });
+
     // Show first node
     this.showNode(0);
 
@@ -176,53 +180,88 @@ export default class CultHead extends Phaser.Scene {
     this.currentNodeIndex = index;
     const node = this.dialogueNodes[index];
 
-    this.dialogueText.setText(node.text);
+    this.dialogueText.setText("");
+
+    // Clear previous text
+    this.choiceTexts.forEach((c) => c.destroy());
+    this.choiceTexts = [];
+
+    // === TYPEWRITER WITH FADE-IN EFFECT ===
+    const fullText = node.text;
+    const chars = fullText.split("");
+    const typeSpeed = 22;
+    let currentCharIndex = 0;
+    const fadeDuration = 400;
+
+    this.cultHeadVoice.play({
+      loop: true,
+      rate: 0.8,
+    });
+
+    const speechInterval = setInterval(
+      () => {
+        if (currentCharIndex >= chars.length) {
+          clearInterval(speechInterval);
+          this.cultHeadVoice.stop();
+          displayChoices();
+          return;
+        } else {
+          const char = chars[currentCharIndex];
+          currentCharIndex++;
+          this.dialogueText.setText(this.dialogueText.text + char);
+        }
+      },
+      typeSpeed,
+      currentCharIndex
+    );
 
     // Remove old choices
     this.choiceTexts.forEach((c) => c.destroy());
     this.choiceTexts = [];
 
     // If no choices, check if end
-    if (!node.choices || node.choices.length === 0) {
-      this.add.text(
-        180,
-        this.scale.height - 110,
-        "Press space to exit conversation",
-        {
-          fontSize: "24px",
-          color: "#ffcc00",
-          wordWrap: { width: this.scale.width - 300 },
-        }
-      );
+    const displayChoices = () => {
+      if (!node.choices || node.choices.length === 0) {
+        this.add.text(
+          180,
+          this.scale.height - 110,
+          "Press space to exit conversation",
+          {
+            fontSize: "24px",
+            color: "#ffcc00",
+            wordWrap: { width: this.scale.width - 300 },
+          }
+        );
 
-      this.input.keyboard!.once("keydown-SPACE", () => {
-        this.music.stop();
+        this.input.keyboard!.once("keydown-SPACE", () => {
+          this.music.stop();
 
-        // Determine how to resume SceneOne based on current node
-        const resumeData =
-          this.currentNodeIndex === 1
-            ? { from: "PlayerDeath" } // node 1 → loss
-            : { from: "CultHead" }; // other nodes → normal
+          // Determine how to resume SceneOne based on current node
+          const resumeData =
+            this.currentNodeIndex === 1
+              ? { from: "PlayerDeath" } // node 1 → loss
+              : { from: "CultHead" }; // other nodes → normal
 
-        this.scene.stop();
-        this.scene.resume("SceneOne", resumeData);
+          this.scene.stop();
+          this.scene.resume("SceneOne", resumeData);
+        });
+        return;
+      }
+
+      // Show new choices
+      node.choices.forEach((choice, i) => {
+        const choiceText = this.add.text(
+          180,
+          this.scale.height - 110 + i * 40,
+          choice.text,
+          {
+            fontSize: "24px",
+            color: "#ffcc00",
+            wordWrap: { width: this.scale.width - 300 },
+          }
+        );
+        this.choiceTexts.push(choiceText);
       });
-      return;
-    }
-
-    // Show new choices
-    node.choices.forEach((choice, i) => {
-      const choiceText = this.add.text(
-        180,
-        this.scale.height - 110 + i * 40,
-        choice.text,
-        {
-          fontSize: "24px",
-          color: "#ffcc00",
-          wordWrap: { width: this.scale.width - 300 },
-        }
-      );
-      this.choiceTexts.push(choiceText);
-    });
+    };
   }
 }

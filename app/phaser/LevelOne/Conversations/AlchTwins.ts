@@ -184,6 +184,7 @@ export default class AlchTwins extends Phaser.Scene {
   public dialogueText!: Phaser.GameObjects.Text;
   public choiceTexts: Phaser.GameObjects.Text[] = [];
   public music!: Phaser.Sound.BaseSound;
+  public femDemonSpeech!: Phaser.Sound.BaseSound;
   public dialogueNodes: DialogueNode[] = [];
 
   constructor() {
@@ -207,6 +208,7 @@ export default class AlchTwins extends Phaser.Scene {
   preload() {
     this.load.image("AlchTwinsConvo", "/assets/conversations/AlchTwins.png");
     this.load.audio("TwinDemonsMusic", "/assets/music/rain.mp3");
+    this.load.audio("femDemonSpeech", "/assets/sfx/femWhisper.mp3");
   }
 
   create() {
@@ -236,6 +238,8 @@ export default class AlchTwins extends Phaser.Scene {
     this.music = this.sound.add("TwinDemonsMusic", { loop: true, volume: 1 });
     this.music.play();
 
+    this.femDemonSpeech = this.sound.add("femDemonSpeech", { volume: 0.8 });
+
     // Show first node
     this.showNode(0);
 
@@ -256,45 +260,79 @@ export default class AlchTwins extends Phaser.Scene {
     this.currentNodeIndex = index;
     const node = this.dialogueNodes[index];
 
-    this.dialogueText.setText(node.text);
+    this.dialogueText.setText("");
+
+    // Clear previous text
+    this.choiceTexts.forEach((c) => c.destroy());
+    this.choiceTexts = [];
+
+    // === TYPEWRITER WITH FADE-IN EFFECT ===
+    const fullText = node.text;
+    const chars = fullText.split("");
+    const typeSpeed = 22;
+    let currentCharIndex = 0;
+    const fadeDuration = 400;
+
+    this.femDemonSpeech.play({
+      loop: true,
+      rate: 1.5,
+    });
+
+    const speechInterval = setInterval(
+      () => {
+        if (currentCharIndex >= chars.length) {
+          clearInterval(speechInterval);
+          this.femDemonSpeech.stop();
+          displayChoices();
+          return;
+        } else {
+          const char = chars[currentCharIndex];
+          currentCharIndex++;
+          this.dialogueText.setText(this.dialogueText.text + char);
+        }
+      },
+      typeSpeed,
+      currentCharIndex
+    );
 
     // Remove old choices
     this.choiceTexts.forEach((c) => c.destroy());
     this.choiceTexts = [];
+    const displayChoices = () => {
+      // If no choices, check if end
+      if (!node.choices || node.choices.length === 0) {
+        this.add.text(
+          180,
+          this.scale.height - 110,
+          "Press space to exit conversation",
+          {
+            fontSize: "24px",
+            color: "#ffcc00",
+            wordWrap: { width: this.scale.width - 300 },
+          }
+        );
+        this.input.keyboard!.once("keydown-SPACE", () => {
+          this.music.stop();
+          this.scene.stop("AlchTwins");
+          this.scene.resume("SceneOne", { from: "AlchTwins" });
+        });
+        return;
+      }
 
-    // If no choices, check if end
-    if (!node.choices || node.choices.length === 0) {
-      this.add.text(
-        180,
-        this.scale.height - 110,
-        "Press space to exit conversation",
-        {
-          fontSize: "24px",
-          color: "#ffcc00",
-          wordWrap: { width: this.scale.width - 300 },
-        }
-      );
-      this.input.keyboard!.once("keydown-SPACE", () => {
-        this.music.stop();
-        this.scene.stop("AlchTwins");
-        this.scene.resume("SceneOne", { from: "AlchTwins" });
+      // Show new choices
+      node.choices.forEach((choice, i) => {
+        const choiceText = this.add.text(
+          180,
+          this.scale.height - 96 + i * 40,
+          choice.text,
+          {
+            fontSize: "24px",
+            color: "#ffcc00",
+            wordWrap: { width: this.scale.width - 300 },
+          }
+        );
+        this.choiceTexts.push(choiceText);
       });
-      return;
-    }
-
-    // Show new choices
-    node.choices.forEach((choice, i) => {
-      const choiceText = this.add.text(
-        180,
-        this.scale.height - 96 + i * 40,
-        choice.text,
-        {
-          fontSize: "24px",
-          color: "#ffcc00",
-          wordWrap: { width: this.scale.width - 300 },
-        }
-      );
-      this.choiceTexts.push(choiceText);
-    });
+    };
   }
 }

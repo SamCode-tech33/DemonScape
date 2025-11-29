@@ -151,6 +151,7 @@ export default class BoxGuy extends Phaser.Scene {
   public dialogueText!: Phaser.GameObjects.Text;
   public choiceTexts: Phaser.GameObjects.Text[] = [];
   public music!: Phaser.Sound.BaseSound;
+  public boxGuyVoice!: Phaser.Sound.BaseSound;
 
   constructor() {
     super({ key: "BoxGuy" });
@@ -159,6 +160,7 @@ export default class BoxGuy extends Phaser.Scene {
   preload() {
     this.load.image("boxGuyConvo", "/assets/conversations/box-guy.png");
     this.load.audio("boxGuyMusic", "/assets/music/dimension-2.mp3");
+    this.load.audio("boxGuyVoice", "/assets/sfx/boxGuyVoice.mp3");
   }
 
   create() {
@@ -188,6 +190,8 @@ export default class BoxGuy extends Phaser.Scene {
     this.music = this.sound.add("boxGuyMusic", { loop: true, volume: 1 });
     this.music.play();
 
+    this.boxGuyVoice = this.sound.add("boxGuyVoice", { volume: 0.8 });
+
     // Show first node
     this.showNode(0);
 
@@ -208,49 +212,89 @@ export default class BoxGuy extends Phaser.Scene {
     this.currentNodeIndex = index;
     const node = this.dialogueNodes[index];
 
-    this.dialogueText.setText(node.text);
+    this.dialogueText.setText("");
+
+    // Clear previous text
+    this.choiceTexts.forEach((c) => c.destroy());
+    this.choiceTexts = [];
+
+    // === TYPEWRITER WITH FADE-IN EFFECT ===
+    const fullText = node.text;
+    const chars = fullText.split("");
+    const typeSpeed = 22;
+    let currentCharIndex = 0;
+    const fadeDuration = 400;
+
+    this.boxGuyVoice.play({
+      loop: true,
+      rate: 1.1,
+    });
+
+    const speechInterval = setInterval(
+      () => {
+        if (currentCharIndex >= chars.length) {
+          clearInterval(speechInterval);
+          this.boxGuyVoice.stop();
+          displayChoices();
+          return;
+        } else {
+          const char = chars[currentCharIndex];
+          currentCharIndex++;
+          this.dialogueText.setText(this.dialogueText.text + char);
+        }
+      },
+      typeSpeed,
+      currentCharIndex
+    );
 
     // Remove old choices
     this.choiceTexts.forEach((c) => c.destroy());
     this.choiceTexts = [];
 
     // If no choices, check if end
-    if (!node.choices || node.choices.length === 0) {
-      this.add.text(
-        180,
-        this.scale.height - 110,
-        "Press space to exit conversation",
-        {
-          fontSize: "24px",
-          color: "#ffcc00",
-          wordWrap: { width: this.scale.width - 300 },
-        }
-      );
-      this.input.keyboard!.once("keydown-SPACE", () => {
-        this.music.stop();
-        this.scene.stop();
-        this.scene.resume("SceneOne");
-      });
-      return;
-    }
-
-    // Show new choices
-    node.choices.forEach((choice, i) => {
-      // Special spacing for node index 6
-      let startY = this.scale.height - 110;
-      let spacing = 40;
-
-      if (this.currentNodeIndex === 6) {
-        startY = this.scale.height - 220;
-        spacing = 35;
+    const displayChoices = () => {
+      if (!node.choices || node.choices.length === 0) {
+        this.add.text(
+          180,
+          this.scale.height - 110,
+          "Press space to exit conversation",
+          {
+            fontSize: "24px",
+            color: "#ffcc00",
+            wordWrap: { width: this.scale.width - 300 },
+          }
+        );
+        this.input.keyboard!.once("keydown-SPACE", () => {
+          this.music.stop();
+          this.scene.stop();
+          this.scene.resume("SceneOne");
+        });
+        return;
       }
 
-      const choiceText = this.add.text(180, startY + i * spacing, choice.text, {
-        fontSize: "24px",
-        color: "#ffcc00",
-        wordWrap: { width: this.scale.width - 300 },
+      // Show new choices
+      node.choices.forEach((choice, i) => {
+        // Special spacing for node index 6
+        let startY = this.scale.height - 110;
+        let spacing = 40;
+
+        if (this.currentNodeIndex === 6) {
+          startY = this.scale.height - 220;
+          spacing = 35;
+        }
+
+        const choiceText = this.add.text(
+          180,
+          startY + i * spacing,
+          choice.text,
+          {
+            fontSize: "24px",
+            color: "#ffcc00",
+            wordWrap: { width: this.scale.width - 300 },
+          }
+        );
+        this.choiceTexts.push(choiceText);
       });
-      this.choiceTexts.push(choiceText);
-    });
+    };
   }
 }
