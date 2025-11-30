@@ -108,6 +108,8 @@ export default class SaraOne extends Phaser.Scene {
   public dialogueText!: Phaser.GameObjects.Text;
   public choiceTexts: Phaser.GameObjects.Text[] = [];
   public music!: Phaser.Sound.BaseSound;
+  public saraVoiceOne!: Phaser.Sound.BaseSound;
+  public speechInterval: NodeJS.Timeout | null = null;
   public bossFight: boolean = false;
   playerStats!: PlayerStats;
 
@@ -144,6 +146,7 @@ export default class SaraOne extends Phaser.Scene {
   preload() {
     this.load.image("SaraOneConvo", "/assets/conversations/sara.png");
     this.load.audio("SaraOneMusic", "/assets/music/fogTrees.mp3");
+    this.load.audio("saraVoiceOne", "/assets/sfx/saraVoiceOne.mp3");
   }
 
   create() {
@@ -174,33 +177,88 @@ export default class SaraOne extends Phaser.Scene {
     this.music = this.sound.add("SaraOneMusic", { loop: true, volume: 1 });
     this.music.play();
 
+    this.saraVoiceOne = this.sound.add("saraVoiceOne", { volume: 2 });
+
     // Show first node
     this.showNode(0);
+  }
 
-    // Input: pick choices with number keys
-    this.input.keyboard!.on("keydown", (event: KeyboardEvent) => {
-      const key = parseInt(event.key);
-      if (!isNaN(key)) {
-        const choice =
-          this.dialogueNodes[this.currentNodeIndex].choices?.[key - 1];
-        if (choice) {
-          this.showNode(choice.next);
-        }
+  // Input: pick choices with number keys
+  private onChoiceKey(event: KeyboardEvent) {
+    const key = parseInt(event.key);
+    if (!isNaN(key) && key >= 1 && key <= 9) {
+      const choice =
+        this.dialogueNodes[this.currentNodeIndex].choices?.[key - 1];
+      if (choice) {
+        // Remove listener before recursing to next node
+        this.input.keyboard!.off("keydown", this.onChoiceKey, this);
+        this.showNode(choice.next);
       }
-    });
+    }
   }
 
   private showNode(index: number) {
+    if (this.speechInterval) {
+      clearInterval(this.speechInterval);
+    }
+
     this.currentNodeIndex = index;
     const node = this.dialogueNodes[index];
 
-    this.dialogueText.setText(node.text);
+    // Clear previous text
+    this.input.keyboard!.off("keydown", this.onChoiceKey, this);
+    this.dialogueText.setText("");
+    this.choiceTexts.forEach((c) => c.destroy());
+    this.choiceTexts = [];
 
+    // === TYPEWRITER WITH FADE-IN EFFECT ===
+    const fullText = node.text;
+    const chars = fullText.split("");
+    const typeSpeed = 16;
+    let currentCharIndex = 0;
+    const fadeDuration = 400;
+
+    this.saraVoiceOne.play({
+      loop: true,
+      rate: 1.1,
+    });
+
+    this.input.keyboard!.once("keydown-SPACE", () => {
+      if (this.speechInterval) {
+        clearInterval(this.speechInterval);
+        this.speechInterval = null;
+      }
+      this.dialogueText.setText(fullText);
+      this.saraVoiceOne.play({
+        loop: false,
+      });
+      this.displayChoices(node);
+    });
+
+    this.speechInterval = setInterval(() => {
+      if (currentCharIndex >= chars.length) {
+        if (this.speechInterval) {
+          clearInterval(this.speechInterval);
+          this.speechInterval = null;
+        }
+        this.saraVoiceOne.play({
+          loop: false,
+        });
+        this.displayChoices(node);
+        return;
+      }
+      const char = chars[currentCharIndex];
+      currentCharIndex++;
+      this.dialogueText.setText(this.dialogueText.text + char);
+    }, typeSpeed);
+  }
+
+  private displayChoices(node: DialogueNode) {
     // Remove old choices
     this.choiceTexts.forEach((c) => c.destroy());
     this.choiceTexts = [];
 
-    // If no choices, check if end
+    // check for end of conversation
     if (!node.choices || node.choices.length === 0) {
       this.add.text(
         180,
@@ -240,7 +298,7 @@ export default class SaraOne extends Phaser.Scene {
     node.choices.forEach((choice, i) => {
       const choiceText = this.add.text(
         180,
-        this.scale.height - 145 + i * 80,
+        this.scale.height - 145 + i * 40,
         choice.text,
         {
           fontSize: "24px",
@@ -250,5 +308,6 @@ export default class SaraOne extends Phaser.Scene {
       );
       this.choiceTexts.push(choiceText);
     });
+    this.input.keyboard!.on("keydown", this.onChoiceKey, this);
   }
 }

@@ -152,6 +152,7 @@ export default class BoxGuy extends Phaser.Scene {
   public choiceTexts: Phaser.GameObjects.Text[] = [];
   public music!: Phaser.Sound.BaseSound;
   public boxGuyVoice!: Phaser.Sound.BaseSound;
+  public speechInterval: NodeJS.Timeout | null = null;
 
   constructor() {
     super({ key: "BoxGuy" });
@@ -190,38 +191,43 @@ export default class BoxGuy extends Phaser.Scene {
     this.music = this.sound.add("boxGuyMusic", { loop: true, volume: 1 });
     this.music.play();
 
-    this.boxGuyVoice = this.sound.add("boxGuyVoice", { volume: 0.8 });
+    this.boxGuyVoice = this.sound.add("boxGuyVoice", { volume: 2 });
 
     // Show first node
     this.showNode(0);
-
-    // Input: pick choices with number keys
-    this.input.keyboard!.on("keydown", (event: KeyboardEvent) => {
-      const key = parseInt(event.key);
-      if (!isNaN(key)) {
-        const choice =
-          this.dialogueNodes[this.currentNodeIndex].choices?.[key - 1];
-        if (choice) {
-          this.showNode(choice.next);
-        }
+  }
+  // Input: pick choices with number keys
+  private onChoiceKey(event: KeyboardEvent) {
+    const key = parseInt(event.key);
+    if (!isNaN(key) && key >= 1 && key <= 9) {
+      const choice =
+        this.dialogueNodes[this.currentNodeIndex].choices?.[key - 1];
+      if (choice) {
+        // Remove listener before recursing to next node
+        this.input.keyboard!.off("keydown", this.onChoiceKey, this);
+        this.showNode(choice.next);
       }
-    });
+    }
   }
 
   private showNode(index: number) {
+    if (this.speechInterval) {
+      clearInterval(this.speechInterval);
+    }
+
     this.currentNodeIndex = index;
     const node = this.dialogueNodes[index];
 
-    this.dialogueText.setText("");
-
     // Clear previous text
+    this.input.keyboard!.off("keydown", this.onChoiceKey, this);
+    this.dialogueText.setText("");
     this.choiceTexts.forEach((c) => c.destroy());
     this.choiceTexts = [];
 
     // === TYPEWRITER WITH FADE-IN EFFECT ===
     const fullText = node.text;
     const chars = fullText.split("");
-    const typeSpeed = 22;
+    const typeSpeed = 16;
     let currentCharIndex = 0;
     const fadeDuration = 400;
 
@@ -230,71 +236,75 @@ export default class BoxGuy extends Phaser.Scene {
       rate: 1.1,
     });
 
-    const speechInterval = setInterval(
-      () => {
-        if (currentCharIndex >= chars.length) {
-          clearInterval(speechInterval);
-          this.boxGuyVoice.stop();
-          displayChoices();
-          return;
-        } else {
-          const char = chars[currentCharIndex];
-          currentCharIndex++;
-          this.dialogueText.setText(this.dialogueText.text + char);
-        }
-      },
-      typeSpeed,
-      currentCharIndex
-    );
+    this.input.keyboard!.once("keydown-SPACE", () => {
+      if (this.speechInterval) {
+        clearInterval(this.speechInterval);
+        this.speechInterval = null;
+      }
+      this.dialogueText.setText(fullText);
+      this.boxGuyVoice.stop();
+      this.displayChoices(node);
+    });
 
+    this.speechInterval = setInterval(() => {
+      if (currentCharIndex >= chars.length) {
+        if (this.speechInterval) {
+          clearInterval(this.speechInterval);
+          this.speechInterval = null;
+        }
+        this.boxGuyVoice.stop();
+        this.displayChoices(node);
+        return;
+      }
+      const char = chars[currentCharIndex];
+      currentCharIndex++;
+      this.dialogueText.setText(this.dialogueText.text + char);
+    }, typeSpeed);
+  }
+
+  private displayChoices(node: DialogueNode) {
     // Remove old choices
     this.choiceTexts.forEach((c) => c.destroy());
     this.choiceTexts = [];
 
-    // If no choices, check if end
-    const displayChoices = () => {
-      if (!node.choices || node.choices.length === 0) {
-        this.add.text(
-          180,
-          this.scale.height - 110,
-          "Press space to exit conversation",
-          {
-            fontSize: "24px",
-            color: "#ffcc00",
-            wordWrap: { width: this.scale.width - 300 },
-          }
-        );
-        this.input.keyboard!.once("keydown-SPACE", () => {
-          this.music.stop();
-          this.scene.stop();
-          this.scene.resume("SceneOne");
-        });
-        return;
+    // check for end of conversation
+    if (!node.choices || node.choices.length === 0) {
+      this.add.text(
+        180,
+        this.scale.height - 110,
+        "Press space to exit conversation",
+        {
+          fontSize: "24px",
+          color: "#ffcc00",
+          wordWrap: { width: this.scale.width - 300 },
+        }
+      );
+      this.input.keyboard!.once("keydown-SPACE", () => {
+        this.music.stop();
+        this.scene.stop();
+        this.scene.resume("SceneOne");
+      });
+      return;
+    }
+
+    // Show new choices
+    node.choices.forEach((choice, i) => {
+      // Special spacing for node index 6
+      let startY = this.scale.height - 110;
+      let spacing = 40;
+
+      if (this.currentNodeIndex === 6) {
+        startY = this.scale.height - 220;
+        spacing = 35;
       }
 
-      // Show new choices
-      node.choices.forEach((choice, i) => {
-        // Special spacing for node index 6
-        let startY = this.scale.height - 110;
-        let spacing = 40;
-
-        if (this.currentNodeIndex === 6) {
-          startY = this.scale.height - 220;
-          spacing = 35;
-        }
-
-        const choiceText = this.add.text(
-          180,
-          startY + i * spacing,
-          choice.text,
-          {
-            fontSize: "24px",
-            color: "#ffcc00",
-            wordWrap: { width: this.scale.width - 300 },
-          }
-        );
-        this.choiceTexts.push(choiceText);
+      const choiceText = this.add.text(180, startY + i * spacing, choice.text, {
+        fontSize: "24px",
+        color: "#ffcc00",
+        wordWrap: { width: this.scale.width - 300 },
       });
-    };
+      this.choiceTexts.push(choiceText);
+    });
+    this.input.keyboard!.on("keydown", this.onChoiceKey, this);
   }
 }
