@@ -2,7 +2,7 @@ import { DialogueNode } from "@/app/components/demonScapeTypes";
 export default class SkelMan extends Phaser.Scene {
   public dialogueNodes: DialogueNode[] = [
     {
-      text: "Fedora Skeleton: WAAAAAAZZZZZZZUUUUUPPPPPPPP?",
+      text: "WAAAAAAZZZZZZZUUUUUPPPPPPPP?",
       choices: [
         {
           text: "1) And now there is a talking skeleton... I'm insane. I hope there is a lot of padding in my crazy room.",
@@ -15,7 +15,7 @@ export default class SkelMan extends Phaser.Scene {
       ],
     },
     {
-      text: "Fedora Skeleton: WHHHAATTT?! you can see me?",
+      text: "WHHHAATTT?! you can see me?",
       choices: [
         {
           text: "1) Yes and you are very ugly.",
@@ -28,11 +28,11 @@ export default class SkelMan extends Phaser.Scene {
       ],
     },
     {
-      text: "Fedora Skeleton: GEHEHEHEH I'm prettier than what's inside you. *He points at his eye socket* I'm winking GEHEHEH",
+      text: "GEHEHEHEH I'm prettier than what's inside you. *He points at his eye socket* I'm winking GEHEHEH",
       choices: [{ text: "1) Continue...", next: 3 }],
     },
     {
-      text: "Fedora Skeleton: GEH! Yeah it's wierd that you can see me. I'm Light-Bleached after all.",
+      text: "GEH! Yeah it's wierd that you can see me. I'm Light-Bleached after all.",
       choices: [
         { text: "1) What is Light-Bleached?", next: 4 },
         {
@@ -42,7 +42,7 @@ export default class SkelMan extends Phaser.Scene {
       ],
     },
     {
-      text: "Fedora Skeleton: GEHEHEHEHEH ANYWAYS DO YOU LIKE PUZZLES? THERE IS ONE IN THIS VERY ROOM WOOWEEWOOWEE",
+      text: "GEHEHEHEHEH ANYWAYS DO YOU LIKE PUZZLES? THERE IS ONE IN THIS VERY ROOM WOOWEEWOOWEE",
       choices: [
         {
           text: "1) How about you tell me what Light-Bleached means instead?",
@@ -55,7 +55,7 @@ export default class SkelMan extends Phaser.Scene {
       ],
     },
     {
-      text: "Fedora Skeleton: GEHEHEHEHEH ANYWAYS DO YOU LIKE PUZZLES? THERE IS ONE IN THIS VERY ROOM WOOWEEWOOWEE",
+      text: "GEHEHEHEHEH ANYWAYS DO YOU LIKE PUZZLES? THERE IS ONE IN THIS VERY ROOM WOOWEEWOOWEE",
       choices: [
         {
           text: "1) OK...",
@@ -64,7 +64,7 @@ export default class SkelMan extends Phaser.Scene {
       ],
     },
     {
-      text: "Fedora Skeleton: GEHEHEHEHEH ANYWAYS DO YOU LIKE PUZZLES? THERE IS ONE IN THIS VERY ROOM WOOWEEWOOWEE",
+      text: "GEHEHEHEHEH ANYWAYS DO YOU LIKE PUZZLES? THERE IS ONE IN THIS VERY ROOM WOOWEEWOOWEE - ;aslkdfja;sldkfj;aslkdfj;aslkdjflsadkjfljakfdhgqadjf;aslkdjf;lkdjafs;ldkfjas;ldkfj;asldkfj;aslkdjf;alskdjf;alskdjf;aslkdfj;aslkdfj;aslkdjfieut;lknasdlkguatia;sldkcna;sjdfgtyhpasiert5u;laskdcnm;aljshdgkuatplaisjd;flkasndfuituheoiaj;sdlkfjna;lskdjuytreiqp;osdkfjnalsdkfjhadiapueirer Oh yeah.... *He winks at you, somehow without eyelids*",
     },
   ];
 
@@ -74,6 +74,8 @@ export default class SkelMan extends Phaser.Scene {
   public music!: Phaser.Sound.BaseSound;
   public skelVoice!: Phaser.Sound.BaseSound;
   public speechInterval: NodeJS.Timeout | null = null;
+  public speakerName!: Phaser.GameObjects.Text;
+  public playerSpeaker!: Phaser.GameObjects.Text;
 
   constructor() {
     super({ key: "SkelMan" });
@@ -103,9 +105,34 @@ export default class SkelMan extends Phaser.Scene {
       0.4
     );
 
-    this.dialogueText = this.add.text(150, this.scale.height - 270, "", {
-      fontSize: "26px",
-      color: "#ffffff",
+    this.speakerName = this.add.text(
+      60,
+      this.scale.height - 278,
+      "Fedora Skeleton:",
+      {
+        fontFamily: "Mostean",
+        fontSize: "52px",
+        color: "#378444",
+        stroke: "black",
+        strokeThickness: 1,
+        wordWrap: { width: 200 },
+      }
+    );
+
+    this.playerSpeaker = this.add.text(60, this.scale.height - 110, "You:", {
+      fontFamily: "Mostean",
+      fontSize: "52px",
+      color: "#ffcc00",
+      stroke: "black",
+      strokeThickness: 1,
+    });
+
+    this.dialogueText = this.add.text(240, this.scale.height - 270, "", {
+      fontFamily: "Mostean",
+      fontSize: "40px",
+      color: "#378444",
+      stroke: "black",
+      strokeThickness: 1,
       wordWrap: { width: this.scale.width - 300 },
     });
 
@@ -192,12 +219,15 @@ export default class SkelMan extends Phaser.Scene {
     // check for end of conversation
     if (!node.choices || node.choices.length === 0) {
       this.add.text(
-        180,
+        300,
         this.scale.height - 110,
         "Press space to exit conversation",
         {
-          fontSize: "24px",
+          fontFamily: "Mostean",
+          fontSize: "44px",
           color: "#ffcc00",
+          stroke: "black",
+          strokeThickness: 1,
           wordWrap: { width: this.scale.width - 300 },
         }
       );
@@ -212,12 +242,15 @@ export default class SkelMan extends Phaser.Scene {
     // Show new choices
     node.choices.forEach((choice, i) => {
       const choiceText = this.add.text(
-        180,
+        248,
         this.scale.height - 110 + i * 40,
         choice.text,
         {
-          fontSize: "24px",
+          fontFamily: "Mostean",
+          fontSize: "32px",
           color: "#ffcc00",
+          stroke: "black",
+          strokeThickness: 1,
           wordWrap: { width: this.scale.width - 300 },
         }
       );

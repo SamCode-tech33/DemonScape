@@ -3,7 +3,7 @@ import { DialogueNode } from "@/app/components/demonScapeTypes";
 export default class CultHead extends Phaser.Scene {
   public dialogue1Nodes: DialogueNode[] = [
     {
-      text: "Cult Head: You whine like fettered swine. Why?",
+      text: "You whine like fettered swine. Why?",
       choices: [
         {
           text: "1) Th-this heart in my hand. . . wh-where am I? I-I was just in my room...",
@@ -16,22 +16,22 @@ export default class CultHead extends Phaser.Scene {
       ],
     },
     {
-      text: "Cult Head: *He leans in and peers intently into your eyes* Hmm your eyes show no light, and so the bind is tight. But what pathetic words for a demon of your stature... Hell burns at the same rate as your evaporating masculinity.",
+      text: "*He leans in and peers intently into your eyes* Hmm your eyes show no light, and so the bind is tight. But what pathetic words for a demon of your stature... Hell burns at the same rate as your evaporating masculinity.",
       choices: [{ text: "1) Continue...", next: 3 }],
     },
     {
-      text: "Cult Head: *He leans in and peers intently into your eyes* Hmm your eyes show no light, and so the bind is tight. But for a demon of your stature to so brazenly speak to a Lord two-hundred years your superior... You must be having trouble grasping reality.",
+      text: "*He leans in and peers intently into your eyes* Hmm your eyes show no light, and so the bind is tight. But for a demon of your stature to so brazenly speak to a Lord two-hundred years your superior... You must be having trouble grasping reality.",
       choices: [{ text: "1) Continue...", next: 3 }],
     },
     {
-      text: "Cult Head: *His fist lights aflame and he punches you swiftly in the gut* Heal your mind or we will tear your soul for energy. Have the twins check you out. They're in the room to the right of here. We will finish without you...",
+      text: "*His fist lights aflame and he punches you swiftly in the gut* Heal your mind or we will tear your soul for energy. Have the twins check you out. They're in the room to the right of here. We will finish without you...",
       // no choices = end
     },
   ];
 
   public dialogue2Nodes: DialogueNode[] = [
     {
-      text: "Cult Head: The potion proves the bind upon this mind is in motion. However, your negligence leaves you on the fence.",
+      text: "The potion proves the bind upon this mind is in motion. However, your negligence leaves you on the fence.",
       choices: [
         {
           text: "1) You're rhyming more consistently this time.",
@@ -44,7 +44,7 @@ export default class CultHead extends Phaser.Scene {
       ],
     },
     {
-      text: "Cult Head: I lament your useless comment",
+      text: "I lament your useless comment",
       choices: [
         {
           text: "1) They said you would have killed me if I had less demonic energy...",
@@ -53,7 +53,7 @@ export default class CultHead extends Phaser.Scene {
       ],
     },
     {
-      text: "Cult Head: Yes, and after you restore you connection to this brain. From thence, you best have good sense.",
+      text: "Yes, and after you restore you connection to this brain. From thence, you best have good sense.",
       choices: [
         { text: "1) Continue...", next: 3 },
         {
@@ -63,7 +63,7 @@ export default class CultHead extends Phaser.Scene {
       ],
     },
     {
-      text: "Cult Head: I will enjoy the melting of your brain if you fail.",
+      text: "I will enjoy the melting of your brain if you fail.",
       // no choices = end
     },
   ];
@@ -102,6 +102,9 @@ export default class CultHead extends Phaser.Scene {
   public choiceTexts: Phaser.GameObjects.Text[] = [];
   public music!: Phaser.Sound.BaseSound;
   public cultHeadVoice!: Phaser.Sound.BaseSound;
+  public speechInterval: NodeJS.Timeout | null = null;
+  public speakerName!: Phaser.GameObjects.Text;
+  public playerSpeaker!: Phaser.GameObjects.Text;
 
   constructor() {
     super({ key: "CultHead" });
@@ -149,9 +152,34 @@ export default class CultHead extends Phaser.Scene {
       0.4
     );
 
-    this.dialogueText = this.add.text(150, this.scale.height - 270, "", {
-      fontSize: "26px",
-      color: "#ffffff",
+    this.speakerName = this.add.text(
+      60,
+      this.scale.height - 278,
+      "Cult Head:",
+      {
+        fontFamily: "Mostean",
+        fontSize: "52px",
+        color: "red",
+        stroke: "black",
+        strokeThickness: 1,
+        wordWrap: { width: 200 },
+      }
+    );
+
+    this.playerSpeaker = this.add.text(60, this.scale.height - 110, "You:", {
+      fontFamily: "Mostean",
+      fontSize: "52px",
+      color: "#ffcc00",
+      stroke: "black",
+      strokeThickness: 1,
+    });
+
+    this.dialogueText = this.add.text(240, this.scale.height - 270, "", {
+      fontFamily: "Mostean",
+      fontSize: "40px",
+      color: "red",
+      stroke: "black",
+      strokeThickness: 1,
       wordWrap: { width: this.scale.width - 300 },
     });
 
@@ -202,14 +230,20 @@ export default class CultHead extends Phaser.Scene {
 
     this.input.keyboard!.once("keydown-SPACE", () => {
       this.dialogueText.setText(fullText);
-      clearInterval(speechInterval);
+      if (this.speechInterval) {
+        clearInterval(this.speechInterval);
+        this.speechInterval = null;
+      }
       this.cultHeadVoice.stop();
       this.displayChoices(node);
     });
 
-    const speechInterval = setInterval(() => {
+    this.speechInterval = setInterval(() => {
       if (currentCharIndex >= chars.length) {
-        clearInterval(speechInterval);
+        if (this.speechInterval) {
+          clearInterval(this.speechInterval);
+          this.speechInterval = null;
+        }
         this.cultHeadVoice.stop();
         this.displayChoices(node);
         return;
@@ -228,12 +262,15 @@ export default class CultHead extends Phaser.Scene {
     // check for end of conversation
     if (!node.choices || node.choices.length === 0) {
       this.add.text(
-        180,
+        300,
         this.scale.height - 110,
         "Press space to exit conversation",
         {
-          fontSize: "24px",
+          fontFamily: "Mostean",
+          fontSize: "44px",
           color: "#ffcc00",
+          stroke: "black",
+          strokeThickness: 1,
           wordWrap: { width: this.scale.width - 300 },
         }
       );
@@ -256,12 +293,15 @@ export default class CultHead extends Phaser.Scene {
     // Show new choices
     node.choices.forEach((choice, i) => {
       const choiceText = this.add.text(
-        180,
+        248,
         this.scale.height - 110 + i * 40,
         choice.text,
         {
-          fontSize: "24px",
+          fontFamily: "Mostean",
+          fontSize: "32px",
           color: "#ffcc00",
+          stroke: "black",
+          strokeThickness: 1,
           wordWrap: { width: this.scale.width - 300 },
         }
       );
