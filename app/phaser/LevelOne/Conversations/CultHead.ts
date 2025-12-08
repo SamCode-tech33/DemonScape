@@ -28,7 +28,6 @@ export default class CultHead extends Phaser.Scene {
       // no choices = end
     },
   ];
-
   public dialogue2Nodes: DialogueNode[] = [
     {
       text: "The potion proves the bind upon this mind is in motion. However, your negligence leaves you on the fence.",
@@ -53,7 +52,7 @@ export default class CultHead extends Phaser.Scene {
       ],
     },
     {
-      text: "Yes, and after you restore you connection to this brain. From thence, you best have good sense.",
+      text: "Yes, and after you restore your connection to this brain. From thence, you best have good sense.",
       choices: [
         { text: "1) Continue...", next: 3 },
         {
@@ -67,16 +66,14 @@ export default class CultHead extends Phaser.Scene {
       // no choices = end
     },
   ];
-
   public dialogue3Nodes: DialogueNode[] = [
     {
-      text: "Cult Head: I will enjoy the melting of your brain if you fail.",
+      text: "I will enjoy the melting of your brain if you fail.",
     },
   ];
-
   public dialogue4Nodes: DialogueNode[] = [
     {
-      text: "Cult Head: Ah, the zombie groans have fell to silence after your swift violence. *He peers deeply into your eyes* So have you regained your wits?",
+      text: "Ah, the zombie groans have fell to silence after your swift violence. *He peers deeply into your eyes* So have you regained your wits?",
       choices: [
         {
           text: "1) No! I am telling you I am a Human!",
@@ -89,10 +86,10 @@ export default class CultHead extends Phaser.Scene {
       ],
     },
     {
-      text: "Cult Head: A pity...",
+      text: "A pity...",
     },
     {
-      text: "Cult Head: Then leave. We have much to prepare for this eve.",
+      text: "Then leave. We have much to prepare for this eve.",
     },
   ];
 
@@ -101,10 +98,11 @@ export default class CultHead extends Phaser.Scene {
   public dialogueText!: Phaser.GameObjects.Text;
   public choiceTexts: Phaser.GameObjects.Text[] = [];
   public music!: Phaser.Sound.BaseSound;
-  public cultHeadVoice!: Phaser.Sound.BaseSound;
+  public cultHeadDialogue: Phaser.Sound.BaseSound | null = null;
   public speechInterval: NodeJS.Timeout | null = null;
   public speakerName!: Phaser.GameObjects.Text;
   public playerSpeaker!: Phaser.GameObjects.Text;
+  public dialogueScene: number = 1;
 
   constructor() {
     super({ key: "CultHead" });
@@ -118,12 +116,15 @@ export default class CultHead extends Phaser.Scene {
         break;
       case 2:
         this.dialogueNodes = this.dialogue2Nodes;
+        this.dialogueScene = 2;
         break;
       case 3:
         this.dialogueNodes = this.dialogue3Nodes;
+        this.dialogueScene = 3;
         break;
       case 4:
         this.dialogueNodes = this.dialogue4Nodes;
+        this.dialogueScene = 4;
         break;
     }
   }
@@ -131,7 +132,54 @@ export default class CultHead extends Phaser.Scene {
   preload() {
     this.load.image("cultHeadConvo", "/assets/conversations/cultHead.png");
     this.load.audio("cultHeadMusic", "/assets/music/morbid.mp3");
-    this.load.audio("cultHeadVoice", "/assets/sfx/cultHeadVoice.mp3");
+    this.load.audio(
+      "cultHead1-dialogue0",
+      "/assets/dialogue/cultHead/cultHead-dialogue0.wav"
+    );
+    this.load.audio(
+      "cultHead1-dialogue1",
+      "/assets/dialogue/cultHead/cultHead-dialogue1.wav"
+    );
+    this.load.audio(
+      "cultHead1-dialogue2",
+      "/assets/dialogue/cultHead/cultHead-dialogue2.wav"
+    );
+    this.load.audio(
+      "cultHead1-dialogue3",
+      "/assets/dialogue/cultHead/cultHead-dialogue3.wav"
+    );
+    this.load.audio(
+      "cultHead2-dialogue0",
+      "/assets/dialogue/cultHead/cultHead-dialogue4.wav"
+    );
+    this.load.audio(
+      "cultHead2-dialogue1",
+      "/assets/dialogue/cultHead/cultHead-dialogue5.wav"
+    );
+    this.load.audio(
+      "cultHead2-dialogue2",
+      "/assets/dialogue/cultHead/cultHead-dialogue6.wav"
+    );
+    this.load.audio(
+      "cultHead2-dialogue3",
+      "/assets/dialogue/cultHead/cultHead-dialogue7.wav"
+    );
+    this.load.audio(
+      "cultHead3-dialogue0",
+      "/assets/dialogue/cultHead/cultHead-dialogue7.wav"
+    );
+    this.load.audio(
+      "cultHead4-dialogue0",
+      "/assets/dialogue/cultHead/cultHead-dialogue8.wav"
+    );
+    this.load.audio(
+      "cultHead4-dialogue1",
+      "/assets/dialogue/cultHead/cultHead-dialogue9.wav"
+    );
+    this.load.audio(
+      "cultHead4-dialogue2",
+      "/assets/dialogue/cultHead/cultHead-dialogue10.wav"
+    );
   }
 
   create() {
@@ -186,8 +234,6 @@ export default class CultHead extends Phaser.Scene {
     this.music = this.sound.add("cultHeadMusic", { loop: true, volume: 1 });
     this.music.play();
 
-    this.cultHeadVoice = this.sound.add("cultHeadVoice", { volume: 5 });
-
     // Show first node
     this.showNode(0);
   }
@@ -210,6 +256,8 @@ export default class CultHead extends Phaser.Scene {
     this.currentNodeIndex = index;
     const node = this.dialogueNodes[index];
 
+    this.input.keyboard!.removeListener("keydown-SPACE");
+
     // Clear previous text
     this.input.keyboard!.off("keydown", this.onChoiceKey, this);
     this.dialogueText.setText("");
@@ -219,22 +267,26 @@ export default class CultHead extends Phaser.Scene {
     // === TYPEWRITER WITH FADE-IN EFFECT ===
     const fullText = node.text;
     const chars = fullText.split("");
-    const typeSpeed = 16;
+    const typeSpeed = 80;
     let currentCharIndex = 0;
     const fadeDuration = 400;
 
-    this.cultHeadVoice.play({
-      loop: true,
-      rate: 1.1,
-    });
+    this.cultHeadDialogue = this.sound.add(
+      `cultHead${this.dialogueScene}-dialogue${index}`
+    );
 
     this.input.keyboard!.once("keydown-SPACE", () => {
-      this.dialogueText.setText(fullText);
       if (this.speechInterval) {
         clearInterval(this.speechInterval);
         this.speechInterval = null;
       }
-      this.cultHeadVoice.stop();
+      if (this.cultHeadDialogue) {
+        this.cultHeadDialogue.stop();
+        this.sound.remove(this.cultHeadDialogue);
+        this.cultHeadDialogue.destroy();
+        this.cultHeadDialogue = null;
+      }
+      this.dialogueText.setText(fullText);
       this.displayChoices(node);
     });
 
@@ -244,7 +296,6 @@ export default class CultHead extends Phaser.Scene {
           clearInterval(this.speechInterval);
           this.speechInterval = null;
         }
-        this.cultHeadVoice.stop();
         this.displayChoices(node);
         return;
       }
@@ -252,6 +303,9 @@ export default class CultHead extends Phaser.Scene {
       currentCharIndex++;
       this.dialogueText.setText(this.dialogueText.text + char);
     }, typeSpeed);
+    this.cultHeadDialogue.play({
+      volume: 1.5,
+    });
   }
 
   private displayChoices(node: DialogueNode) {
