@@ -3,7 +3,7 @@ import { DialogueNode } from "@/app/components/demonScapeTypes";
 export default class BoxGuy extends Phaser.Scene {
   public dialogueNodes: DialogueNode[] = [
     {
-      text: "Box Guy: Man I am so high right now..... and an erotic view lies before me...*His smirk grows in intensity* a beautiful day indeed.",
+      text: "Man I am so high right now..... and an erotic view lies before me...*His smirk grows in intensity* a beautiful day indeed.",
       choices: [
         {
           text: "1) Yeah... beautiful in a debaucherous, sick kind of way.",
@@ -16,7 +16,7 @@ export default class BoxGuy extends Phaser.Scene {
       ],
     },
     {
-      text: "Box Guy: Exactly! My Man!",
+      text: "Exactly! My Man!",
       choices: [
         {
           text: "1) Continue...",
@@ -25,7 +25,7 @@ export default class BoxGuy extends Phaser.Scene {
       ],
     },
     {
-      text: "Box Guy: I'm more of watch from the corner kind of demon if you know what I mean.",
+      text: "I'm more of watch from the corner kind of demon if you know what I mean.",
       choices: [
         {
           text: "1) Distgusting...",
@@ -38,7 +38,7 @@ export default class BoxGuy extends Phaser.Scene {
       ],
     },
     {
-      text: "Box Guy: Exactly! My Man!",
+      text: "Exactly! My Man!",
       choices: [
         {
           text: "1) Continue...",
@@ -47,7 +47,7 @@ export default class BoxGuy extends Phaser.Scene {
       ],
     },
     {
-      text: "Box Guy: Man I am so high right now... you could ask me anything... and I wouldn't suspect you of being a Light-Bleached or even a human or some crazy shit like that.",
+      text: "Man I am so high right now... you could ask me anything... and I wouldn't suspect you of being a Light-Bleached or even a human or some crazy shit like that.",
       choices: [
         {
           text: "1) Yeah I'm not falling for that shit.",
@@ -60,7 +60,7 @@ export default class BoxGuy extends Phaser.Scene {
       ],
     },
     {
-      text: "Box Guy: Humans? Nooooo they would be killed or possessed immediatly if they are here. Obviously. I saw one in the forest once, I guess there are a few still surviving outside cities and stuff. But damnnnn what a depressing day that was. I was too high to kill him. When I got home, I was so sad that I smoked some more.",
+      text: "Humans? Nooooo they would be killed or possessed immediatly if they are here. Obviously. I saw one in the forest once, I guess there are a few still surviving outside cities and stuff. But damnnnn what a depressing day that was. I was too high to kill him. When I got home, I was so sad that I smoked some more.",
       choices: [
         {
           text: "1) continue...",
@@ -69,7 +69,7 @@ export default class BoxGuy extends Phaser.Scene {
       ],
     },
     {
-      text: "Box Guy: Any other brimmmming questions?",
+      text: "Any other brimmmming questions?",
       choices: [
         {
           text: "1) What is a Light-Bleached?",
@@ -98,7 +98,7 @@ export default class BoxGuy extends Phaser.Scene {
       ],
     },
     {
-      text: "Box Guy: They're like that moment you take a huge hit and your mind goesss allll WHITE. I'm sure you know what I mean.",
+      text: "They're like that moment you take a huge hit and your mind goesss allll WHITE. I'm sure you know what I mean.",
       choices: [
         {
           text: "1) OK...",
@@ -107,7 +107,7 @@ export default class BoxGuy extends Phaser.Scene {
       ],
     },
     {
-      text: "Box Guy: We are in DA CATHEDRAL LE GROUND. It's a flipped over cathedral that is underground. That's right. We don't just like inverted crosses. We like INVERTED CHURCHES. It's a FATTER middle finger one might say. Also great for hotboxing. But we're in a shit poor town my dude. None of the good stuff around here. Mmmmmm actually you have more energy than most in this shithole. Unfortunate your a man...",
+      text: "We are in DA CATHEDRAL LE GROUND. It's a flipped over cathedral that is underground. That's right. We don't just like inverted crosses. We like INVERTED CHURCHES. It's a FATTER middle finger one might say. Also great for hotboxing. But we're in a shit poor town my dude. None of the good stuff around here. Mmmmmm actually you have more energy than most in this shithole. Unfortunate your a man...",
       choices: [
         {
           text: "1) OK...",
@@ -116,7 +116,7 @@ export default class BoxGuy extends Phaser.Scene {
       ],
     },
     {
-      text: "Box Guy: Who me? I just sit on boxes and get high HAHAHAH. But for real, I am SUPPOSED to be... oh wait that's a secret! Whew, It would have been a sad day if I told you... AND THEN I WOULD HAVE TO SMOKE MORE. And if I got that high I wouldn't be able to see the glorious ass before me. Man you almost got me, but not quite hehehe.",
+      text: "Who me? I just sit on boxes and get high HAHAHAH. But for real, I am SUPPOSED to be... oh wait that's a secret! Whew, It would have been a sad day if I told you... AND THEN I WOULD HAVE TO SMOKE MORE. And if I got that high I wouldn't be able to see the glorious ass before me. Man you almost got me, but not quite hehehe.",
       choices: [
         {
           text: "1) OK...",
@@ -125,7 +125,7 @@ export default class BoxGuy extends Phaser.Scene {
       ],
     },
     {
-      text: "Box Guy: Mostly dead! But we still have the final cleanzzzzing coming up. I'm sad about that though. No more flesh for my tacoes after we finish. Maybe I'll ask Baelzog to make a human farm.... nah his presence is enough to kill people like us. Maybe I'll write a letter...",
+      text: "Mostly dead! But we still have the final cleanzzzzing coming up. I'm sad about that though. No more flesh for my tacoes after we finish. Maybe I'll ask Baelzog to make a human farm.... nah his presence is enough to kill people like us. Maybe I'll write a letter...",
       choices: [
         {
           text: "1) OK...",
@@ -134,7 +134,7 @@ export default class BoxGuy extends Phaser.Scene {
       ],
     },
     {
-      text: "Box Guy: OHHHH YEAHHHH I was the first to INVERT THAT SHIT. Upside down tacoes with human flesh as meat and that sweet cockroach CRUNCH. Oh! and tomatoes... But mannnn that was a sad day. I was so high that ALFRED STOLE MY BUSINESS IDEA. Cocksucker's rich now.",
+      text: "OHHHH YEAHHHH I was the first to INVERT THAT SHIT. Upside down tacoes with human flesh as meat and that sweet cockroach CRUNCH. Oh! and tomatoes... But mannnn that was a sad day. I was so high that ALFRED STOLE MY BUSINESS IDEA. Cocksucker's rich now.",
       choices: [
         {
           text: "1) OK...",
@@ -143,7 +143,7 @@ export default class BoxGuy extends Phaser.Scene {
       ],
     },
     {
-      text: "Box Guy: Great! I've got a fat ass in the orgasmic throes of passion to stare at. Move along.",
+      text: "Great! I've got a fat ass in the orgasmic throes of passion to stare at. Move along.",
     },
   ];
 
@@ -151,6 +151,10 @@ export default class BoxGuy extends Phaser.Scene {
   public dialogueText!: Phaser.GameObjects.Text;
   public choiceTexts: Phaser.GameObjects.Text[] = [];
   public music!: Phaser.Sound.BaseSound;
+  public boxGuyVoice!: Phaser.Sound.BaseSound;
+  public speechInterval: NodeJS.Timeout | null = null;
+  public speakerName!: Phaser.GameObjects.Text;
+  public playerSpeaker!: Phaser.GameObjects.Text;
 
   constructor() {
     super({ key: "BoxGuy" });
@@ -159,6 +163,7 @@ export default class BoxGuy extends Phaser.Scene {
   preload() {
     this.load.image("boxGuyConvo", "/assets/conversations/box-guy.png");
     this.load.audio("boxGuyMusic", "/assets/music/dimension-2.mp3");
+    this.load.audio("boxGuyVoice", "/assets/sfx/boxGuyVoice.mp3");
   }
 
   create() {
@@ -179,50 +184,123 @@ export default class BoxGuy extends Phaser.Scene {
       0.4
     );
 
-    this.dialogueText = this.add.text(150, this.scale.height - 270, "", {
-      fontSize: "26px",
-      color: "#ffffff",
+    this.speakerName = this.add.text(60, this.scale.height - 278, "Box Guy:", {
+      fontFamily: "Mostean",
+      fontSize: "52px",
+      color: "#F96F5D",
+      stroke: "black",
+      strokeThickness: 1,
+    });
+
+    this.playerSpeaker = this.add.text(60, this.scale.height - 110, "You:", {
+      fontFamily: "Mostean",
+      fontSize: "52px",
+      color: "#ffcc00",
+      stroke: "black",
+      strokeThickness: 1,
+      wordWrap: { width: 200 },
+    });
+
+    this.dialogueText = this.add.text(240, this.scale.height - 270, "", {
+      fontFamily: "Mostean",
+      fontSize: "40px",
+      color: "#F96F5D",
+      stroke: "black",
+      strokeThickness: 1,
       wordWrap: { width: this.scale.width - 300 },
     });
 
     this.music = this.sound.add("boxGuyMusic", { loop: true, volume: 1 });
     this.music.play();
 
+    this.boxGuyVoice = this.sound.add("boxGuyVoice", { volume: 2 });
+
     // Show first node
     this.showNode(0);
-
-    // Input: pick choices with number keys
-    this.input.keyboard!.on("keydown", (event: KeyboardEvent) => {
-      const key = parseInt(event.key);
-      if (!isNaN(key)) {
-        const choice =
-          this.dialogueNodes[this.currentNodeIndex].choices?.[key - 1];
-        if (choice) {
-          this.showNode(choice.next);
-        }
+  }
+  // Input: pick choices with number keys
+  private onChoiceKey(event: KeyboardEvent) {
+    const key = parseInt(event.key);
+    if (!isNaN(key) && key >= 1 && key <= 9) {
+      const choice =
+        this.dialogueNodes[this.currentNodeIndex].choices?.[key - 1];
+      if (choice) {
+        // Remove listener before recursing to next node
+        this.input.keyboard!.off("keydown", this.onChoiceKey, this);
+        this.showNode(choice.next);
       }
-    });
+    }
   }
 
   private showNode(index: number) {
+    if (this.speechInterval) {
+      clearInterval(this.speechInterval);
+    }
+
     this.currentNodeIndex = index;
     const node = this.dialogueNodes[index];
 
-    this.dialogueText.setText(node.text);
+    // Clear previous text
+    this.input.keyboard!.off("keydown", this.onChoiceKey, this);
+    this.dialogueText.setText("");
+    this.choiceTexts.forEach((c) => c.destroy());
+    this.choiceTexts = [];
 
+    // === TYPEWRITER WITH FADE-IN EFFECT ===
+    const fullText = node.text;
+    const chars = fullText.split("");
+    const typeSpeed = 16;
+    let currentCharIndex = 0;
+    const fadeDuration = 400;
+
+    this.boxGuyVoice.play({
+      loop: true,
+      rate: 1.1,
+    });
+
+    this.input.keyboard!.once("keydown-SPACE", () => {
+      if (this.speechInterval) {
+        clearInterval(this.speechInterval);
+        this.speechInterval = null;
+      }
+      this.dialogueText.setText(fullText);
+      this.boxGuyVoice.stop();
+      this.displayChoices(node);
+    });
+
+    this.speechInterval = setInterval(() => {
+      if (currentCharIndex >= chars.length) {
+        if (this.speechInterval) {
+          clearInterval(this.speechInterval);
+          this.speechInterval = null;
+        }
+        this.boxGuyVoice.stop();
+        this.displayChoices(node);
+        return;
+      }
+      const char = chars[currentCharIndex];
+      currentCharIndex++;
+      this.dialogueText.setText(this.dialogueText.text + char);
+    }, typeSpeed);
+  }
+
+  private displayChoices(node: DialogueNode) {
     // Remove old choices
     this.choiceTexts.forEach((c) => c.destroy());
     this.choiceTexts = [];
 
-    // If no choices, check if end
+    // check for end of conversation
     if (!node.choices || node.choices.length === 0) {
       this.add.text(
-        180,
+        300,
         this.scale.height - 110,
         "Press space to exit conversation",
         {
-          fontSize: "24px",
+          fontFamily: "Mostean",
+          fontSize: "44px",
           color: "#ffcc00",
+          stroke: "black",
+          strokeThickness: 1,
           wordWrap: { width: this.scale.width - 300 },
         }
       );
@@ -245,12 +323,16 @@ export default class BoxGuy extends Phaser.Scene {
         spacing = 35;
       }
 
-      const choiceText = this.add.text(180, startY + i * spacing, choice.text, {
-        fontSize: "24px",
+      const choiceText = this.add.text(248, startY + i * spacing, choice.text, {
+        fontFamily: "Mostean",
+        fontSize: "32px",
         color: "#ffcc00",
+        stroke: "black",
+        strokeThickness: 1,
         wordWrap: { width: this.scale.width - 300 },
       });
       this.choiceTexts.push(choiceText);
     });
+    this.input.keyboard!.on("keydown", this.onChoiceKey, this);
   }
 }

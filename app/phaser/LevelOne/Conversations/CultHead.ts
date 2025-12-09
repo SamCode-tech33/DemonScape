@@ -3,7 +3,7 @@ import { DialogueNode } from "@/app/components/demonScapeTypes";
 export default class CultHead extends Phaser.Scene {
   public dialogue1Nodes: DialogueNode[] = [
     {
-      text: "Cult Head: You whine like fettered swine. Why?",
+      text: "You whine like fettered swine. Why?",
       choices: [
         {
           text: "1) Th-this heart in my hand. . . wh-where am I? I-I was just in my room...",
@@ -16,22 +16,21 @@ export default class CultHead extends Phaser.Scene {
       ],
     },
     {
-      text: "Cult Head: *He leans in and peers intently into your eyes* Hmm your eyes show no light, and so the bind is tight. But what pathetic words for a demon of your stature... Hell burns at the same rate as your evaporating masculinity.",
+      text: "*He leans in and peers intently into your eyes* Hmm your eyes show no light, and so the bind is tight. But what pathetic words for a demon of your stature... Hell burns at the same rate as your evaporating masculinity.",
       choices: [{ text: "1) Continue...", next: 3 }],
     },
     {
-      text: "Cult Head: *He leans in and peers intently into your eyes* Hmm your eyes show no light, and so the bind is tight. But for a demon of your stature to so brazenly speak to a Lord two-hundred years your superior... You must be having trouble grasping reality.",
+      text: "*He leans in and peers intently into your eyes* Hmm your eyes show no light, and so the bind is tight. But for a demon of your stature to so brazenly speak to a Lord two-hundred years your superior... You must be having trouble grasping reality.",
       choices: [{ text: "1) Continue...", next: 3 }],
     },
     {
-      text: "Cult Head: *His fist lights aflame and he punches you swiftly in the gut* Heal your mind or we will tear your soul for energy. Have the twins check you out. They're in the room to the right of here. We will finish without you...",
+      text: "*His fist lights aflame and he punches you swiftly in the gut* Heal your mind or we will tear your soul for energy. Have the twins check you out. They're in the room to the right of here. We will finish without you...",
       // no choices = end
     },
   ];
-
   public dialogue2Nodes: DialogueNode[] = [
     {
-      text: "Cult Head: The potion proves the bind upon this mind is in motion. However, your negligence leaves you on the fence.",
+      text: "The potion proves the bind upon this mind is in motion. However, your negligence leaves you on the fence.",
       choices: [
         {
           text: "1) You're rhyming more consistently this time.",
@@ -44,7 +43,7 @@ export default class CultHead extends Phaser.Scene {
       ],
     },
     {
-      text: "Cult Head: I lament your useless comment",
+      text: "I lament your useless comment",
       choices: [
         {
           text: "1) They said you would have killed me if I had less demonic energy...",
@@ -53,7 +52,7 @@ export default class CultHead extends Phaser.Scene {
       ],
     },
     {
-      text: "Cult Head: Yes, and after you restore you connection to this brain. From thence, you best have good sense.",
+      text: "Yes, and after you restore your connection to this brain. From thence, you best have good sense.",
       choices: [
         { text: "1) Continue...", next: 3 },
         {
@@ -63,20 +62,18 @@ export default class CultHead extends Phaser.Scene {
       ],
     },
     {
-      text: "Cult Head: I will enjoy the melting of your brain if you fail.",
+      text: "I will enjoy the melting of your brain if you fail.",
       // no choices = end
     },
   ];
-
   public dialogue3Nodes: DialogueNode[] = [
     {
-      text: "Cult Head: I will enjoy the melting of your brain if you fail.",
+      text: "I will enjoy the melting of your brain if you fail.",
     },
   ];
-
   public dialogue4Nodes: DialogueNode[] = [
     {
-      text: "Cult Head: Ah, the zombie groans have fell to silence after your swift violence. *He peers deeply into your eyes* So have you regained your wits?",
+      text: "Ah, the zombie groans have fell to silence after your swift violence. *He peers deeply into your eyes* So have you regained your wits?",
       choices: [
         {
           text: "1) No! I am telling you I am a Human!",
@@ -89,10 +86,10 @@ export default class CultHead extends Phaser.Scene {
       ],
     },
     {
-      text: "Cult Head: A pity...",
+      text: "A pity...",
     },
     {
-      text: "Cult Head: Then leave. We have much to prepare for this eve.",
+      text: "Then leave. We have much to prepare for this eve.",
     },
   ];
 
@@ -101,6 +98,11 @@ export default class CultHead extends Phaser.Scene {
   public dialogueText!: Phaser.GameObjects.Text;
   public choiceTexts: Phaser.GameObjects.Text[] = [];
   public music!: Phaser.Sound.BaseSound;
+  public cultHeadDialogue: Phaser.Sound.BaseSound | null = null;
+  public speechInterval: NodeJS.Timeout | null = null;
+  public speakerName!: Phaser.GameObjects.Text;
+  public playerSpeaker!: Phaser.GameObjects.Text;
+  public dialogueScene: number = 1;
 
   constructor() {
     super({ key: "CultHead" });
@@ -114,12 +116,15 @@ export default class CultHead extends Phaser.Scene {
         break;
       case 2:
         this.dialogueNodes = this.dialogue2Nodes;
+        this.dialogueScene = 2;
         break;
       case 3:
         this.dialogueNodes = this.dialogue3Nodes;
+        this.dialogueScene = 3;
         break;
       case 4:
         this.dialogueNodes = this.dialogue4Nodes;
+        this.dialogueScene = 4;
         break;
     }
   }
@@ -127,6 +132,54 @@ export default class CultHead extends Phaser.Scene {
   preload() {
     this.load.image("cultHeadConvo", "/assets/conversations/cultHead.png");
     this.load.audio("cultHeadMusic", "/assets/music/morbid.mp3");
+    this.load.audio(
+      "cultHead1-dialogue0",
+      "/assets/dialogue/cultHead/cultHead-dialogue0.wav"
+    );
+    this.load.audio(
+      "cultHead1-dialogue1",
+      "/assets/dialogue/cultHead/cultHead-dialogue1.wav"
+    );
+    this.load.audio(
+      "cultHead1-dialogue2",
+      "/assets/dialogue/cultHead/cultHead-dialogue2.wav"
+    );
+    this.load.audio(
+      "cultHead1-dialogue3",
+      "/assets/dialogue/cultHead/cultHead-dialogue3.wav"
+    );
+    this.load.audio(
+      "cultHead2-dialogue0",
+      "/assets/dialogue/cultHead/cultHead-dialogue4.wav"
+    );
+    this.load.audio(
+      "cultHead2-dialogue1",
+      "/assets/dialogue/cultHead/cultHead-dialogue5.wav"
+    );
+    this.load.audio(
+      "cultHead2-dialogue2",
+      "/assets/dialogue/cultHead/cultHead-dialogue6.wav"
+    );
+    this.load.audio(
+      "cultHead2-dialogue3",
+      "/assets/dialogue/cultHead/cultHead-dialogue7.wav"
+    );
+    this.load.audio(
+      "cultHead3-dialogue0",
+      "/assets/dialogue/cultHead/cultHead-dialogue7.wav"
+    );
+    this.load.audio(
+      "cultHead4-dialogue0",
+      "/assets/dialogue/cultHead/cultHead-dialogue8.wav"
+    );
+    this.load.audio(
+      "cultHead4-dialogue1",
+      "/assets/dialogue/cultHead/cultHead-dialogue9.wav"
+    );
+    this.load.audio(
+      "cultHead4-dialogue2",
+      "/assets/dialogue/cultHead/cultHead-dialogue10.wav"
+    );
   }
 
   create() {
@@ -147,9 +200,34 @@ export default class CultHead extends Phaser.Scene {
       0.4
     );
 
-    this.dialogueText = this.add.text(150, this.scale.height - 270, "", {
-      fontSize: "26px",
-      color: "#ffffff",
+    this.speakerName = this.add.text(
+      60,
+      this.scale.height - 278,
+      "Cult Head:",
+      {
+        fontFamily: "Mostean",
+        fontSize: "52px",
+        color: "red",
+        stroke: "black",
+        strokeThickness: 1,
+        wordWrap: { width: 200 },
+      }
+    );
+
+    this.playerSpeaker = this.add.text(60, this.scale.height - 110, "You:", {
+      fontFamily: "Mostean",
+      fontSize: "52px",
+      color: "#ffcc00",
+      stroke: "black",
+      strokeThickness: 1,
+    });
+
+    this.dialogueText = this.add.text(240, this.scale.height - 270, "", {
+      fontFamily: "Mostean",
+      fontSize: "40px",
+      color: "red",
+      stroke: "black",
+      strokeThickness: 1,
       wordWrap: { width: this.scale.width - 300 },
     });
 
@@ -158,39 +236,95 @@ export default class CultHead extends Phaser.Scene {
 
     // Show first node
     this.showNode(0);
+  }
 
-    // Input: pick choices with number keys
-    this.input.keyboard!.on("keydown", (event: KeyboardEvent) => {
-      const key = parseInt(event.key);
-      if (!isNaN(key)) {
-        const choice =
-          this.dialogueNodes[this.currentNodeIndex].choices?.[key - 1];
-        if (choice) {
-          this.showNode(choice.next);
-        }
+  // Input: pick choices with number keys
+  private onChoiceKey(event: KeyboardEvent) {
+    const key = parseInt(event.key);
+    if (!isNaN(key) && key >= 1 && key <= 9) {
+      const choice =
+        this.dialogueNodes[this.currentNodeIndex].choices?.[key - 1];
+      if (choice) {
+        // Remove listener before recursing to next node
+        this.input.keyboard!.off("keydown", this.onChoiceKey, this);
+        this.showNode(choice.next);
       }
-    });
+    }
   }
 
   private showNode(index: number) {
     this.currentNodeIndex = index;
     const node = this.dialogueNodes[index];
 
-    this.dialogueText.setText(node.text);
+    this.input.keyboard!.removeListener("keydown-SPACE");
 
+    // Clear previous text
+    this.input.keyboard!.off("keydown", this.onChoiceKey, this);
+    this.dialogueText.setText("");
+    this.choiceTexts.forEach((c) => c.destroy());
+    this.choiceTexts = [];
+
+    // === TYPEWRITER WITH FADE-IN EFFECT ===
+    const fullText = node.text;
+    const chars = fullText.split("");
+    const typeSpeed = 80;
+    let currentCharIndex = 0;
+    const fadeDuration = 400;
+
+    this.cultHeadDialogue = this.sound.add(
+      `cultHead${this.dialogueScene}-dialogue${index}`
+    );
+
+    this.input.keyboard!.once("keydown-SPACE", () => {
+      if (this.speechInterval) {
+        clearInterval(this.speechInterval);
+        this.speechInterval = null;
+      }
+      if (this.cultHeadDialogue) {
+        this.cultHeadDialogue.stop();
+        this.sound.remove(this.cultHeadDialogue);
+        this.cultHeadDialogue.destroy();
+        this.cultHeadDialogue = null;
+      }
+      this.dialogueText.setText(fullText);
+      this.displayChoices(node);
+    });
+
+    this.speechInterval = setInterval(() => {
+      if (currentCharIndex >= chars.length) {
+        if (this.speechInterval) {
+          clearInterval(this.speechInterval);
+          this.speechInterval = null;
+        }
+        this.displayChoices(node);
+        return;
+      }
+      const char = chars[currentCharIndex];
+      currentCharIndex++;
+      this.dialogueText.setText(this.dialogueText.text + char);
+    }, typeSpeed);
+    this.cultHeadDialogue.play({
+      volume: 1.5,
+    });
+  }
+
+  private displayChoices(node: DialogueNode) {
     // Remove old choices
     this.choiceTexts.forEach((c) => c.destroy());
     this.choiceTexts = [];
 
-    // If no choices, check if end
+    // check for end of conversation
     if (!node.choices || node.choices.length === 0) {
       this.add.text(
-        180,
+        300,
         this.scale.height - 110,
         "Press space to exit conversation",
         {
-          fontSize: "24px",
+          fontFamily: "Mostean",
+          fontSize: "44px",
           color: "#ffcc00",
+          stroke: "black",
+          strokeThickness: 1,
           wordWrap: { width: this.scale.width - 300 },
         }
       );
@@ -198,7 +332,7 @@ export default class CultHead extends Phaser.Scene {
       this.input.keyboard!.once("keydown-SPACE", () => {
         this.music.stop();
 
-        // Determine how to resume SceneOne based on current node
+        // Determine how to resume based on current node
         const resumeData =
           this.currentNodeIndex === 1
             ? { from: "PlayerDeath" } // node 1 → loss
@@ -213,16 +347,20 @@ export default class CultHead extends Phaser.Scene {
     // Show new choices
     node.choices.forEach((choice, i) => {
       const choiceText = this.add.text(
-        180,
+        248,
         this.scale.height - 110 + i * 40,
         choice.text,
         {
-          fontSize: "24px",
+          fontFamily: "Mostean",
+          fontSize: "32px",
           color: "#ffcc00",
+          stroke: "black",
+          strokeThickness: 1,
           wordWrap: { width: this.scale.width - 300 },
         }
       );
       this.choiceTexts.push(choiceText);
     });
+    this.input.keyboard!.on("keydown", this.onChoiceKey, this);
   }
 }

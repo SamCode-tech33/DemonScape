@@ -2,7 +2,7 @@ import { PlayerStats, DialogueNode } from "@/app/components/demonScapeTypes";
 export default class SaraOne extends Phaser.Scene {
   public dialogue1Nodes: DialogueNode[] = [
     {
-      text: "Sara: ughh what? I'm busy.",
+      text: "ughh what? I'm busy.",
       choices: [
         {
           text: "1) I just drank this strange potion and I don't really know what is going on but I... passed. My um 'husk's' brain was the issue. Those um 'twins' said I should talk to you about taking the soul fragments from these zombies to heal?",
@@ -15,7 +15,7 @@ export default class SaraOne extends Phaser.Scene {
       ],
     },
     {
-      text: "Sara: tch that bitch whore... She's jealous of my skill. Damnit. acting like that... your husk is probably short-circuiting your conciousness...",
+      text: "That bitch whore... She's jealous of my skill. Damnit. acting like that... look, your husk is probably short-circuiting your conciousness...",
       choices: [
         {
           text: "1) Excuse me, my conciousness? Oh... yeah that alchemist mentioned there was a bad integration or husk damage.",
@@ -28,7 +28,7 @@ export default class SaraOne extends Phaser.Scene {
       ],
     },
     {
-      text: "Sara: Yeah I don't care about any of that. Damnit your husk is probably short-circuiting your conciousness...",
+      text: "Yeah I don't care about any of that. Damnit your husk is probably short-circuiting your conciousness...",
       choices: [
         {
           text: "1) Excuse me, my conciousness? Oh... yeah that alchemist mentioned there was a bad integration or husk damage.",
@@ -41,11 +41,11 @@ export default class SaraOne extends Phaser.Scene {
       ],
     },
     {
-      text: "Sara: *She smirks* Oh so she probably gave you temporary control back... pathetic that you messed up something so basic.",
+      text: "*She smirks* Oh so she probably gave you temporary control back... pathetic that you messed up something so basic.",
       choices: [{ text: "1) Continue...", next: 5 }],
     },
     {
-      text: "Sara: It clearly isn't and neither is your logic. Tell me, is it more likely that every being in this room is crazy and just YOU are sane or is it more likely your the crazy one? Take all the time you need.",
+      text: "It clearly isn't and neither is your logic. Tell me, is it more likely that every being in this room is crazy and just YOU are sane or is it more likely your the crazy one? Take all the time you need.",
       choices: [
         {
           text: "1) And if you gaze long enough into the abyss of collective folly, you may find that you alone still see clearly.",
@@ -54,30 +54,30 @@ export default class SaraOne extends Phaser.Scene {
       ],
     },
     {
-      text: "Sara: Damnit, do you know how long it took me to program these soul fragments to fight... ughh fine, Maelvoth would have just killed you instead of making you drink that potion, but you have quite a lot of demonic energy, which makes it even stranger that you didn't integrate the possession correctly...",
+      text: "Damnit, do you know how long it took me to program these soul fragments to fight... ughh fine, Maelvoth would have just killed you instead of making you drink that potion, but you have quite a lot of demonic energy, which makes it even stranger that you didn't integrate the possession correctly...",
       choices: [{ text: "1) Continue...", next: 7 }],
     },
     {
-      text: "Sara: Ok Mr. Nietzsche... Look, your spirit is filtered through the mind's circuits. Either you didn't properly rewrite the brain on possesion... or damnit who prepared this body for you? Right you wouldn't know...",
+      text: "Ok Mr. Nietzsche... Look, your spirit is filtered through the mind's circuits. Either you didn't properly rewrite the brain on possesion... or damnit who prepared this body for you? Right you wouldn't know...",
       choices: [{ text: "1) Continue...", next: 5 }],
     },
     {
-      text: "Sara: Maelvoth probably assumes he'll be killed by his superiors if he killed you before the final cleansing. Damn politics... I'll let you kill them, but I'm activating them. I'm sure if mere zombies are able to kill you, no one will complain... good luck.",
+      text: "Maelvoth probably assumes he'll be killed by his superiors if he killed you before the final cleansing. Damn politics... I'll let you kill them, but I'm activating them. I'm sure if mere zombies are able to kill you, no one will complain... good luck.",
     },
   ];
   public dialogue2Nodes: DialogueNode[] = [
     {
-      text: "Sara: Go on now. Defeat my pets if you can. Be warned, they'll attack you upon your first hit.",
+      text: "Go on now. Defeat my pets if you can. Be warned, they'll attack you upon your first hit.",
     },
   ];
   public dialogue3Nodes: DialogueNode[] = [
     {
-      text: "Sara: Hehehe, I forgot to mention there is... one more *Sara Winks at you* Careful though, he's an angry boy.",
+      text: "Ohhhh, did I forget to mention, there is... one more *Sara Winks at you* Careful though, he's an angry boy.",
     },
   ];
   public dialogue4Nodes: DialogueNode[] = [
     {
-      text: "Sara: Wow, you beat them. Ok you've only proven your stronger than a human... wow and you had to waste my pets for it... *Sigh* anyways, you probably felt demonic energy enter your body as you fought. Go report to Maelvoth that you've gained full control again. Leave me be.",
+      text: "Wow, you beat them. Ok you've only proven your stronger than a human... and you had to waste my pets for it... *Sigh* anyways, you probably felt demonic energy enter your body as you fought. Go report to Maelvoth that you've gained full control again. And leave me be.",
       choices: [
         {
           text: "1) Yes... I am um in control fully once again.",
@@ -90,10 +90,10 @@ export default class SaraOne extends Phaser.Scene {
       ],
     },
     {
-      text: "Sara: ...I hope you remember how to fight. Heheheh you actually jumped on his head, moron. unbelievable we are saving you. At least learn some magic sheesh, find a scroll or something.",
+      text: "...I hope you remember how to fight. Heheheh you actually jumped on his head, moron. unbelievable we are saving you. At least learn some magic, find a scroll or something.",
     },
     {
-      text: "Sara: Yes, and if you had died to a mere Zombie, no one would have cared.",
+      text: "Yes, and if you had died to a mere Zombie, no one would have cared.",
       choices: [
         {
           text: "1) Continue...",
@@ -108,7 +108,12 @@ export default class SaraOne extends Phaser.Scene {
   public dialogueText!: Phaser.GameObjects.Text;
   public choiceTexts: Phaser.GameObjects.Text[] = [];
   public music!: Phaser.Sound.BaseSound;
+  public saraDialogue: Phaser.Sound.BaseSound | null = null;
+  public speechInterval: NodeJS.Timeout | null = null;
   public bossFight: boolean = false;
+  public speakerName!: Phaser.GameObjects.Text;
+  public playerSpeaker!: Phaser.GameObjects.Text;
+  public dialogueScene: number = 1;
   playerStats!: PlayerStats;
 
   constructor() {
@@ -122,9 +127,11 @@ export default class SaraOne extends Phaser.Scene {
         break;
       case 2:
         this.dialogueNodes = this.dialogue2Nodes;
+        this.dialogueScene = 2;
         break;
       case 3:
         this.dialogueNodes = this.dialogue3Nodes;
+        this.dialogueScene = 3;
         this.bossFight = true;
 
         this.playerStats = {
@@ -137,6 +144,7 @@ export default class SaraOne extends Phaser.Scene {
         break;
       case 4:
         this.dialogueNodes = this.dialogue4Nodes;
+        this.dialogueScene = 4;
         break;
     }
   }
@@ -144,6 +152,58 @@ export default class SaraOne extends Phaser.Scene {
   preload() {
     this.load.image("SaraOneConvo", "/assets/conversations/sara.png");
     this.load.audio("SaraOneMusic", "/assets/music/fogTrees.mp3");
+    this.load.audio(
+      "sara1-dialogue0",
+      "/assets/dialogue/sara/sara-dialogue1.wav"
+    );
+    this.load.audio(
+      "sara1-dialogue1",
+      "/assets/dialogue/sara/sara-dialogue2.wav"
+    );
+    this.load.audio(
+      "sara1-dialogue2",
+      "/assets/dialogue/sara/sara-dialogue3.wav"
+    );
+    this.load.audio(
+      "sara1-dialogue3",
+      "/assets/dialogue/sara/sara-dialogue4.wav"
+    );
+    this.load.audio(
+      "sara1-dialogue4",
+      "/assets/dialogue/sara/sara-dialogue5.wav"
+    );
+    this.load.audio(
+      "sara1-dialogue5",
+      "/assets/dialogue/sara/sara-dialogue6.wav"
+    );
+    this.load.audio(
+      "sara1-dialogue6",
+      "/assets/dialogue/sara/sara-dialogue7.wav"
+    );
+    this.load.audio(
+      "sara1-dialogue7",
+      "/assets/dialogue/sara/sara-dialogue8.wav"
+    );
+    this.load.audio(
+      "sara2-dialogue0",
+      "/assets/dialogue/sara/sara-dialogue9.wav"
+    );
+    this.load.audio(
+      "sara3-dialogue0",
+      "/assets/dialogue/sara/sara-dialogue10.wav"
+    );
+    this.load.audio(
+      "sara4-dialogue0",
+      "/assets/dialogue/sara/sara-dialogue11.wav"
+    );
+    this.load.audio(
+      "sara4-dialogue1",
+      "/assets/dialogue/sara/sara-dialogue12.wav"
+    );
+    this.load.audio(
+      "sara4-dialogue2",
+      "/assets/dialogue/sara/sara-dialogue13.wav"
+    );
   }
 
   create() {
@@ -165,9 +225,29 @@ export default class SaraOne extends Phaser.Scene {
       0.4
     );
 
-    this.dialogueText = this.add.text(150, this.scale.height - 270, "", {
-      fontSize: "26px",
-      color: "#ffffff",
+    this.speakerName = this.add.text(60, this.scale.height - 278, "Sara:", {
+      fontFamily: "Mostean",
+      fontSize: "52px",
+      color: "pink",
+      stroke: "black",
+      strokeThickness: 0.5,
+      wordWrap: { width: 200 },
+    });
+
+    this.playerSpeaker = this.add.text(60, this.scale.height - 110, "You:", {
+      fontFamily: "Mostean",
+      fontSize: "52px",
+      color: "#ffcc00",
+      stroke: "black",
+      strokeThickness: 1,
+    });
+
+    this.dialogueText = this.add.text(240, this.scale.height - 270, "", {
+      fontFamily: "Mostean",
+      fontSize: "40px",
+      color: "pink",
+      stroke: "#CCC5C5",
+      strokeThickness: 0.5,
       wordWrap: { width: this.scale.width - 300 },
     });
 
@@ -176,39 +256,97 @@ export default class SaraOne extends Phaser.Scene {
 
     // Show first node
     this.showNode(0);
+  }
 
-    // Input: pick choices with number keys
-    this.input.keyboard!.on("keydown", (event: KeyboardEvent) => {
-      const key = parseInt(event.key);
-      if (!isNaN(key)) {
-        const choice =
-          this.dialogueNodes[this.currentNodeIndex].choices?.[key - 1];
-        if (choice) {
-          this.showNode(choice.next);
-        }
+  // Input: pick choices with number keys
+  private onChoiceKey(event: KeyboardEvent) {
+    const key = parseInt(event.key);
+    if (!isNaN(key) && key >= 1 && key <= 9) {
+      const choice =
+        this.dialogueNodes[this.currentNodeIndex].choices?.[key - 1];
+      if (choice) {
+        // Remove listener before recursing to next node
+        this.input.keyboard!.off("keydown", this.onChoiceKey, this);
+        this.showNode(choice.next);
       }
-    });
+    }
   }
 
   private showNode(index: number) {
+    if (this.speechInterval) {
+      clearInterval(this.speechInterval);
+    }
+
+    this.input.keyboard!.removeListener("keydown-SPACE");
+
     this.currentNodeIndex = index;
     const node = this.dialogueNodes[index];
 
-    this.dialogueText.setText(node.text);
+    // Clear previous text
+    this.input.keyboard!.off("keydown", this.onChoiceKey, this);
+    this.dialogueText.setText("");
+    this.choiceTexts.forEach((c) => c.destroy());
+    this.choiceTexts = [];
 
+    // === TYPEWRITER WITH FADE-IN EFFECT ===
+    const fullText = node.text;
+    const chars = fullText.split("");
+    const typeSpeed = 80;
+    let currentCharIndex = 0;
+    const fadeDuration = 400;
+
+    this.saraDialogue = this.sound.add(
+      `sara${this.dialogueScene}-dialogue${index}`
+    );
+
+    this.input.keyboard!.once("keydown-SPACE", () => {
+      if (this.speechInterval) {
+        clearInterval(this.speechInterval);
+        this.speechInterval = null;
+      }
+      if (this.saraDialogue) {
+        this.saraDialogue.stop();
+        this.sound.remove(this.saraDialogue);
+        this.saraDialogue.destroy();
+        this.saraDialogue = null;
+      }
+      this.dialogueText.setText(fullText);
+      this.displayChoices(node);
+    });
+
+    this.speechInterval = setInterval(() => {
+      if (currentCharIndex >= chars.length) {
+        if (this.speechInterval) {
+          clearInterval(this.speechInterval);
+          this.speechInterval = null;
+        }
+        this.displayChoices(node);
+        return;
+      }
+      const char = chars[currentCharIndex];
+      currentCharIndex++;
+      this.dialogueText.setText(this.dialogueText.text + char);
+    }, typeSpeed);
+    this.saraDialogue.play();
+  }
+
+  private displayChoices(node: DialogueNode) {
     // Remove old choices
     this.choiceTexts.forEach((c) => c.destroy());
     this.choiceTexts = [];
 
-    // If no choices, check if end
+    // check for end of conversation
     if (!node.choices || node.choices.length === 0) {
       this.add.text(
-        180,
+        300,
         this.scale.height - 110,
         "Press space to exit conversation",
         {
-          fontSize: "24px",
+          fontFamily: "Mostean",
+          fontSize: "44px",
           color: "#ffcc00",
+          stroke: "black",
+          strokeThickness: 1,
           wordWrap: { width: this.scale.width - 300 },
         }
       );
@@ -239,16 +377,20 @@ export default class SaraOne extends Phaser.Scene {
     // Show new choices
     node.choices.forEach((choice, i) => {
       const choiceText = this.add.text(
-        180,
-        this.scale.height - 145 + i * 80,
+        248,
+        this.scale.height - 128 + i * 44,
         choice.text,
         {
-          fontSize: "24px",
+          fontFamily: "Mostean",
+          fontSize: "32px",
           color: "#ffcc00",
+          stroke: "black",
+          strokeThickness: 1,
           wordWrap: { width: this.scale.width - 300 },
         }
       );
       this.choiceTexts.push(choiceText);
     });
+    this.input.keyboard!.on("keydown", this.onChoiceKey, this);
   }
 }
