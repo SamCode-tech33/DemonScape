@@ -50,5 +50,7 @@ export interface DialogueChoice {
 
 export interface DialogueNode {
   text: string;
+  dialogueLine: string;
+  emote: string;
   choices?: DialogueChoice[];
 }
