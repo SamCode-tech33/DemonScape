@@ -173,7 +173,7 @@ export default class Ghost extends Phaser.Scene {
   public speakerName!: Phaser.GameObjects.Text;
   public playerSpeaker!: Phaser.GameObjects.Text;
   public emoteText!: Phaser.GameObjects.Text;
-  public emoteBg!: Phaser.GameObjects.Text;
+  public emoteBg!: Phaser.GameObjects.Rectangle;
 
   constructor() {
     super({ key: "Ghost" });
