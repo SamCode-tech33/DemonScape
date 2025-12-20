@@ -227,6 +227,7 @@ export default class AlchTwins extends Phaser.Scene {
   public speakerName!: Phaser.GameObjects.Text;
   public playerSpeaker!: Phaser.GameObjects.Text;
   public emoteText!: Phaser.GameObjects.Text;
+  public emoteBg!: Phaser.GameObjects.Text;
   public dialogueScene: number = 1;
 
   constructor() {
@@ -375,12 +376,39 @@ export default class AlchTwins extends Phaser.Scene {
       wordWrap: { width: this.scale.width - 300 },
     });
 
+    this.emoteBg = this.add.rectangle(
+      this.scale.width / 2,
+      this.scale.height - this.scale.height,
+      this.scale.width,
+      140,
+      0x000000,
+      0.4
+    );
+
     this.emoteText = this.add.text(0, 15, "", {
       fontFamily: "Mostean",
-      fontSize: "44px",
+      fontSize: "48px",
       color: "white",
-      stroke: "black",
+      stroke: "yellow",
       strokeThickness: 1,
+    });
+
+    this.emoteText.setAlpha(0);
+
+    this.tweens.add({
+      targets: this.emoteText,
+      alpha: 1,
+      duration: 1500,
+      ease: "Power2",
+      onComplete: () => {
+        this.tweens.add({
+          targets: this.emoteText,
+          alpha: 0.33,
+          duration: 1500,
+          yoyo: true,
+          repeat: -1,
+        });
+      },
     });
 
     this.music = this.sound.add("TwinDemonsMusic", { loop: true, volume: 1 });
@@ -468,9 +496,11 @@ export default class AlchTwins extends Phaser.Scene {
       this.seuthalaDialogue.play();
     }
     if (this.dialogueNodes[index].emote) {
+      this.emoteBg.setVisible(true);
       this.emoteText.setText(this.dialogueNodes[index].emote);
       this.emoteText.setX(this.scale.width / 2 - this.emoteText.width / 2);
     } else {
+      this.emoteBg.setVisible(false);
       this.emoteText.setText("");
     }
   }

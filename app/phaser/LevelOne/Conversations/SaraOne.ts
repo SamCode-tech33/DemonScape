@@ -4,7 +4,7 @@ export default class SaraOne extends Phaser.Scene {
     {
       text: "ughh what? I'm busy.",
       emote: "",
-      dialogueLine: "",
+      dialogueLine: "sara-line-0",
       choices: [
         {
           text: "1) I just drank this strange potion and I don't really know what is going on but I... passed. My um 'husk's' brain was the issue. Those um 'twins' said I should talk to you about taking the soul fragments from these zombies to heal?",
@@ -19,7 +19,7 @@ export default class SaraOne extends Phaser.Scene {
     {
       text: "That bitch whore... She's jealous of my skill. Damnit. acting like that... look, your husk is probably short-circuiting your conciousness...",
       emote: "",
-      dialogueLine: "",
+      dialogueLine: "sara-line-1",
       choices: [
         {
           text: "1) Excuse me, my conciousness? Oh... yeah that alchemist mentioned there was a bad integration or husk damage.",
@@ -34,7 +34,7 @@ export default class SaraOne extends Phaser.Scene {
     {
       text: "Yeah I don't care about any of that. Damnit your husk is probably short-circuiting your conciousness...",
       emote: "",
-      dialogueLine: "",
+      dialogueLine: "sara-line-2",
       choices: [
         {
           text: "1) Excuse me, my conciousness? Oh... yeah that alchemist mentioned there was a bad integration or husk damage.",
@@ -49,13 +49,13 @@ export default class SaraOne extends Phaser.Scene {
     {
       text: "Oh so she probably gave you temporary control back... pathetic that you messed up something so basic.",
       emote: "*She smirks*",
-      dialogueLine: "",
+      dialogueLine: "sara-line-3",
       choices: [{ text: "1) Continue...", next: 5 }],
     },
     {
       text: "It clearly isn't and neither is your logic. Tell me, is it more likely that every being in this room is crazy and just YOU are sane or is it more likely your the crazy one? Take all the time you need.",
       emote: "",
-      dialogueLine: "",
+      dialogueLine: "sara-line-4",
       choices: [
         {
           text: "1) And if you gaze long enough into the abyss of collective folly, you may find that you alone still see clearly.",
@@ -66,40 +66,40 @@ export default class SaraOne extends Phaser.Scene {
     {
       text: "Damnit, do you know how long it took me to program these soul fragments to fight... ughh fine, Maelvoth would have just killed you instead of making you drink that potion, but you have quite a lot of demonic energy, which makes it even stranger that you didn't integrate the possession correctly...",
       emote: "",
-      dialogueLine: "",
+      dialogueLine: "sara-line-5",
       choices: [{ text: "1) Continue...", next: 7 }],
     },
     {
       text: "Ok Mr. Nietzsche... Look, your spirit is filtered through the mind's circuits. Either you didn't properly rewrite the brain on possesion... or damnit who prepared this body for you? Right you wouldn't know...",
       emote: "",
-      dialogueLine: "",
+      dialogueLine: "sara-line-6",
       choices: [{ text: "1) Continue...", next: 5 }],
     },
     {
       text: "Maelvoth probably assumes he'll be killed by his superiors if he killed you before the final cleansing. Damn politics... I'll let you kill them, but I'm activating them. I'm sure if mere zombies are able to kill you, no one will complain... good luck.",
       emote: "",
-      dialogueLine: "",
+      dialogueLine: "sara-line-7",
     },
   ];
   public dialogue2Nodes: DialogueNode[] = [
     {
       text: "Go on now. Defeat my pets if you can. Be warned, they'll attack you upon your first hit.",
       emote: "",
-      dialogueLine: "",
+      dialogueLine: "sara-line-8",
     },
   ];
   public dialogue3Nodes: DialogueNode[] = [
     {
       text: "Ohhhh, did I forget to mention, there is... one more. Careful though, he's an angry boy.",
       emote: "*Sara Winks at you*",
-      dialogueLine: "",
+      dialogueLine: "sara-line-9",
     },
   ];
   public dialogue4Nodes: DialogueNode[] = [
     {
       text: "Wow, you beat them. Ok you've only proven your stronger than a human... and you had to waste my pets for it... anyways, you probably felt demonic energy enter your body as you fought. Go report to Maelvoth that you've gained full control again. And leave me be.",
       emote: "*She sighs*",
-      dialogueLine: "",
+      dialogueLine: "sara-line-10",
       choices: [
         {
           text: "1) Yes... I am um in control fully once again.",
@@ -114,12 +114,12 @@ export default class SaraOne extends Phaser.Scene {
     {
       text: "...I hope you remember how to fight. Heheheh you actually jumped on his head, moron. unbelievable we are saving you. At least learn some magic, find a scroll or something.",
       emote: "",
-      dialogueLine: "",
+      dialogueLine: "sara-line-11",
     },
     {
       text: "Yes, and if you had died to a mere Zombie, no one would have cared.",
       emote: "",
-      dialogueLine: "",
+      dialogueLine: "sara-line-12",
       choices: [
         {
           text: "1) Continue...",
@@ -139,6 +139,8 @@ export default class SaraOne extends Phaser.Scene {
   public bossFight: boolean = false;
   public speakerName!: Phaser.GameObjects.Text;
   public playerSpeaker!: Phaser.GameObjects.Text;
+  public emoteText!: Phaser.GameObjects.Text;
+  public emoteBg!: Phaser.GameObjects.Rectangle;
   public dialogueScene: number = 1;
   playerStats!: PlayerStats;
 
@@ -178,56 +180,26 @@ export default class SaraOne extends Phaser.Scene {
   preload() {
     this.load.image("SaraOneConvo", "/assets/conversations/sara.png");
     this.load.audio("SaraOneMusic", "/assets/music/fogTrees.mp3");
+    this.load.audio("sara-line-0", "/assets/dialogue/sara/sara-dialogue1.wav");
+    this.load.audio("sara-line-1", "/assets/dialogue/sara/sara-dialogue2.wav");
+    this.load.audio("sara-line-2", "/assets/dialogue/sara/sara-dialogue3.wav");
+    this.load.audio("sara-line-3", "/assets/dialogue/sara/sara-dialogue4.wav");
+    this.load.audio("sara-line-4", "/assets/dialogue/sara/sara-dialogue5.wav");
+    this.load.audio("sara-line-5", "/assets/dialogue/sara/sara-dialogue6.wav");
+    this.load.audio("sara-line-6", "/assets/dialogue/sara/sara-dialogue7.wav");
+    this.load.audio("sara-line-7", "/assets/dialogue/sara/sara-dialogue8.wav");
+    this.load.audio("sara-line-8", "/assets/dialogue/sara/sara-dialogue9.wav");
+    this.load.audio("sara-line-9", "/assets/dialogue/sara/sara-dialogue10.wav");
     this.load.audio(
-      "sara1-dialogue0",
-      "/assets/dialogue/sara/sara-dialogue1.wav"
-    );
-    this.load.audio(
-      "sara1-dialogue1",
-      "/assets/dialogue/sara/sara-dialogue2.wav"
-    );
-    this.load.audio(
-      "sara1-dialogue2",
-      "/assets/dialogue/sara/sara-dialogue3.wav"
-    );
-    this.load.audio(
-      "sara1-dialogue3",
-      "/assets/dialogue/sara/sara-dialogue4.wav"
-    );
-    this.load.audio(
-      "sara1-dialogue4",
-      "/assets/dialogue/sara/sara-dialogue5.wav"
-    );
-    this.load.audio(
-      "sara1-dialogue5",
-      "/assets/dialogue/sara/sara-dialogue6.wav"
-    );
-    this.load.audio(
-      "sara1-dialogue6",
-      "/assets/dialogue/sara/sara-dialogue7.wav"
-    );
-    this.load.audio(
-      "sara1-dialogue7",
-      "/assets/dialogue/sara/sara-dialogue8.wav"
-    );
-    this.load.audio(
-      "sara2-dialogue0",
-      "/assets/dialogue/sara/sara-dialogue9.wav"
-    );
-    this.load.audio(
-      "sara3-dialogue0",
-      "/assets/dialogue/sara/sara-dialogue10.wav"
-    );
-    this.load.audio(
-      "sara4-dialogue0",
+      "sara-line-10",
       "/assets/dialogue/sara/sara-dialogue11.wav"
     );
     this.load.audio(
-      "sara4-dialogue1",
+      "sara-line-11",
       "/assets/dialogue/sara/sara-dialogue12.wav"
     );
     this.load.audio(
-      "sara4-dialogue2",
+      "sara-line-12",
       "/assets/dialogue/sara/sara-dialogue13.wav"
     );
   }
@@ -277,6 +249,41 @@ export default class SaraOne extends Phaser.Scene {
       wordWrap: { width: this.scale.width - 300 },
     });
 
+    this.emoteBg = this.add.rectangle(
+      this.scale.width / 2,
+      this.scale.height - this.scale.height,
+      this.scale.width,
+      140,
+      0x000000,
+      0.4
+    );
+
+    this.emoteText = this.add.text(0, 15, "", {
+      fontFamily: "Mostean",
+      fontSize: "48px",
+      color: "white",
+      stroke: "yellow",
+      strokeThickness: 1,
+    });
+
+    this.emoteText.setAlpha(0);
+
+    this.tweens.add({
+      targets: this.emoteText,
+      alpha: 1,
+      duration: 1500,
+      ease: "Power2",
+      onComplete: () => {
+        this.tweens.add({
+          targets: this.emoteText,
+          alpha: 0.33,
+          duration: 1500,
+          yoyo: true,
+          repeat: -1,
+        });
+      },
+    });
+
     this.music = this.sound.add("SaraOneMusic", { loop: true, volume: 1 });
     this.music.play();
 
@@ -321,9 +328,7 @@ export default class SaraOne extends Phaser.Scene {
     let currentCharIndex = 0;
     const fadeDuration = 400;
 
-    this.saraDialogue = this.sound.add(
-      `sara${this.dialogueScene}-dialogue${index}`
-    );
+    this.saraDialogue = this.sound.add(`sara-line-${index}`);
 
     this.input.keyboard!.once("keydown-SPACE", () => {
       if (this.speechInterval) {
@@ -354,6 +359,14 @@ export default class SaraOne extends Phaser.Scene {
       this.dialogueText.setText(this.dialogueText.text + char);
     }, typeSpeed);
     this.saraDialogue.play();
+    if (this.dialogueNodes[index].emote) {
+      this.emoteBg.setVisible(true);
+      this.emoteText.setText(this.dialogueNodes[index].emote);
+      this.emoteText.setX(this.scale.width / 2 - this.emoteText.width / 2);
+    } else {
+      this.emoteBg.setVisible(false);
+      this.emoteText.setText("");
+    }
   }
 
   private displayChoices(node: DialogueNode) {
