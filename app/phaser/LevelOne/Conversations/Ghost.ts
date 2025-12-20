@@ -2,7 +2,9 @@ import { DialogueNode } from "@/app/components/demonScapeTypes";
 export default class Ghost extends Phaser.Scene {
   public dialogueNodes: DialogueNode[] = [
     {
-      text: "YOU TOOK IT FROM ME! MY HUSK! ILL KILL YOU ILL KILL YOU ILL KILL YOU... *His punches phase right through you*",
+      text: "YOU TOOK IT FROM ME! MY HUSK! ILL KILL YOU ILL KILL YOU ILL KILL YOU...",
+      emote: "*His punches phase right through you*",
+      dialogueLine: "",
       choices: [
         {
           text: "1) Whoh what the hell are you?",
@@ -15,7 +17,9 @@ export default class Ghost extends Phaser.Scene {
       ],
     },
     {
-      text: "AHkHEMM *Blood sprays out of his mouth. *You whince but it simply phases through your face* So you can see me... That means, no that is impossible!",
+      text: "AHkHEMM *Blood sprays out of his mouth. So you can see me... That means, no that is impossible!",
+      emote: "*You whince but it simply phases through your face*",
+      dialogueLine: "",
       choices: [
         {
           text: "1) What is impossible? Some other guy seemed surprised I saw him too",
@@ -29,6 +33,8 @@ export default class Ghost extends Phaser.Scene {
     },
     {
       text: "But your energy is demonic. Wait, if your demonic and in a husk with the vision to see me... ARE YOU LIGHT-BLEACHED?",
+      emote: "",
+      dialogueLine: "",
       choices: [
         {
           text: "1) Ok what the hell does 'Light-Bleached' mean? No one will give me a straight answer.",
@@ -42,6 +48,8 @@ export default class Ghost extends Phaser.Scene {
     },
     {
       text: "NO DON'T LEAVE! GIVE IT BACK. THE VOID IS PULLING ME BACK. SLOWLY this world is killing me.",
+      emote: "",
+      dialogueLine: "",
       choices: [
         {
           text: "1) I'm pretty sure I am human. This body is mine.",
@@ -55,6 +63,8 @@ export default class Ghost extends Phaser.Scene {
     },
     {
       text: "The physical body blocks spiritual sight unless your a Light-Bleached or powerful demon... DAMN MAELVOTH, I knew he was a fake. Didn't even sense me in the slightest. And now this world is going to kill me. DAMNIT NO ONE IN THIS SHITTY TOWN HAS ENOUGH ENERGY TO SEND ME BACK BETWEEN...let alone see me.",
+      emote: "",
+      dialogueLine: "",
       choices: [
         {
           text: "1) Hah, but I can see you.",
@@ -68,6 +78,8 @@ export default class Ghost extends Phaser.Scene {
     },
     {
       text: "HAH no. Your eyes tell me you are a demon... or perhaps a Light-Bleached in disguise. But no you have to be a demon. Is your husk short circuiting your control? HAH serves you right for stealing my husk... bitch.",
+      emote: "",
+      dialogueLine: "",
       choices: [
         {
           text: "1) But you just said earlier that demons can't see you, which doesn't make any sense by the way.",
@@ -81,6 +93,8 @@ export default class Ghost extends Phaser.Scene {
     },
     {
       text: "AHHHHH yes that's it. You are powerful enough to send me back between! And you owe me. It's the least you can do after stealing my husk and damning me to the void... please? I'll serve you for a lifetime.",
+      emote: "",
+      dialogueLine: "",
       choices: [
         {
           text: "1) A servent for life you say... hmmm that sounds nice but I don't even know what the 'between' is. Obviously I don't know how to send you there.",
@@ -94,6 +108,8 @@ export default class Ghost extends Phaser.Scene {
     },
     {
       text: "OK GREAT! I will follow you until you fix your integration issues! I think I have a few days left yet.",
+      emote: "",
+      dialogueLine: "",
       choices: [
         {
           text: "1) Nah I refuse, I don't need some globby blood ghost melting thing or whatever following me around. That shit creeps me out.",
@@ -107,6 +123,8 @@ export default class Ghost extends Phaser.Scene {
     },
     {
       text: "I'm dead if you are one but I'm also dead if you don't help me... although I've never heard of a Light-Bleached with husk integration problems... so yeah! A bet I'm willing to take.",
+      emote: "",
+      dialogueLine: "",
       choices: [
         {
           text: "1) Your still not going to tell me what a light-bleached is are you?",
@@ -119,10 +137,14 @@ export default class Ghost extends Phaser.Scene {
       ],
     },
     {
-      text: "Of course, of course... *He grins, awkwardly expressing subservience*",
+      text: "Of course, of course...",
+      emote: "*He grins, awkwardly expressing subservience*",
+      dialogueLine: "",
     },
     {
       text: "HAH your husk integration is truly FUCKED. If you were human your eyes wouldn't be red... dumbass.",
+      emote: "",
+      dialogueLine: "",
       choices: [
         {
           text: "1) Ok...",
@@ -132,6 +154,8 @@ export default class Ghost extends Phaser.Scene {
     },
     {
       text: "I mean... you can't stop me from following you unless want to risk your own soul to fight me on this plane. HAH but if your that stupid I'll just snatch your husk when you come out... Ahh sorry I shouldn't say that. Hey you'll get used to me. I'm a funny guy!",
+      emote: "",
+      dialogueLine: "",
       choices: [
         {
           text: "1) Ok... I don't know how to do or even conceptulize that anyways. Fine, but remember the whole servent deal.",

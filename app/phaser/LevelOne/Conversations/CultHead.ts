@@ -4,6 +4,7 @@ export default class CultHead extends Phaser.Scene {
   public dialogue1Nodes: DialogueNode[] = [
     {
       text: "You whine like fettered swine. Why?",
+      emote: "",
       dialogueLine: "cultHead-line-0",
       choices: [
         {
@@ -17,17 +18,20 @@ export default class CultHead extends Phaser.Scene {
       ],
     },
     {
-      text: "*He leans in and peers intently into your eyes* Hmm your eyes show no light, and so the bind is tight. But what pathetic words for a demon of your stature... Hell burns at the same rate as your evaporating masculinity.",
+      text: "Hmm your eyes show no light, and so the bind is tight. But what pathetic words for a demon of your stature... Hell burns at the same rate as your evaporating masculinity.",
+      emote: "*He leans in and peers intently into your eyes*",
       dialogueLine: "cultHead-line-1",
       choices: [{ text: "1) Continue...", next: 3 }],
     },
     {
       text: "*He leans in and peers intently into your eyes* Hmm your eyes show no light, and so the bind is tight. But for a demon of your stature to so brazenly speak to a Lord two-hundred years your superior... You must be having trouble grasping reality.",
+      emote: "*He leans in and peers intently into your eyes*",
       dialogueLine: "cultHead-line-2",
       choices: [{ text: "1) Continue...", next: 3 }],
     },
     {
-      text: "*His fist lights aflame and he punches you swiftly in the gut* Heal your mind or we will tear your soul for energy. Have the twins check you out. They're in the room to the right of here. We will finish without you...",
+      text: "Heal your mind or we will tear your soul for energy. Have the twins check you out. They're in the room to the right of here. We will finish without you...",
+      emote: "*His fist lights aflame and he punches you swiftly in the gut*",
       dialogueLine: "cultHead-line-3",
       // no choices = end
     },
@@ -35,6 +39,7 @@ export default class CultHead extends Phaser.Scene {
   public dialogue2Nodes: DialogueNode[] = [
     {
       text: "The potion proves the bind upon this mind is in motion. However, your negligence leaves you on the fence.",
+      emote: "",
       dialogueLine: "cultHead-line-4",
       choices: [
         {
@@ -49,6 +54,7 @@ export default class CultHead extends Phaser.Scene {
     },
     {
       text: "I lament your useless comment",
+      emote: "",
       dialogueLine: "cultHead-line-5",
       choices: [
         {
@@ -59,6 +65,7 @@ export default class CultHead extends Phaser.Scene {
     },
     {
       text: "Yes, and after you restore your connection to this brain. From thence, you best have good sense.",
+      emote: "",
       dialogueLine: "cultHead-line-6",
       choices: [
         { text: "1) Continue...", next: 3 },
@@ -70,6 +77,7 @@ export default class CultHead extends Phaser.Scene {
     },
     {
       text: "I will enjoy the melting of your brain if you fail.",
+      emote: "",
       dialogueLine: "cultHead-line-7",
       // no choices = end
     },
@@ -77,12 +85,14 @@ export default class CultHead extends Phaser.Scene {
   public dialogue3Nodes: DialogueNode[] = [
     {
       text: "I will enjoy the melting of your brain if you fail.",
+      emote: "",
       dialogueLine: "cultHead-line-8",
     },
   ];
   public dialogue4Nodes: DialogueNode[] = [
     {
-      text: "Ah, the zombie groans have fell to silence after your swift violence. *He peers deeply into your eyes* So have you regained your wits?",
+      text: "Ah, the zombie groans have fell to silence after your swift violence. So have you regained your wits?",
+      emote: "*He peers deeply into your eyes*",
       dialogueLine: "cultHead-line-9",
       choices: [
         {
@@ -97,10 +107,12 @@ export default class CultHead extends Phaser.Scene {
     },
     {
       text: "A pity...",
+      emote: "",
       dialogueLine: "cultHead-line-10",
     },
     {
       text: "Then leave. We have much to prepare for this eve.",
+      emote: "",
       dialogueLine: "cultHead-line-11",
     },
   ];

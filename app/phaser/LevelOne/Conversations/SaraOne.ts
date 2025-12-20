@@ -3,6 +3,8 @@ export default class SaraOne extends Phaser.Scene {
   public dialogue1Nodes: DialogueNode[] = [
     {
       text: "ughh what? I'm busy.",
+      emote: "",
+      dialogueLine: "",
       choices: [
         {
           text: "1) I just drank this strange potion and I don't really know what is going on but I... passed. My um 'husk's' brain was the issue. Those um 'twins' said I should talk to you about taking the soul fragments from these zombies to heal?",
@@ -16,6 +18,8 @@ export default class SaraOne extends Phaser.Scene {
     },
     {
       text: "That bitch whore... She's jealous of my skill. Damnit. acting like that... look, your husk is probably short-circuiting your conciousness...",
+      emote: "",
+      dialogueLine: "",
       choices: [
         {
           text: "1) Excuse me, my conciousness? Oh... yeah that alchemist mentioned there was a bad integration or husk damage.",
@@ -29,6 +33,8 @@ export default class SaraOne extends Phaser.Scene {
     },
     {
       text: "Yeah I don't care about any of that. Damnit your husk is probably short-circuiting your conciousness...",
+      emote: "",
+      dialogueLine: "",
       choices: [
         {
           text: "1) Excuse me, my conciousness? Oh... yeah that alchemist mentioned there was a bad integration or husk damage.",
@@ -41,11 +47,15 @@ export default class SaraOne extends Phaser.Scene {
       ],
     },
     {
-      text: "*She smirks* Oh so she probably gave you temporary control back... pathetic that you messed up something so basic.",
+      text: "Oh so she probably gave you temporary control back... pathetic that you messed up something so basic.",
+      emote: "*She smirks*",
+      dialogueLine: "",
       choices: [{ text: "1) Continue...", next: 5 }],
     },
     {
       text: "It clearly isn't and neither is your logic. Tell me, is it more likely that every being in this room is crazy and just YOU are sane or is it more likely your the crazy one? Take all the time you need.",
+      emote: "",
+      dialogueLine: "",
       choices: [
         {
           text: "1) And if you gaze long enough into the abyss of collective folly, you may find that you alone still see clearly.",
@@ -55,29 +65,41 @@ export default class SaraOne extends Phaser.Scene {
     },
     {
       text: "Damnit, do you know how long it took me to program these soul fragments to fight... ughh fine, Maelvoth would have just killed you instead of making you drink that potion, but you have quite a lot of demonic energy, which makes it even stranger that you didn't integrate the possession correctly...",
+      emote: "",
+      dialogueLine: "",
       choices: [{ text: "1) Continue...", next: 7 }],
     },
     {
       text: "Ok Mr. Nietzsche... Look, your spirit is filtered through the mind's circuits. Either you didn't properly rewrite the brain on possesion... or damnit who prepared this body for you? Right you wouldn't know...",
+      emote: "",
+      dialogueLine: "",
       choices: [{ text: "1) Continue...", next: 5 }],
     },
     {
       text: "Maelvoth probably assumes he'll be killed by his superiors if he killed you before the final cleansing. Damn politics... I'll let you kill them, but I'm activating them. I'm sure if mere zombies are able to kill you, no one will complain... good luck.",
+      emote: "",
+      dialogueLine: "",
     },
   ];
   public dialogue2Nodes: DialogueNode[] = [
     {
       text: "Go on now. Defeat my pets if you can. Be warned, they'll attack you upon your first hit.",
+      emote: "",
+      dialogueLine: "",
     },
   ];
   public dialogue3Nodes: DialogueNode[] = [
     {
-      text: "Ohhhh, did I forget to mention, there is... one more *Sara Winks at you* Careful though, he's an angry boy.",
+      text: "Ohhhh, did I forget to mention, there is... one more. Careful though, he's an angry boy.",
+      emote: "*Sara Winks at you*",
+      dialogueLine: "",
     },
   ];
   public dialogue4Nodes: DialogueNode[] = [
     {
-      text: "Wow, you beat them. Ok you've only proven your stronger than a human... and you had to waste my pets for it... *Sigh* anyways, you probably felt demonic energy enter your body as you fought. Go report to Maelvoth that you've gained full control again. And leave me be.",
+      text: "Wow, you beat them. Ok you've only proven your stronger than a human... and you had to waste my pets for it... anyways, you probably felt demonic energy enter your body as you fought. Go report to Maelvoth that you've gained full control again. And leave me be.",
+      emote: "*She sighs*",
+      dialogueLine: "",
       choices: [
         {
           text: "1) Yes... I am um in control fully once again.",
@@ -91,9 +113,13 @@ export default class SaraOne extends Phaser.Scene {
     },
     {
       text: "...I hope you remember how to fight. Heheheh you actually jumped on his head, moron. unbelievable we are saving you. At least learn some magic, find a scroll or something.",
+      emote: "",
+      dialogueLine: "",
     },
     {
       text: "Yes, and if you had died to a mere Zombie, no one would have cared.",
+      emote: "",
+      dialogueLine: "",
       choices: [
         {
           text: "1) Continue...",

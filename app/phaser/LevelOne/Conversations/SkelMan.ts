@@ -3,6 +3,8 @@ export default class SkelMan extends Phaser.Scene {
   public dialogueNodes: DialogueNode[] = [
     {
       text: "WAAAAAAZZZZZZZUUUUUPPPPPPPP?",
+      emote: "",
+      dialogueLine: "",
       choices: [
         {
           text: "1) And now there is a talking skeleton... I'm insane. I hope there is a lot of padding in my crazy room.",
@@ -16,6 +18,8 @@ export default class SkelMan extends Phaser.Scene {
     },
     {
       text: "WHHHAATTT?! you can see me?",
+      emote: "",
+      dialogueLine: "",
       choices: [
         {
           text: "1) Yes and you are very ugly.",
@@ -28,11 +32,15 @@ export default class SkelMan extends Phaser.Scene {
       ],
     },
     {
-      text: "GEHEHEHEH I'm prettier than what's inside you. *He points at his eye socket* I'm winking GEHEHEH",
+      text: "GEHEHEHEH I'm prettier than what's inside you. I'm winking GEHEHEH",
+      emote: "*He points at his eye socket*",
+      dialogueLine: "",
       choices: [{ text: "1) Continue...", next: 3 }],
     },
     {
       text: "GEH! Yeah it's wierd that you can see me. I'm Light-Bleached after all.",
+      emote: "",
+      dialogueLine: "",
       choices: [
         { text: "1) What is Light-Bleached?", next: 4 },
         {
@@ -43,6 +51,8 @@ export default class SkelMan extends Phaser.Scene {
     },
     {
       text: "GEHEHEHEHEH ANYWAYS DO YOU LIKE PUZZLES? THERE IS ONE IN THIS VERY ROOM WOOWEEWOOWEE",
+      emote: "",
+      dialogueLine: "",
       choices: [
         {
           text: "1) How about you tell me what Light-Bleached means instead?",
@@ -56,6 +66,8 @@ export default class SkelMan extends Phaser.Scene {
     },
     {
       text: "GEHEHEHEHEH ANYWAYS DO YOU LIKE PUZZLES? THERE IS ONE IN THIS VERY ROOM WOOWEEWOOWEE",
+      emote: "",
+      dialogueLine: "",
       choices: [
         {
           text: "1) OK...",
@@ -65,6 +77,8 @@ export default class SkelMan extends Phaser.Scene {
     },
     {
       text: "GEHEHEHEHEH ANYWAYS DO YOU LIKE PUZZLES? THERE IS ONE IN THIS VERY ROOM WOOWEEWOOWEE - ;aslkdfja;sldkfj;aslkdfj;aslkdjflsadkjfljakfdhgqadjf;aslkdjf;lkdjafs;ldkfjas;ldkfj;asldkfj;aslkdjf;alskdjf;alskdjf;aslkdfj;aslkdfj;aslkdjfieut;lknasdlkguatia;sldkcna;sjdfgtyhpasiert5u;laskdcnm;aljshdgkuatplaisjd;flkasndfuituheoiaj;sdlkfjna;lskdjuytreiqp;osdkfjnalsdkfjhadiapueirer Oh yeah.... *He winks at you, somehow without eyelids*",
+      emote: "",
+      dialogueLine: "",
     },
   ];
 
