@@ -4,6 +4,7 @@ export default class CultHead extends Phaser.Scene {
   public dialogue1Nodes: DialogueNode[] = [
     {
       text: "You whine like fettered swine. Why?",
+      dialogueLine: "cultHead-line-0",
       choices: [
         {
           text: "1) Th-this heart in my hand. . . wh-where am I? I-I was just in my room...",
@@ -17,20 +18,24 @@ export default class CultHead extends Phaser.Scene {
     },
     {
       text: "*He leans in and peers intently into your eyes* Hmm your eyes show no light, and so the bind is tight. But what pathetic words for a demon of your stature... Hell burns at the same rate as your evaporating masculinity.",
+      dialogueLine: "cultHead-line-1",
       choices: [{ text: "1) Continue...", next: 3 }],
     },
     {
       text: "*He leans in and peers intently into your eyes* Hmm your eyes show no light, and so the bind is tight. But for a demon of your stature to so brazenly speak to a Lord two-hundred years your superior... You must be having trouble grasping reality.",
+      dialogueLine: "cultHead-line-2",
       choices: [{ text: "1) Continue...", next: 3 }],
     },
     {
       text: "*His fist lights aflame and he punches you swiftly in the gut* Heal your mind or we will tear your soul for energy. Have the twins check you out. They're in the room to the right of here. We will finish without you...",
+      dialogueLine: "cultHead-line-3",
       // no choices = end
     },
   ];
   public dialogue2Nodes: DialogueNode[] = [
     {
       text: "The potion proves the bind upon this mind is in motion. However, your negligence leaves you on the fence.",
+      dialogueLine: "cultHead-line-4",
       choices: [
         {
           text: "1) You're rhyming more consistently this time.",
@@ -44,6 +49,7 @@ export default class CultHead extends Phaser.Scene {
     },
     {
       text: "I lament your useless comment",
+      dialogueLine: "cultHead-line-5",
       choices: [
         {
           text: "1) They said you would have killed me if I had less demonic energy...",
@@ -53,6 +59,7 @@ export default class CultHead extends Phaser.Scene {
     },
     {
       text: "Yes, and after you restore your connection to this brain. From thence, you best have good sense.",
+      dialogueLine: "cultHead-line-6",
       choices: [
         { text: "1) Continue...", next: 3 },
         {
@@ -63,17 +70,20 @@ export default class CultHead extends Phaser.Scene {
     },
     {
       text: "I will enjoy the melting of your brain if you fail.",
+      dialogueLine: "cultHead-line-7",
       // no choices = end
     },
   ];
   public dialogue3Nodes: DialogueNode[] = [
     {
       text: "I will enjoy the melting of your brain if you fail.",
+      dialogueLine: "cultHead-line-8",
     },
   ];
   public dialogue4Nodes: DialogueNode[] = [
     {
       text: "Ah, the zombie groans have fell to silence after your swift violence. *He peers deeply into your eyes* So have you regained your wits?",
+      dialogueLine: "cultHead-line-9",
       choices: [
         {
           text: "1) No! I am telling you I am a Human!",
@@ -87,9 +97,11 @@ export default class CultHead extends Phaser.Scene {
     },
     {
       text: "A pity...",
+      dialogueLine: "cultHead-line-10",
     },
     {
       text: "Then leave. We have much to prepare for this eve.",
+      dialogueLine: "cultHead-line-11",
     },
   ];
 
@@ -133,51 +145,51 @@ export default class CultHead extends Phaser.Scene {
     this.load.image("cultHeadConvo", "/assets/conversations/cultHead.png");
     this.load.audio("cultHeadMusic", "/assets/music/morbid.mp3");
     this.load.audio(
-      "cultHead1-dialogue0",
+      "cultHead-line-0",
       "/assets/dialogue/cultHead/cultHead-dialogue0.wav"
     );
     this.load.audio(
-      "cultHead1-dialogue1",
+      "cultHead-line-1",
       "/assets/dialogue/cultHead/cultHead-dialogue1.wav"
     );
     this.load.audio(
-      "cultHead1-dialogue2",
+      "cultHead-line-2",
       "/assets/dialogue/cultHead/cultHead-dialogue2.wav"
     );
     this.load.audio(
-      "cultHead1-dialogue3",
+      "cultHead-line-3",
       "/assets/dialogue/cultHead/cultHead-dialogue3.wav"
     );
     this.load.audio(
-      "cultHead2-dialogue0",
+      "cultHead-line-4",
       "/assets/dialogue/cultHead/cultHead-dialogue4.wav"
     );
     this.load.audio(
-      "cultHead2-dialogue1",
+      "cultHead-line-5",
       "/assets/dialogue/cultHead/cultHead-dialogue5.wav"
     );
     this.load.audio(
-      "cultHead2-dialogue2",
+      "cultHead-line-6",
       "/assets/dialogue/cultHead/cultHead-dialogue6.wav"
     );
     this.load.audio(
-      "cultHead2-dialogue3",
+      "cultHead-line-7",
       "/assets/dialogue/cultHead/cultHead-dialogue7.wav"
     );
     this.load.audio(
-      "cultHead3-dialogue0",
+      "cultHead-line-8",
       "/assets/dialogue/cultHead/cultHead-dialogue7.wav"
     );
     this.load.audio(
-      "cultHead4-dialogue0",
+      "cultHead-line-9",
       "/assets/dialogue/cultHead/cultHead-dialogue8.wav"
     );
     this.load.audio(
-      "cultHead4-dialogue1",
+      "cultHead-line-10",
       "/assets/dialogue/cultHead/cultHead-dialogue9.wav"
     );
     this.load.audio(
-      "cultHead4-dialogue2",
+      "cultHead-line-11",
       "/assets/dialogue/cultHead/cultHead-dialogue10.wav"
     );
   }
@@ -272,7 +284,7 @@ export default class CultHead extends Phaser.Scene {
     const fadeDuration = 400;
 
     this.cultHeadDialogue = this.sound.add(
-      `cultHead${this.dialogueScene}-dialogue${index}`
+      this.dialogueNodes[index].dialogueLine
     );
 
     this.input.keyboard!.once("keydown-SPACE", () => {
