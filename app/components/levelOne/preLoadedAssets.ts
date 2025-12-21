@@ -1,4 +1,4 @@
-import { SceneOneState } from "./SceneOneTypes";
+import type { SceneOneState } from "./SceneOneTypes";
 
 const preLoadedAssets = (scene: Phaser.Scene & SceneOneState) => {
   scene.load.tilemapTiledJSON("map", "/assets/level1-master-map.json");

@@ -1,5 +1,10 @@
-import { PlayerStats, DialogueNode } from "@/app/components/demonScapeTypes";
-export default class SaraOne extends Phaser.Scene {
+import type {
+  PlayerStats,
+  DialogueNode,
+  ConvoSceneState,
+} from "@/app/components/demonScapeTypes";
+import { conversationLogic } from "@/app/components/conversationLogic";
+export default class SaraOne extends Phaser.Scene implements ConvoSceneState {
   public dialogue1Nodes: DialogueNode[] = [
     {
       text: "ughh what? I'm busy.",
@@ -134,14 +139,18 @@ export default class SaraOne extends Phaser.Scene {
   public dialogueText!: Phaser.GameObjects.Text;
   public choiceTexts: Phaser.GameObjects.Text[] = [];
   public music!: Phaser.Sound.BaseSound;
-  public saraDialogue: Phaser.Sound.BaseSound | null = null;
+  public voiceDialogue: Phaser.Sound.BaseSound | null = null;
   public speechInterval: NodeJS.Timeout | null = null;
   public bossFight: boolean = false;
-  public speakerName!: Phaser.GameObjects.Text;
+  public speakerText!: Phaser.GameObjects.Text;
   public playerSpeaker!: Phaser.GameObjects.Text;
   public emoteText!: Phaser.GameObjects.Text;
   public emoteBg!: Phaser.GameObjects.Rectangle;
   public dialogueScene: number = 1;
+  public fromScene: string = "SaraOne";
+  public speakerName: string = "Sara:";
+  public voiceLoop: boolean = false;
+  public manyOptionsNode: number = -1;
   playerStats!: PlayerStats;
 
   constructor() {
@@ -178,8 +187,8 @@ export default class SaraOne extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image("SaraOneConvo", "/assets/conversations/sara.png");
-    this.load.audio("SaraOneMusic", "/assets/music/fogTrees.mp3");
+    this.load.image("saraOneBg", "/assets/conversations/sara.png");
+    this.load.audio("saraOneMusic", "/assets/music/fogTrees.mp3");
     this.load.audio("sara-line-0", "/assets/dialogue/sara/sara-dialogue1.wav");
     this.load.audio("sara-line-1", "/assets/dialogue/sara/sara-dialogue2.wav");
     this.load.audio("sara-line-2", "/assets/dialogue/sara/sara-dialogue3.wav");
@@ -205,231 +214,6 @@ export default class SaraOne extends Phaser.Scene {
   }
 
   create() {
-    // Background portrait
-    const portrait = this.add
-      .image(this.scale.width / 2, this.scale.height / 2, "SaraOneConvo")
-      .setOrigin(0.5);
-
-    portrait.displayWidth = this.scale.width;
-    portrait.displayHeight = this.scale.height;
-
-    // Dialogue box
-    this.add.rectangle(
-      this.scale.width / 2,
-      this.scale.height - 150,
-      this.scale.width,
-      290,
-      0x000000,
-      0.4
-    );
-
-    this.speakerName = this.add.text(60, this.scale.height - 278, "Sara:", {
-      fontFamily: "Mostean",
-      fontSize: "52px",
-      color: "pink",
-      stroke: "black",
-      strokeThickness: 0.5,
-      wordWrap: { width: 200 },
-    });
-
-    this.playerSpeaker = this.add.text(60, this.scale.height - 110, "You:", {
-      fontFamily: "Mostean",
-      fontSize: "52px",
-      color: "#ffcc00",
-      stroke: "black",
-      strokeThickness: 1,
-    });
-
-    this.dialogueText = this.add.text(240, this.scale.height - 270, "", {
-      fontFamily: "Mostean",
-      fontSize: "40px",
-      color: "pink",
-      stroke: "#CCC5C5",
-      strokeThickness: 0.5,
-      wordWrap: { width: this.scale.width - 300 },
-    });
-
-    this.emoteBg = this.add.rectangle(
-      this.scale.width / 2,
-      this.scale.height - this.scale.height,
-      this.scale.width,
-      140,
-      0x000000,
-      0.4
-    );
-
-    this.emoteText = this.add.text(0, 15, "", {
-      fontFamily: "Mostean",
-      fontSize: "48px",
-      color: "white",
-      stroke: "yellow",
-      strokeThickness: 1,
-    });
-
-    this.emoteText.setAlpha(0);
-
-    this.tweens.add({
-      targets: this.emoteText,
-      alpha: 1,
-      duration: 1500,
-      ease: "Power2",
-      onComplete: () => {
-        this.tweens.add({
-          targets: this.emoteText,
-          alpha: 0.33,
-          duration: 1500,
-          yoyo: true,
-          repeat: -1,
-        });
-      },
-    });
-
-    this.music = this.sound.add("SaraOneMusic", { loop: true, volume: 1 });
-    this.music.play();
-
-    // Show first node
-    this.showNode(0);
-  }
-
-  // Input: pick choices with number keys
-  private onChoiceKey(event: KeyboardEvent) {
-    const key = parseInt(event.key);
-    if (!isNaN(key) && key >= 1 && key <= 9) {
-      const choice =
-        this.dialogueNodes[this.currentNodeIndex].choices?.[key - 1];
-      if (choice) {
-        // Remove listener before recursing to next node
-        this.input.keyboard!.off("keydown", this.onChoiceKey, this);
-        this.showNode(choice.next);
-      }
-    }
-  }
-
-  private showNode(index: number) {
-    if (this.speechInterval) {
-      clearInterval(this.speechInterval);
-    }
-
-    this.input.keyboard!.removeListener("keydown-SPACE");
-
-    this.currentNodeIndex = index;
-    const node = this.dialogueNodes[index];
-
-    // Clear previous text
-    this.input.keyboard!.off("keydown", this.onChoiceKey, this);
-    this.dialogueText.setText("");
-    this.choiceTexts.forEach((c) => c.destroy());
-    this.choiceTexts = [];
-
-    // === TYPEWRITER WITH FADE-IN EFFECT ===
-    const fullText = node.text;
-    const chars = fullText.split("");
-    const typeSpeed = 80;
-    let currentCharIndex = 0;
-    const fadeDuration = 400;
-
-    this.saraDialogue = this.sound.add(`sara-line-${index}`);
-
-    this.input.keyboard!.once("keydown-SPACE", () => {
-      if (this.speechInterval) {
-        clearInterval(this.speechInterval);
-        this.speechInterval = null;
-      }
-      if (this.saraDialogue) {
-        this.saraDialogue.stop();
-        this.sound.remove(this.saraDialogue);
-        this.saraDialogue.destroy();
-        this.saraDialogue = null;
-      }
-      this.dialogueText.setText(fullText);
-      this.displayChoices(node);
-    });
-
-    this.speechInterval = setInterval(() => {
-      if (currentCharIndex >= chars.length) {
-        if (this.speechInterval) {
-          clearInterval(this.speechInterval);
-          this.speechInterval = null;
-        }
-        this.displayChoices(node);
-        return;
-      }
-      const char = chars[currentCharIndex];
-      currentCharIndex++;
-      this.dialogueText.setText(this.dialogueText.text + char);
-    }, typeSpeed);
-    this.saraDialogue.play();
-    if (this.dialogueNodes[index].emote) {
-      this.emoteBg.setVisible(true);
-      this.emoteText.setText(this.dialogueNodes[index].emote);
-      this.emoteText.setX(this.scale.width / 2 - this.emoteText.width / 2);
-    } else {
-      this.emoteBg.setVisible(false);
-      this.emoteText.setText("");
-    }
-  }
-
-  private displayChoices(node: DialogueNode) {
-    // Remove old choices
-    this.choiceTexts.forEach((c) => c.destroy());
-    this.choiceTexts = [];
-
-    // check for end of conversation
-    if (!node.choices || node.choices.length === 0) {
-      this.add.text(
-        300,
-        this.scale.height - 110,
-        "Press space to exit conversation",
-        {
-          fontFamily: "Mostean",
-          fontSize: "44px",
-          color: "#ffcc00",
-          stroke: "black",
-          strokeThickness: 1,
-          wordWrap: { width: this.scale.width - 300 },
-        }
-      );
-      this.input.keyboard!.once("keydown-SPACE", () => {
-        if (this.bossFight === true) {
-          this.music.stop();
-          this.scene.launch("ZombieCombat", {
-            playerStats: this.playerStats,
-            enemy: {
-              enemyPresence: true,
-              health: 40,
-              maxHealth: 40,
-              magic: 10,
-              maxMagic: 10,
-            },
-          });
-          this.scene.stop("SaraOne");
-          this.bossFight = false;
-        } else {
-          this.music.stop();
-          this.scene.stop();
-          this.scene.resume("SceneOne");
-        }
-      });
-      return;
-    }
-
-    // Show new choices
-    node.choices.forEach((choice, i) => {
-      const choiceText = this.add.text(
-        248,
-        this.scale.height - 128 + i * 44,
-        choice.text,
-        {
-          fontFamily: "Mostean",
-          fontSize: "32px",
-          color: "#ffcc00",
-          stroke: "black",
-          strokeThickness: 1,
-          wordWrap: { width: this.scale.width - 300 },
-        }
-      );
-      this.choiceTexts.push(choiceText);
-    });
-    this.input.keyboard!.on("keydown", this.onChoiceKey, this);
+    conversationLogic(this, "pink", "black", "saraOneBg", "saraOneMusic");
   }
 }

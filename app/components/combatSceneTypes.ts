@@ -1,5 +1,5 @@
-import Phaser from "phaser";
-import { PlayerStats, EnemyStats } from "./demonScapeTypes";
+import type { EnemyStats, PlayerStats } from "./demonScapeTypes";
+import type Phaser from "phaser";
 
 export interface CombatSceneState {
   music: Phaser.Sound.BaseSound;

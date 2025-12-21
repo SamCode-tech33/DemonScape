@@ -1,4 +1,4 @@
-import { CombatSceneState } from "./combatSceneTypes";
+import type { CombatSceneState } from "./combatSceneTypes";
 
 export const enemyAttack = (scene: Phaser.Scene & CombatSceneState) => {
   scene.playerTurn = false;

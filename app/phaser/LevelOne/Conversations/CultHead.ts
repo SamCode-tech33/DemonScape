@@ -1,6 +1,10 @@
-import { DialogueNode } from "@/app/components/demonScapeTypes";
+import type {
+  ConvoSceneState,
+  DialogueNode,
+} from "@/app/components/demonScapeTypes";
+import { conversationLogic } from "@/app/components/conversationLogic";
 
-export default class CultHead extends Phaser.Scene {
+export default class CultHead extends Phaser.Scene implements ConvoSceneState {
   public dialogue1Nodes: DialogueNode[] = [
     {
       text: "You whine like fettered swine. Why?",
@@ -122,13 +126,17 @@ export default class CultHead extends Phaser.Scene {
   public dialogueText!: Phaser.GameObjects.Text;
   public choiceTexts: Phaser.GameObjects.Text[] = [];
   public music!: Phaser.Sound.BaseSound;
-  public cultHeadDialogue: Phaser.Sound.BaseSound | null = null;
+  public voiceDialogue: Phaser.Sound.BaseSound | null = null;
   public speechInterval: NodeJS.Timeout | null = null;
-  public speakerName!: Phaser.GameObjects.Text;
+  public speakerText!: Phaser.GameObjects.Text;
   public playerSpeaker!: Phaser.GameObjects.Text;
   public dialogueScene: number = 1;
   public emoteText!: Phaser.GameObjects.Text;
   public emoteBg!: Phaser.GameObjects.Rectangle;
+  public fromScene: string = "CultHead";
+  public speakerName: string = "Cult Head:";
+  public voiceLoop: boolean = false;
+  public manyOptionsNode: number = -1;
 
   constructor() {
     super({ key: "CultHead" });
@@ -156,7 +164,7 @@ export default class CultHead extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image("cultHeadConvo", "/assets/conversations/cultHead.png");
+    this.load.image("cultHeadBg", "/assets/conversations/cultHead.png");
     this.load.audio("cultHeadMusic", "/assets/music/morbid.mp3");
     this.load.audio(
       "cultHead-line-0",
@@ -210,226 +218,6 @@ export default class CultHead extends Phaser.Scene {
 
   create() {
     // Background portrait
-    const portrait = this.add
-      .image(this.scale.width / 2, this.scale.height / 2, "cultHeadConvo")
-      .setOrigin(0.5);
-    portrait.displayWidth = this.scale.width;
-    portrait.displayHeight = this.scale.height;
-
-    // Dialogue box
-    this.add.rectangle(
-      this.scale.width / 2,
-      this.scale.height - 150,
-      this.scale.width,
-      290,
-      0x000000,
-      0.4
-    );
-
-    this.speakerName = this.add.text(
-      60,
-      this.scale.height - 278,
-      "Cult Head:",
-      {
-        fontFamily: "Mostean",
-        fontSize: "52px",
-        color: "red",
-        stroke: "black",
-        strokeThickness: 1,
-        wordWrap: { width: 200 },
-      }
-    );
-
-    this.playerSpeaker = this.add.text(60, this.scale.height - 110, "You:", {
-      fontFamily: "Mostean",
-      fontSize: "52px",
-      color: "#ffcc00",
-      stroke: "black",
-      strokeThickness: 1,
-    });
-
-    this.dialogueText = this.add.text(240, this.scale.height - 270, "", {
-      fontFamily: "Mostean",
-      fontSize: "40px",
-      color: "red",
-      stroke: "black",
-      strokeThickness: 1,
-      wordWrap: { width: this.scale.width - 300 },
-    });
-
-    this.emoteBg = this.add.rectangle(
-      this.scale.width / 2,
-      this.scale.height - this.scale.height,
-      this.scale.width,
-      140,
-      0x000000,
-      0.4
-    );
-
-    this.emoteText = this.add.text(0, 15, "", {
-      fontFamily: "Mostean",
-      fontSize: "48px",
-      color: "white",
-      stroke: "yellow",
-      strokeThickness: 1,
-    });
-
-    this.emoteText.setAlpha(0);
-
-    this.tweens.add({
-      targets: this.emoteText,
-      alpha: 1,
-      duration: 1500,
-      ease: "Power2",
-      onComplete: () => {
-        this.tweens.add({
-          targets: this.emoteText,
-          alpha: 0.33,
-          duration: 1500,
-          yoyo: true,
-          repeat: -1,
-        });
-      },
-    });
-
-    this.music = this.sound.add("cultHeadMusic", { loop: true, volume: 1 });
-    this.music.play();
-
-    // Show first node
-    this.showNode(0);
-  }
-
-  // Input: pick choices with number keys
-  private onChoiceKey(event: KeyboardEvent) {
-    const key = parseInt(event.key);
-    if (!isNaN(key) && key >= 1 && key <= 9) {
-      const choice =
-        this.dialogueNodes[this.currentNodeIndex].choices?.[key - 1];
-      if (choice) {
-        // Remove listener before recursing to next node
-        this.input.keyboard!.off("keydown", this.onChoiceKey, this);
-        this.showNode(choice.next);
-      }
-    }
-  }
-
-  private showNode(index: number) {
-    this.currentNodeIndex = index;
-    const node = this.dialogueNodes[index];
-
-    this.input.keyboard!.removeListener("keydown-SPACE");
-
-    // Clear previous text
-    this.input.keyboard!.off("keydown", this.onChoiceKey, this);
-    this.dialogueText.setText("");
-    this.choiceTexts.forEach((c) => c.destroy());
-    this.choiceTexts = [];
-
-    // === TYPEWRITER WITH FADE-IN EFFECT ===
-    const fullText = node.text;
-    const chars = fullText.split("");
-    const typeSpeed = 80;
-    let currentCharIndex = 0;
-    const fadeDuration = 400;
-
-    this.cultHeadDialogue = this.sound.add(
-      this.dialogueNodes[index].dialogueLine
-    );
-
-    this.input.keyboard!.once("keydown-SPACE", () => {
-      if (this.speechInterval) {
-        clearInterval(this.speechInterval);
-        this.speechInterval = null;
-      }
-      if (this.cultHeadDialogue) {
-        this.cultHeadDialogue.stop();
-        this.sound.remove(this.cultHeadDialogue);
-        this.cultHeadDialogue.destroy();
-        this.cultHeadDialogue = null;
-      }
-      this.dialogueText.setText(fullText);
-      this.displayChoices(node);
-    });
-
-    this.speechInterval = setInterval(() => {
-      if (currentCharIndex >= chars.length) {
-        if (this.speechInterval) {
-          clearInterval(this.speechInterval);
-          this.speechInterval = null;
-        }
-        this.displayChoices(node);
-        return;
-      }
-      const char = chars[currentCharIndex];
-      currentCharIndex++;
-      this.dialogueText.setText(this.dialogueText.text + char);
-    }, typeSpeed);
-    this.cultHeadDialogue.play({
-      volume: 1.5,
-    });
-    if (this.dialogueNodes[index].emote) {
-      this.emoteBg.setVisible(true);
-      this.emoteText.setText(this.dialogueNodes[index].emote);
-      this.emoteText.setX(this.scale.width / 2 - this.emoteText.width / 2);
-    } else {
-      this.emoteBg.setVisible(false);
-      this.emoteText.setText("");
-    }
-  }
-
-  private displayChoices(node: DialogueNode) {
-    // Remove old choices
-    this.choiceTexts.forEach((c) => c.destroy());
-    this.choiceTexts = [];
-
-    // check for end of conversation
-    if (!node.choices || node.choices.length === 0) {
-      this.add.text(
-        300,
-        this.scale.height - 110,
-        "Press space to exit conversation",
-        {
-          fontFamily: "Mostean",
-          fontSize: "44px",
-          color: "#ffcc00",
-          stroke: "black",
-          strokeThickness: 1,
-          wordWrap: { width: this.scale.width - 300 },
-        }
-      );
-
-      this.input.keyboard!.once("keydown-SPACE", () => {
-        this.music.stop();
-
-        // Determine how to resume based on current node
-        const resumeData =
-          this.currentNodeIndex === 1
-            ? { from: "PlayerDeath" } // node 1 → loss
-            : { from: "CultHead" }; // other nodes → normal
-
-        this.scene.stop();
-        this.scene.resume("SceneOne", resumeData);
-      });
-      return;
-    }
-
-    // Show new choices
-    node.choices.forEach((choice, i) => {
-      const choiceText = this.add.text(
-        248,
-        this.scale.height - 110 + i * 40,
-        choice.text,
-        {
-          fontFamily: "Mostean",
-          fontSize: "32px",
-          color: "#ffcc00",
-          stroke: "black",
-          strokeThickness: 1,
-          wordWrap: { width: this.scale.width - 300 },
-        }
-      );
-      this.choiceTexts.push(choiceText);
-    });
-    this.input.keyboard!.on("keydown", this.onChoiceKey, this);
+    conversationLogic(this, "red", "black", "cultHeadBg", "cultHeadMusic");
   }
 }

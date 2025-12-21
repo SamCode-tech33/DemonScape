@@ -56,7 +56,7 @@ import {
   singleTriggerDialogue,
   threeMenGroup,
 } from "@/app/components/levelOne/floatingDialogue";
-import { SceneOneState } from "@/app/components/levelOne/SceneOneTypes";
+import type { SceneOneState } from "@/app/components/levelOne/SceneOneTypes";
 export default class Main extends Phaser.Scene implements SceneOneState {
   public player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   public keys!: WASDAndArrowKeys;
@@ -221,6 +221,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
     Alch2Dialogue(this);
 
     this.events.off("resume"); // listeners stack through reset so always turn off resume before setting it.
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation> to be properly typed on game completion. too many emerging factors
     this.events.on("resume", (sys: Phaser.Scenes.Systems, data: any) => {
       if (data?.from === "AlchTwins") {
         if (this.alchSceneNum === 1) {
@@ -297,7 +298,9 @@ export default class Main extends Phaser.Scene implements SceneOneState {
             this.player.anims.play("get-up", true);
             this.player.once(
               Phaser.Animations.Events.ANIMATION_COMPLETE,
-              () => (this.movementDisabled = false)
+              () => {
+                this.movementDisabled = false;
+              }
             );
           });
         } else if (this.cultHeadSceneNum === 4) {
@@ -465,7 +468,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
     pathingZombie3(this);
   }
 
-  update(time: number, delta: number) {
+  update(delta: number) {
     // INTERACTION LOGIC
     interactionLogic(this);
     if (this.alchEvent && this.cultHeadSceneNum === 4) {
