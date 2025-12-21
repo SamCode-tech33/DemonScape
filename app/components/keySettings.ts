@@ -1,8 +1,8 @@
 import type { WASDAndArrowKeys } from "@/app/components/demonScapeTypes";
-import { SceneOneState } from "./levelOne/SceneOneTypes";
+import type { SceneOneState } from "./levelOne/SceneOneTypes";
 
 const keySettings = (scene: Phaser.Scene & SceneOneState) => {
-  scene.keys = scene.input.keyboard!.addKeys({
+  scene.keys = scene.input.keyboard?.addKeys({
     w: Phaser.Input.Keyboard.KeyCodes.W,
     up: Phaser.Input.Keyboard.KeyCodes.UP,
     s: Phaser.Input.Keyboard.KeyCodes.S,

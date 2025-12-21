@@ -54,3 +54,21 @@ export interface DialogueNode {
   emote: string;
   choices?: DialogueChoice[];
 }
+export interface ConvoSceneState {
+  currentNodeIndex: number;
+  dialogueText: Phaser.GameObjects.Text;
+  choiceTexts: Phaser.GameObjects.Text[];
+  music: Phaser.Sound.BaseSound;
+  voiceDialogue: Phaser.Sound.BaseSound | null;
+  dialogueNodes: DialogueNode[];
+  speechInterval: NodeJS.Timeout | null;
+  speakerText: Phaser.GameObjects.Text;
+  playerSpeaker: Phaser.GameObjects.Text;
+  emoteText: Phaser.GameObjects.Text;
+  emoteBg: Phaser.GameObjects.Rectangle;
+  dialogueScene: number;
+  fromScene: string;
+  speakerName: string;
+  voiceLoop: boolean;
+  manyOptionsNode: number;
+}

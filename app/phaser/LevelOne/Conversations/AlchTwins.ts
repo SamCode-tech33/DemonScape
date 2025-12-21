@@ -1,6 +1,10 @@
-import { DialogueNode } from "@/app/components/demonScapeTypes";
+import type {
+  ConvoSceneState,
+  DialogueNode,
+} from "@/app/components/demonScapeTypes";
+import { conversationLogic } from "@/app/components/conversationLogic";
 
-export default class AlchTwins extends Phaser.Scene {
+export default class AlchTwins extends Phaser.Scene implements ConvoSceneState {
   public dialogue1Nodes: DialogueNode[] = [
     {
       text: "Yes? Do you need something?",
@@ -221,14 +225,18 @@ export default class AlchTwins extends Phaser.Scene {
   public dialogueText!: Phaser.GameObjects.Text;
   public choiceTexts: Phaser.GameObjects.Text[] = [];
   public music!: Phaser.Sound.BaseSound;
-  public seuthalaDialogue!: Phaser.Sound.BaseSound | null;
+  public voiceDialogue!: Phaser.Sound.BaseSound | null;
   public dialogueNodes: DialogueNode[] = [];
   public speechInterval: NodeJS.Timeout | null = null;
-  public speakerName!: Phaser.GameObjects.Text;
+  public speakerText!: Phaser.GameObjects.Text;
   public playerSpeaker!: Phaser.GameObjects.Text;
   public emoteText!: Phaser.GameObjects.Text;
-  public emoteBg!: Phaser.GameObjects.Text;
+  public emoteBg!: Phaser.GameObjects.Rectangle;
   public dialogueScene: number = 1;
+  public fromScene: string = "AlchTwins";
+  public speakerName: string = "Seuthala:";
+  public voiceLoop: boolean = false;
+  public manyOptionsNode: number = -1;
 
   constructor() {
     super({ key: "AlchTwins" });
@@ -251,8 +259,8 @@ export default class AlchTwins extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image("AlchTwinsConvo", "/assets/conversations/AlchTwins.png");
-    this.load.audio("TwinDemonsMusic", "/assets/music/rain.mp3");
+    this.load.image("alchTwinsBg", "/assets/conversations/AlchTwins.png");
+    this.load.audio("alchTwinsMusic", "/assets/music/rain.mp3");
     this.load.audio(
       "seuthala-line-0",
       "/assets/dialogue/seuthala/seuthala-dialogue0.wav"
@@ -324,232 +332,12 @@ export default class AlchTwins extends Phaser.Scene {
   }
 
   create() {
-    // Background portrait
-    const portrait = this.add
-      .image(this.scale.width / 2, this.scale.height / 2, "AlchTwinsConvo")
-      .setOrigin(0.5);
-    portrait.displayWidth = this.scale.width;
-    portrait.displayHeight = this.scale.height;
-
-    // Dialogue box
-    this.add.rectangle(
-      this.scale.width / 2,
-      this.scale.height - 150,
-      this.scale.width,
-      320,
-      0x000000,
-      0.4
+    conversationLogic(
+      this,
+      "#83A0A9",
+      "black",
+      "alchTwinsBg",
+      "alchTwinsMusic"
     );
-
-    this.add.rectangle(
-      this.scale.width / 2,
-      0,
-      this.scale.width,
-      50,
-      0x000000,
-      0.7
-    );
-
-    this.speakerName = this.add.text(60, this.scale.height - 278, "Seuthala:", {
-      fontFamily: "Mostean",
-      fontSize: "52px",
-      color: "#83A0A9",
-      stroke: "black",
-      strokeThickness: 1,
-      wordWrap: { width: 200 },
-    });
-
-    this.playerSpeaker = this.add.text(60, this.scale.height - 110, "You:", {
-      fontFamily: "Mostean",
-      fontSize: "52px",
-      color: "#ffcc00",
-      stroke: "black",
-      strokeThickness: 1,
-    });
-
-    this.dialogueText = this.add.text(240, this.scale.height - 270, "", {
-      fontFamily: "Mostean",
-      fontSize: "40px",
-      color: "#83A0A9",
-      stroke: "black",
-      strokeThickness: 1,
-      wordWrap: { width: this.scale.width - 300 },
-    });
-
-    this.emoteBg = this.add.rectangle(
-      this.scale.width / 2,
-      this.scale.height - this.scale.height,
-      this.scale.width,
-      140,
-      0x000000,
-      0.4
-    );
-
-    this.emoteText = this.add.text(0, 15, "", {
-      fontFamily: "Mostean",
-      fontSize: "48px",
-      color: "white",
-      stroke: "yellow",
-      strokeThickness: 1,
-    });
-
-    this.emoteText.setAlpha(0);
-
-    this.tweens.add({
-      targets: this.emoteText,
-      alpha: 1,
-      duration: 1500,
-      ease: "Power2",
-      onComplete: () => {
-        this.tweens.add({
-          targets: this.emoteText,
-          alpha: 0.33,
-          duration: 1500,
-          yoyo: true,
-          repeat: -1,
-        });
-      },
-    });
-
-    this.music = this.sound.add("TwinDemonsMusic", { loop: true, volume: 1 });
-    this.music.play();
-
-    // Show first node
-    this.showNode(0);
-  }
-  // Input: pick choices with number keys
-  private onChoiceKey(event: KeyboardEvent) {
-    const key = parseInt(event.key);
-    if (!isNaN(key) && key >= 1 && key <= 9) {
-      const choice =
-        this.dialogueNodes[this.currentNodeIndex].choices?.[key - 1];
-      if (choice) {
-        // Remove listener before recursing to next node
-        this.input.keyboard!.off("keydown", this.onChoiceKey, this);
-        this.showNode(choice.next);
-      }
-    }
-  }
-
-  private showNode(index: number) {
-    if (this.speechInterval) {
-      clearInterval(this.speechInterval);
-    }
-
-    this.currentNodeIndex = index;
-    const node = this.dialogueNodes[index];
-
-    this.input.keyboard!.removeListener("keydown-SPACE");
-
-    // Clear previous text
-    this.input.keyboard!.off("keydown", this.onChoiceKey, this);
-    this.dialogueText.setText("");
-    this.choiceTexts.forEach((c) => c.destroy());
-    this.choiceTexts = [];
-
-    // === TYPEWRITER WITH FADE-IN EFFECT ===
-    const fullText = node.text;
-    const chars = fullText.split("");
-    const typeSpeed = 80;
-    let currentCharIndex = 0;
-    const fadeDuration = 400;
-
-    if (this.dialogueNodes[index].dialogueLine) {
-      this.speakerName.setText("Seuthala:");
-      this.seuthalaDialogue = this.sound.add(
-        this.dialogueNodes[index].dialogueLine,
-        { volume: 2 }
-      );
-    } else {
-      this.speakerName.setText("You Thinking:");
-    }
-
-    this.input.keyboard!.once("keydown-SPACE", () => {
-      if (this.speechInterval) {
-        clearInterval(this.speechInterval);
-        this.speechInterval = null;
-      }
-      if (this.seuthalaDialogue) {
-        this.seuthalaDialogue.stop();
-        this.sound.remove(this.seuthalaDialogue);
-        this.seuthalaDialogue.destroy();
-        this.seuthalaDialogue = null;
-      }
-      this.dialogueText.setText(fullText);
-      this.displayChoices(node);
-    });
-
-    this.speechInterval = setInterval(() => {
-      if (currentCharIndex >= chars.length) {
-        if (this.speechInterval) {
-          clearInterval(this.speechInterval);
-          this.speechInterval = null;
-        }
-        this.displayChoices(node);
-        return;
-      }
-      const char = chars[currentCharIndex];
-      currentCharIndex++;
-      this.dialogueText.setText(this.dialogueText.text + char);
-    }, typeSpeed);
-    if (this.seuthalaDialogue && this.dialogueNodes[index].dialogueLine) {
-      this.seuthalaDialogue.play();
-    }
-    if (this.dialogueNodes[index].emote) {
-      this.emoteBg.setVisible(true);
-      this.emoteText.setText(this.dialogueNodes[index].emote);
-      this.emoteText.setX(this.scale.width / 2 - this.emoteText.width / 2);
-    } else {
-      this.emoteBg.setVisible(false);
-      this.emoteText.setText("");
-    }
-  }
-
-  private displayChoices(node: DialogueNode) {
-    // Remove old choices
-    this.choiceTexts.forEach((c) => c.destroy());
-    this.choiceTexts = [];
-
-    // check for end of conversation
-    if (!node.choices || node.choices.length === 0) {
-      this.add.text(
-        300,
-        this.scale.height - 110,
-        "Press space to exit conversation",
-        {
-          fontFamily: "Mostean",
-          fontSize: "44px",
-          color: "#ffcc00",
-          stroke: "black",
-          strokeThickness: 1,
-          wordWrap: { width: this.scale.width - 300 },
-        }
-      );
-      this.input.keyboard!.once("keydown-SPACE", () => {
-        this.music.stop();
-        this.scene.stop("AlchTwins");
-        this.scene.resume("SceneOne", { from: "AlchTwins" });
-      });
-      return;
-    }
-
-    // Show new choices
-    node.choices.forEach((choice, i) => {
-      const choiceText = this.add.text(
-        248,
-        this.scale.height - 100 + i * 40,
-        choice.text,
-        {
-          fontFamily: "Mostean",
-          fontSize: "32px",
-          color: "#ffcc00",
-          stroke: "black",
-          strokeThickness: 1,
-          wordWrap: { width: this.scale.width - 300 },
-        }
-      );
-      this.choiceTexts.push(choiceText);
-    });
-    this.input.keyboard!.on("keydown", this.onChoiceKey, this);
   }
 }
