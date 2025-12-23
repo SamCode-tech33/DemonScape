@@ -22,4 +22,14 @@ export interface CombatSceneState {
   dodgeText: Phaser.GameObjects.Text | undefined;
   parry: Phaser.GameObjects.Graphics | undefined;
   parryText: Phaser.GameObjects.Text | undefined;
+  sparklesPlayer?: Phaser.GameObjects.Particles.ParticleEmitter[];
+  sparklesDefense?: Phaser.GameObjects.Particles.ParticleEmitter[];
 }
+
+type HasAlpha =
+  | Phaser.GameObjects.Components.Alpha
+  | Phaser.GameObjects.Components.AlphaSingle;
+
+export type TweenableGameObject = Phaser.GameObjects.GameObject &
+  Phaser.GameObjects.Components.Transform &
+  HasAlpha;
