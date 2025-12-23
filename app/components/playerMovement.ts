@@ -1,4 +1,4 @@
-import { SceneOneState } from "./levelOne/SceneOneTypes";
+import type { SceneOneState } from "./levelOne/SceneOneTypes";
 
 const playerMovement = (scene: Phaser.Scene & SceneOneState) => {
   if (scene.movementDisabled) return;
@@ -6,11 +6,11 @@ const playerMovement = (scene: Phaser.Scene & SceneOneState) => {
   const jumpSpeed = 200;
   const runSpeed = 300;
 
-  const isRunning = scene.input.keyboard!.addKey(
+  const isRunning = scene.input.keyboard?.addKey(
     Phaser.Input.Keyboard.KeyCodes.SHIFT
   ).isDown;
 
-  const spaceKey = scene.input.keyboard!.addKey(
+  const spaceKey = scene.input.keyboard?.addKey(
     Phaser.Input.Keyboard.KeyCodes.SPACE
   );
   const moving =
@@ -23,7 +23,11 @@ const playerMovement = (scene: Phaser.Scene & SceneOneState) => {
     scene.keys.s.isDown ||
     scene.keys.d.isDown;
 
-  if (Phaser.Input.Keyboard.JustDown(spaceKey) && !scene.isJumping) {
+  if (
+    spaceKey &&
+    Phaser.Input.Keyboard.JustDown(spaceKey) &&
+    !scene.isJumping
+  ) {
     scene.isJumping = true;
     let jumpAnim = "";
     let jumpDirection = () => scene.player.setVelocity(0);

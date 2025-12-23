@@ -1,10 +1,3 @@
-import localFont from "next/font/local";
-const mostean = localFont({
-  src: "../../../public/assets/fonts/mostean.otf",
-  weight: "700",
-  display: "swap",
-});
-
 export default class GameOver extends Phaser.Scene {
   music!: Phaser.Sound.BaseSound;
 
@@ -40,7 +33,7 @@ export default class GameOver extends Phaser.Scene {
     flames.displayWidth = this.scale.width;
     flames.displayHeight = this.scale.height;
 
-    const gameOverText = this.add
+    this.add
       .text(this.scale.width / 2, this.scale.height * 0.25, "GAME OVER", {
         fontSize: "156px",
         color: "ff0000",
@@ -79,7 +72,7 @@ export default class GameOver extends Phaser.Scene {
       ease: "Sine.easeInOut",
     });
 
-    this.input.keyboard!.once("keydown-SPACE", () => {
+    this.input.keyboard?.once("keydown-SPACE", () => {
       this.music.stop();
       this.scene.stop("GameOver");
       this.scene.start("SceneOne");

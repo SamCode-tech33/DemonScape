@@ -1,4 +1,4 @@
-import { SceneOneState } from "./SceneOneTypes";
+import type { SceneOneState } from "./SceneOneTypes";
 
 export const Alch2Dialogue = (scene: Phaser.Scene & SceneOneState) => {
   scene.time.addEvent({
@@ -51,9 +51,8 @@ export const hallwayGirlsDialogue = (scene: Phaser.Scene & SceneOneState) => {
     "Sure. It's gotta be in that empty room there.",
     "hmmm...",
   ];
-  let count = 0;
   scene.time.delayedCall(4000, () =>
-    convo(scene, participants, lines, count, 48, 48, 43, 43, false)
+    convo(scene, participants, lines, 48, 48, 43, 43, false)
   );
 };
 
@@ -73,9 +72,8 @@ export const guysAlterDialogue = (scene: Phaser.Scene & SceneOneState) => {
     "Total mindfuck...",
     "Yeah...",
   ];
-  let count = 0;
   scene.time.delayedCall(8000, () =>
-    convo(scene, participants, lines, count, 48, 48, 43, 43, false)
+    convo(scene, participants, lines, 48, 48, 43, 43, false)
   );
 };
 
@@ -95,9 +93,8 @@ export const girlsLeftWallDialogue = (scene: Phaser.Scene & SceneOneState) => {
     "whohh... you do deserve those big breasts...",
     "Yeah...",
   ];
-  let count = 0;
   scene.time.delayedCall(12000, () =>
-    convo(scene, participants, lines, count, -16, 16, -21, 12, false)
+    convo(scene, participants, lines, -16, 16, -21, 12, false)
   );
 };
 
@@ -112,9 +109,8 @@ export const threeMenGroup = (scene: Phaser.Scene & SceneOneState) => {
     "I was also surprised, humans can't even kill zombies.",
     "Either you're hiding your incompetence, or the Humans are getting help...",
   ];
-  let count = 0;
   scene.time.delayedCall(16000, () =>
-    convo(scene, participants, lines, count, 48, 48, 43, 45, true)
+    convo(scene, participants, lines, 48, 48, 43, 45, true)
   );
 };
 
@@ -124,7 +120,7 @@ export const singleTriggerDialogue = (
 ) => {
   const npcs = scene.npcs.getChildren() as Phaser.Physics.Arcade.Sprite[];
   const targets = [npcs[7], npcs[11], npcs[10], npcs[12]];
-  let npcInRange: any | null;
+  let npcInRange: Phaser.Physics.Arcade.Sprite | undefined;
   let line: string = "";
   for (const npc of targets) {
     if (
@@ -178,23 +174,22 @@ export const singleTriggerDialogue = (
     scene.approachText.destroy();
     scene.approachBox = undefined;
     scene.approachText = undefined;
-    npcInRange = null;
+    npcInRange = undefined;
   }
 };
 
 const convo = (
   scene: Phaser.Scene & SceneOneState,
-  participants: any,
+  participants: Phaser.Physics.Arcade.Sprite[],
   lines: string[],
-  count: number,
   boxOffsetX: number,
   boxOffsetY: number,
   textOffsetX: number,
   textOffsetY: number,
   group: boolean
 ) => {
-  let npc: any;
-
+  let npc: Phaser.Physics.Arcade.Sprite | undefined;
+  let count = 0;
   if (group) {
     if (count === 0 || count === 3) {
       npc = participants[0];
@@ -215,7 +210,6 @@ const convo = (
         scene,
         participants,
         lines,
-        count,
         boxOffsetX,
         boxOffsetY,
         textOffsetX,
@@ -248,7 +242,6 @@ const convo = (
       scene,
       participants,
       lines,
-      count,
       boxOffsetX,
       boxOffsetY,
       textOffsetX,

@@ -1,4 +1,4 @@
-import { SceneOneState } from "./levelOne/SceneOneTypes";
+import type { SceneOneState } from "./levelOne/SceneOneTypes";
 
 export const cultHeadNpc = (scene: Phaser.Scene & SceneOneState) => {
   scene.cultHead = scene.physics.add

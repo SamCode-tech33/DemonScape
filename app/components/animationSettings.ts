@@ -1,4 +1,4 @@
-import { SceneOneState } from "./levelOne/SceneOneTypes";
+import type { SceneOneState } from "./levelOne/SceneOneTypes";
 
 export const playerAnimation = (scene: Phaser.Scene & SceneOneState) => {
   //WALKING ANIMATION
@@ -538,7 +538,7 @@ export const alchTwinsAnimation = (scene: Phaser.Scene & SceneOneState) => {
 // FLAME ANIMATION
 export const torchAnimation = (
   scene: Phaser.Scene & SceneOneState,
-  torchPositions: any
+  torchPositions: Array<{ x: number; y: number }>
 ) => {
   scene.anims.create({
     key: "torch",
@@ -546,7 +546,7 @@ export const torchAnimation = (
     frameRate: 8,
     repeat: -1,
   });
-  scene.animatedTorches = torchPositions.map((pos: any, index: number) => {
+  scene.animatedTorches = torchPositions.map((pos, index) => {
     const torch = scene.add.sprite(pos.x, pos.y, "torch");
     torch.play("torch");
     if (index < 6) {
@@ -561,7 +561,7 @@ export const torchAnimation = (
 // TORCHES
 export const alchTorchAnimation = (
   scene: Phaser.Scene & SceneOneState,
-  alchemyPositions: any
+  alchemyPositions: Array<{ x: number; y: number }>
 ) => {
   scene.anims.create({
     key: "alch",
@@ -572,7 +572,7 @@ export const alchTorchAnimation = (
     frameRate: 8,
     repeat: -1,
   });
-  scene.animatedTorches = alchemyPositions.map((pos: any) => {
+  scene.animatedTorches = alchemyPositions.map((pos) => {
     const torch = scene.add.sprite(pos.x, pos.y, "alch");
     torch.play("alch");
     torch.setDepth(6);

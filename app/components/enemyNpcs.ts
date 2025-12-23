@@ -1,4 +1,4 @@
-import { SceneOneState } from "./levelOne/SceneOneTypes";
+import type { SceneOneState } from "./levelOne/SceneOneTypes";
 
 export const zombies = (scene: Phaser.Scene & SceneOneState) => {
   scene.zom1 = scene.physics.add

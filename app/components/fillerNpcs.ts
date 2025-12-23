@@ -1,4 +1,4 @@
-import { SceneOneState } from "./levelOne/SceneOneTypes";
+import type { SceneOneState } from "./levelOne/SceneOneTypes";
 
 export const demonCultMembers = (scene: Phaser.Scene & SceneOneState) => {
   const cultMemberPositions = [
@@ -29,8 +29,8 @@ export const demonCultMembers = (scene: Phaser.Scene & SceneOneState) => {
 
   (scene.npcs.getChildren() as Phaser.Physics.Arcade.Sprite[]).forEach(
     (npc) => {
-      npc.body!.setSize(npc.width * 0.33, npc.height * 0.3);
-      npc.body!.setOffset(npc.width * 0.33, npc.height * 0.7);
+      npc.body?.setSize(npc.width * 0.33, npc.height * 0.3);
+      npc.body?.setOffset(npc.width * 0.33, npc.height * 0.7);
       npc.setImmovable(true);
     }
   );

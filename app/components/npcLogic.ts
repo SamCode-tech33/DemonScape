@@ -1,4 +1,4 @@
-import { SceneOneState } from "./levelOne/SceneOneTypes";
+import type { SceneOneState } from "./levelOne/SceneOneTypes";
 
 export const depthSetting = (scene: Phaser.Scene & SceneOneState) => {
   (scene.npcs.getChildren() as Phaser.Physics.Arcade.Sprite[]).forEach(
@@ -251,10 +251,7 @@ export const pathingSkel = (scene: Phaser.Scene & SceneOneState) => {
   moveToNextPoint();
 };
 
-export const pathingAlch2 = (
-  scene: Phaser.Scene & SceneOneState,
-  index: number
-) => {
+export const pathingAlch2 = (scene: Phaser.Scene & SceneOneState) => {
   scene.alchTwin2.anims.play("alch-idle-right", true);
 };
 

@@ -8,8 +8,8 @@ import {
   playerJumpAttack,
   playerUI,
 } from "@/app/components/combatLogic";
-import { PlayerStats, EnemyStats } from "@/app/components/demonScapeTypes";
-import { CombatSceneState } from "@/app/components/combatSceneTypes";
+import type { PlayerStats, EnemyStats } from "@/app/components/demonScapeTypes";
+import type { CombatSceneState } from "@/app/components/combatSceneTypes";
 export default class ZombieCombat
   extends Phaser.Scene
   implements CombatSceneState
@@ -113,12 +113,12 @@ export default class ZombieCombat
     this.time.delayedCall(1000, () => enemyAttack(this));
     playerUI(this);
 
-    this.input.keyboard!.on("keydown-E", () => {
+    this.input.keyboard?.on("keydown-E", () => {
       if (this.playerTurn && !this.playerAttack) {
         playerBaseAttack(this);
       }
     });
-    this.input.keyboard!.on("keydown-Q", () => {
+    this.input.keyboard?.on("keydown-Q", () => {
       if (this.playerTurn && !this.playerAttack) {
         playerJumpAttack(this);
       }

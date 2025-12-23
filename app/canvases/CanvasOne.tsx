@@ -71,5 +71,6 @@ export default function CanvasOne() {
     };
   }, []);
 
+  // biome-ignore lint/correctness/useUniqueElementIds: <explanation> this is fine for a game
   return <div id="game-container"></div>;
 }

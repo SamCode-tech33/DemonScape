@@ -218,11 +218,12 @@ export default class Main extends Phaser.Scene implements SceneOneState {
         cultHeadEvent(this);
       });
     }
+
     Alch2Dialogue(this);
 
     this.events.off("resume"); // listeners stack through reset so always turn off resume before setting it.
     // biome-ignore lint/suspicious/noExplicitAny: <explanation> to be properly typed on game completion. too many emerging factors
-    this.events.on("resume", (sys: Phaser.Scenes.Systems, data: any) => {
+    this.events.on("resume", (_sys: Phaser.Scenes.Systems, data: any) => {
       if (data?.from === "AlchTwins") {
         if (this.alchSceneNum === 1) {
           this.alchSceneNum++;
@@ -480,7 +481,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
     // MOVEMENT AND NPC LOGIC
     playerMovement(this);
     depthSetting(this);
-    pathingAlch2(this, 0);
+    pathingAlch2(this); //index
 
     if (this.ghostFollow && this.ghost) {
       // pick an offset based on the player's lastDirection

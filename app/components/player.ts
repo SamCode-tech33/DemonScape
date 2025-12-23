@@ -1,8 +1,8 @@
-import { SceneOneState } from "./levelOne/SceneOneTypes";
+import type { SceneOneState } from "./levelOne/SceneOneTypes";
 
 const playerSprite = (
   scene: Phaser.Scene & SceneOneState,
-  collisionGroup: any
+  collisionGroup: Phaser.Physics.Arcade.StaticGroup
 ) => {
   scene.player = scene.physics.add
     .sprite(414, 500, "idle", 4)
