@@ -1,5 +1,9 @@
-import Phaser from "phaser";
-import { WASDAndArrowKeys, PlayerStats, EnemyStats } from "../demonScapeTypes";
+import type Phaser from "phaser";
+import type {
+  EnemyStats,
+  PlayerStats,
+  WASDAndArrowKeys,
+} from "../demonScapeTypes";
 
 export interface SceneOneState {
   player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;

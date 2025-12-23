@@ -1,4 +1,4 @@
-import { CombatSceneState } from "./combatSceneTypes";
+import type { CombatSceneState } from "./combatSceneTypes";
 
 export const playerCombatAnimation = (
   scene: Phaser.Scene & CombatSceneState

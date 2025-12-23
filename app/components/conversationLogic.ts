@@ -1,6 +1,5 @@
-/** biome-ignore-all assist/source/organizeImports: <explanation> annoying for now*/
-import type { ConvoSceneState, DialogueNode } from "./demonScapeTypes";
 import type Phaser from "phaser";
+import type { ConvoSceneState, DialogueNode } from "./demonScapeTypes";
 
 export const conversationLogic = (
   scene: Phaser.Scene & ConvoSceneState,

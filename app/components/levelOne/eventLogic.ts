@@ -1,4 +1,4 @@
-import { SceneOneState } from "./SceneOneTypes";
+import type { SceneOneState } from "./SceneOneTypes";
 
 export const cultHeadEvent = (scene: Phaser.Scene & SceneOneState) => {
   scene.tweens.add({

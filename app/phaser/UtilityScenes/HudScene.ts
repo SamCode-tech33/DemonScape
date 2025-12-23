@@ -1,4 +1,4 @@
-import { PlayerStats, EnemyStats } from "@/app/components/demonScapeTypes";
+import type { EnemyStats, PlayerStats } from "@/app/components/demonScapeTypes";
 
 export default class HudScene extends Phaser.Scene {
   // Player
@@ -219,9 +219,6 @@ export default class HudScene extends Phaser.Scene {
   }
 
   updateBars({ player, enemy }: { player: PlayerStats; enemy: EnemyStats }) {
-    const radius = 8;
-    const screenWidth = this.scale.width;
-
     // Update player stats
     this.health = player.health;
     this.maxHealth = player.maxHealth;

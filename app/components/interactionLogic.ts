@@ -1,5 +1,5 @@
-import { SceneOneState } from "./levelOne/SceneOneTypes";
-import { NpcsInteraction, NpcInRange } from "./demonScapeTypes";
+import type { NpcInRange, NpcsInteraction } from "./demonScapeTypes";
+import type { SceneOneState } from "./levelOne/SceneOneTypes";
 
 const interactionLogic = (scene: Phaser.Scene & SceneOneState) => {
   const npcs: NpcsInteraction = [
@@ -128,7 +128,7 @@ const interactionLogic = (scene: Phaser.Scene & SceneOneState) => {
 
       scene.activeNpc = { name: npcInRange.name, scene: npcInRange.scene };
 
-      scene.input.keyboard!.on("keydown-E", () => {
+      scene.input.keyboard?.on("keydown-E", () => {
         if (
           (scene.activeNpc && scene.alchEvent) ||
           (scene.activeNpc && scene.activeNpc.name === "AlchTwins")

@@ -70,8 +70,8 @@ export const playerBaseAttack = (scene: Phaser.Scene & CombatSceneState) => {
       let qteSuccess = false;
 
       // Open QTE window shortly before animation ends
-      const qteWindow = scene.time.delayedCall(220, () => {
-        const spaceKey = scene.input.keyboard!.addKey(
+      scene.time.delayedCall(220, () => {
+        const spaceKey = scene.input.keyboard?.addKey(
           Phaser.Input.Keyboard.KeyCodes.SPACE
         );
 
@@ -84,17 +84,17 @@ export const playerBaseAttack = (scene: Phaser.Scene & CombatSceneState) => {
           });
 
           // remove listener after success
-          spaceKey.off("down", onSpace);
+          spaceKey?.off("down", onSpace);
         };
 
-        spaceKey.on("down", onSpace);
+        spaceKey?.on("down", onSpace);
 
         // Close QTE window after a short time
         scene.time.delayedCall(300, () => {
           if (!qteSuccess) {
             console.log("QTE failed, no damage.");
           }
-          spaceKey.off("down", onSpace);
+          spaceKey?.off("down", onSpace);
         });
       });
       scene.player.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
@@ -146,8 +146,8 @@ export const playerJumpAttack = (scene: Phaser.Scene & CombatSceneState) => {
           let qteSuccess = false;
 
           // Open QTE window shortly before animation ends
-          const qteWindow = scene.time.delayedCall(0, () => {
-            const spaceKey = scene.input.keyboard!.addKey(
+          scene.time.delayedCall(0, () => {
+            const spaceKey = scene.input.keyboard?.addKey(
               Phaser.Input.Keyboard.KeyCodes.SPACE
             );
 
@@ -160,17 +160,17 @@ export const playerJumpAttack = (scene: Phaser.Scene & CombatSceneState) => {
               });
 
               // remove listener after success
-              spaceKey.off("down", onSpace);
+              spaceKey?.off("down", onSpace);
             };
 
-            spaceKey.on("down", onSpace);
+            spaceKey?.on("down", onSpace);
 
             // Close QTE window after a short time
             scene.time.delayedCall(50, () => {
               if (!qteSuccess) {
                 console.log("QTE failed, no damage.");
               }
-              spaceKey.off("down", onSpace);
+              spaceKey?.off("down", onSpace);
             });
           });
           scene.player.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
@@ -426,10 +426,10 @@ const enemyAttackBasic = (scene: Phaser.Scene & CombatSceneState) => {
       let dodgeSuccess = false;
       let parrySuccess = false;
 
-      const fKey = scene.input.keyboard!.addKey(
+      const fKey = scene.input.keyboard?.addKey(
         Phaser.Input.Keyboard.KeyCodes.F
       );
-      const rKey = scene.input.keyboard!.addKey(
+      const rKey = scene.input.keyboard?.addKey(
         Phaser.Input.Keyboard.KeyCodes.R
       );
 
@@ -441,9 +441,9 @@ const enemyAttackBasic = (scene: Phaser.Scene & CombatSceneState) => {
           scene.player.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
             scene.player.anims.play("player-combat-idle-right", true);
           });
-          fKey.off("down", onDodge);
+          fKey?.off("down", onDodge);
         };
-        fKey.on("down", onDodge);
+        fKey?.on("down", onDodge);
 
         scene.time.delayedCall(300, () => {
           if (!dodgeSuccess && !parrySuccess) scene.playerStats.health -= 10;
@@ -451,7 +451,7 @@ const enemyAttackBasic = (scene: Phaser.Scene & CombatSceneState) => {
             player: scene.playerStats,
             enemy: scene.enemyStats,
           });
-          fKey.off("down", onDodge);
+          fKey?.off("down", onDodge);
         });
       });
 
@@ -463,9 +463,9 @@ const enemyAttackBasic = (scene: Phaser.Scene & CombatSceneState) => {
           scene.player.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
             scene.player.anims.play("player-combat-idle-right", true);
           });
-          rKey.off("down", onParry);
+          rKey?.off("down", onParry);
         };
-        rKey.on("down", onParry);
+        rKey?.on("down", onParry);
 
         scene.time.delayedCall(150, () => {
           if (!parrySuccess && !dodgeSuccess)
@@ -474,7 +474,7 @@ const enemyAttackBasic = (scene: Phaser.Scene & CombatSceneState) => {
               enemy: scene.enemyStats,
             });
 
-          rKey.off("down", onParry);
+          rKey?.off("down", onParry);
         });
       });
 

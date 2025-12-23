@@ -3,9 +3,6 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-}
-
-@theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -102,7 +99,6 @@ path {
   background-repeat: no-repeat;
   height: 100vh;
   width: 100%;
-  position: relative;
   z-index: -1;
   opacity: 0.1;
   position: absolute;
@@ -113,5 +109,6 @@ path {
 }
 
 .silver:hover {
+  /* biome-ignore lint/complexity/noImportantStyles: <explanation> needed in this case*/
   color: gold !important;
 }
