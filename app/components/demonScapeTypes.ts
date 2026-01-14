@@ -72,3 +72,34 @@ export interface ConvoSceneState {
   voiceLoop: boolean;
   manyOptionsNode: number;
 }
+export interface SaveState {
+  userId: string;
+
+  scene: {
+    alchSceneNum: number;
+    saraOneSceneNum: number;
+    cultHeadSceneNum: number;
+  };
+
+  player: {
+    x: number;
+    y: number;
+    lastDirection: string;
+    stats: PlayerStats;
+    ghostFollow: boolean;
+  };
+
+  combat: {
+    zomDeathCount: number;
+    zomNum: number;
+  };
+
+  flags: {
+    alchEvent: boolean;
+    movementDisabled: boolean;
+  };
+
+  meta: {
+    updatedAt: Date;
+  };
+}

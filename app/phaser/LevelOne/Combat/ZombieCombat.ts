@@ -34,6 +34,7 @@ export default class ZombieCombat
   dodgeText: Phaser.GameObjects.Text | undefined;
   parry: Phaser.GameObjects.Graphics | undefined;
   parryText: Phaser.GameObjects.Text | undefined;
+  sparkles?: Phaser.GameObjects.Particles.ParticleEmitter[];
 
   constructor() {
     super({ key: "ZombieCombat" });
@@ -83,6 +84,14 @@ export default class ZombieCombat
       player: this.playerStats,
       enemy: this.enemyStats,
     });
+
+    if (!this.textures.exists("spark")) {
+      const g = this.add.graphics();
+      g.fillStyle(0xffd700, 1);
+      g.fillCircle(4, 4, 4);
+      g.generateTexture("spark", 8, 8);
+      g.destroy();
+    }
 
     const portrait = this.add
       .image(this.scale.width / 2, this.scale.height / 2, "ZombieCombatBG")

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef, useEffect } from "react";
 import Phaser from "phaser";
 import Main from "../phaser/LevelOne/Main";
 import SceneHud from "../phaser/UtilityScenes/HudScene";
@@ -12,6 +12,11 @@ import Ghost from "../phaser/LevelOne/Conversations/Ghost";
 import SkelMan from "../phaser/LevelOne/Conversations/SkelMan";
 import ZombieCombat from "../phaser/LevelOne/Combat/ZombieCombat";
 import GameOver from "../phaser/LevelOne/GameOver";
+declare global {
+  interface Window {
+    phaserGame?: Phaser.Game;
+  }
+}
 
 export default function CanvasOne() {
   const gameRef = useRef<Phaser.Game | null>(null);
@@ -19,11 +24,13 @@ export default function CanvasOne() {
   useEffect(() => {
     if (gameRef.current) return;
 
+    let cancelled = false;
+
     const config: Phaser.Types.Core.GameConfig = {
       type: Phaser.AUTO,
       width: window.innerWidth,
       height: window.innerHeight,
-      parent: "gameCanvas",
+      parent: "game-container",
       transparent: true,
       input: {
         keyboard: true,
@@ -34,29 +41,46 @@ export default function CanvasOne() {
         default: "arcade",
         arcade: { gravity: { y: 0, x: 0 }, debug: false },
       },
-      scene: [
-        Main,
-        SceneHud,
-        CultHead,
-        AlchTwins,
-        BoxGuy,
-        SaraOne,
-        Ghost,
-        SkelMan,
-        ZombieCombat,
-        GameOver,
-      ],
+      scene: [],
       scale: {
         mode: Phaser.Scale.RESIZE,
         autoCenter: Phaser.Scale.CENTER_BOTH,
       },
     };
 
+    const game = new Phaser.Game(config);
+    gameRef.current = game;
+    window.phaserGame = game;
+
+    game.scene.add("SceneOne", Main);
+    game.scene.add("SceneHud", SceneHud);
+    game.scene.add("CultHead", CultHead);
+    game.scene.add("AlchTwins", AlchTwins);
+    game.scene.add("BoxGuy", BoxGuy);
+    game.scene.add("SaraOne", SaraOne);
+    game.scene.add("Ghost", Ghost);
+    game.scene.add("SkelMan", SkelMan);
+    game.scene.add("ZombieCombat", ZombieCombat);
+    game.scene.add("GameOver", GameOver);
+
+    const startGame = async () => {
+      const userId = "test-user-001"; // later: auth / session
+
+      const res = await fetch(`/api/load?userId=${userId}`);
+      const save = await res.json();
+      console.log("[CANVAS] loaded save:", save);
+
+      if (cancelled || !game.scene) return;
+
+      game.registry.set("userId", userId);
+      game.scene.start("SceneOne", { save });
+    };
+
+    startGame();
+
     window.addEventListener("resize", () => {
       gameRef.current?.scale.resize(window.innerWidth, window.innerHeight);
     });
-
-    gameRef.current = new Phaser.Game(config);
 
     const handleResize = () => {
       gameRef.current?.scale.resize(window.innerWidth, window.innerHeight);
@@ -65,9 +89,10 @@ export default function CanvasOne() {
     window.addEventListener("resize", handleResize);
 
     return () => {
-      gameRef.current?.destroy(true);
-      gameRef.current = null;
+      cancelled = true;
       window.removeEventListener("resize", handleResize);
+      game.destroy(true);
+      gameRef.current = null;
     };
   }, []);
 
