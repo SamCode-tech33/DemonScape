@@ -45,6 +45,7 @@ import type {
   WASDAndArrowKeys,
   PlayerStats,
   EnemyStats,
+  SaveState,
 } from "@/app/components/demonScapeTypes";
 import keySettings from "@/app/components/keySettings";
 import { zombies } from "@/app/components/enemyNpcs";
@@ -57,6 +58,7 @@ import {
   threeMenGroup,
 } from "@/app/components/levelOne/floatingDialogue";
 import type { SceneOneState } from "@/app/components/levelOne/SceneOneTypes";
+import { saveGame } from "@/app/phaser/saveGame";
 export default class Main extends Phaser.Scene implements SceneOneState {
   public player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   public keys!: WASDAndArrowKeys;
@@ -99,12 +101,70 @@ export default class Main extends Phaser.Scene implements SceneOneState {
   public ghostFollow: boolean = false;
   public lastDirection: string = "down";
   public movementDisabled: boolean = false;
+  private pendingSave?: SaveState;
+  private isLoadingSave?: boolean = true;
 
   constructor() {
     super({ key: "SceneOne" });
   }
 
-  init() {
+  getSaveState(): SaveState {
+    return {
+      userId: this.registry.get("userId"),
+
+      scene: {
+        alchSceneNum: this.alchSceneNum,
+        saraOneSceneNum: this.saraOneSceneNum,
+        cultHeadSceneNum: this.cultHeadSceneNum,
+      },
+
+      player: {
+        x: this.player.x,
+        y: this.player.y,
+        lastDirection: this.lastDirection,
+        stats: this.playerStats,
+        ghostFollow: this.ghostFollow,
+      },
+
+      combat: {
+        zomDeathCount: this.zomDeathCount,
+        zomNum: this.zomNum,
+      },
+
+      flags: {
+        alchEvent: this.alchEvent,
+        movementDisabled: this.movementDisabled,
+      },
+
+      meta: {
+        updatedAt: new Date(),
+      },
+    };
+  }
+
+  applySaveState(save: SaveState) {
+    this.alchSceneNum = save.scene.alchSceneNum;
+    this.saraOneSceneNum = save.scene.saraOneSceneNum;
+    this.cultHeadSceneNum = save.scene.cultHeadSceneNum;
+
+    this.player.setPosition(save.player.x, save.player.y);
+    this.lastDirection = save.player.lastDirection;
+    this.playerStats = save.player.stats;
+    this.ghostFollow = save.player.ghostFollow;
+
+    this.zomDeathCount = save.combat.zomDeathCount;
+    this.zomNum = save.combat.zomNum;
+
+    this.alchEvent = save.flags.alchEvent;
+    this.movementDisabled = false;
+  }
+
+  init(data: { save?: SaveState }) {
+    this.pendingSave = data.save;
+    this.isLoadingSave = !!data.save;
+    console.log("[INIT] incoming save:", data.save);
+
+    //defaults on newgame
     this.alchEvent = false;
     this.playerStats = {
       health: 50,
@@ -127,12 +187,16 @@ export default class Main extends Phaser.Scene implements SceneOneState {
     this.ghostFollow = false;
     this.lastDirection = "down";
     this.movementDisabled = false;
+
+    console.log("[INIT] AFTER defaults:", {
+      cultHeadSceneNum: this.cultHeadSceneNum,
+    });
   }
 
   preload() {
     preLoadedAssets(this);
   }
-  create() {
+  private createWorld() {
     // MAP
     mapLayering(this);
 
@@ -212,12 +276,23 @@ export default class Main extends Phaser.Scene implements SceneOneState {
         )
         .setDepth(50)
         .setOrigin(0.5);
-    if (this.cultHeadSceneNum === 1) {
+    if (!this.isLoadingSave && this.cultHeadSceneNum === 1) {
       this.movementDisabled = true;
       this.time.delayedCall(700, () => {
         cultHeadEvent(this);
       });
     }
+
+    this.enemyStats.enemyPresence = true;
+    this.time.delayedCall(500, () => {
+      this.zomNum = 1;
+      this.scene.pause("SceneOne");
+      this.backgroundMusic.stop();
+      this.scene.launch("ZombieCombat", {
+        playerStats: this.playerStats,
+        enemy: this.enemyStats,
+      });
+    });
 
     Alch2Dialogue(this);
 
@@ -280,6 +355,8 @@ export default class Main extends Phaser.Scene implements SceneOneState {
           this.playerStats.health = Math.max(0, this.playerStats.health - 15);
 
           this.player.anims.play("pass-out", true);
+
+          saveGame();
 
           this.scene.launch("HudScene", {
             player: this.playerStats,
@@ -467,6 +544,21 @@ export default class Main extends Phaser.Scene implements SceneOneState {
     pathingZombie1(this);
     pathingZombie2(this);
     pathingZombie3(this);
+  }
+  create() {
+    preLoadedAssets(this);
+
+    console.log("[CREATE] pendingSave:", this.pendingSave);
+
+    this.createWorld(); // <-- player is created here
+
+    if (this.pendingSave) {
+      this.applySaveState(this.pendingSave);
+      this.pendingSave = undefined;
+      this.isLoadingSave = false;
+    }
+
+    console.log("[CREATE] AFTER apply:", this.cultHeadSceneNum);
   }
 
   update(delta: number) {
