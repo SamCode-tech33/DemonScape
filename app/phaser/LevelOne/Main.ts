@@ -283,17 +283,6 @@ export default class Main extends Phaser.Scene implements SceneOneState {
       });
     }
 
-    this.enemyStats.enemyPresence = true;
-    this.time.delayedCall(500, () => {
-      this.zomNum = 1;
-      this.scene.pause("SceneOne");
-      this.backgroundMusic.stop();
-      this.scene.launch("ZombieCombat", {
-        playerStats: this.playerStats,
-        enemy: this.enemyStats,
-      });
-    });
-
     Alch2Dialogue(this);
 
     this.events.off("resume"); // listeners stack through reset so always turn off resume before setting it.
