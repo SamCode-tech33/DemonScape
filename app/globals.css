@@ -73,6 +73,10 @@ path {
   border: solid red 8px;
 }
 
+#game-container canvas {
+  pointer-events: auto;
+}
+
 .hero {
   font-size: 232px;
   -webkit-text-stroke: 4px gold;
