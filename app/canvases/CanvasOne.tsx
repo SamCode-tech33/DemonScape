@@ -35,7 +35,6 @@ export default function CanvasOne() {
       input: {
         keyboard: true,
         mouse: true,
-        touch: true,
       },
       physics: {
         default: "arcade",

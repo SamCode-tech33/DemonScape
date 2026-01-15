@@ -162,7 +162,6 @@ export default class Main extends Phaser.Scene implements SceneOneState {
   init(data: { save?: SaveState }) {
     this.pendingSave = data.save;
     this.isLoadingSave = !!data.save;
-    console.log("[INIT] incoming save:", data.save);
 
     //defaults on newgame
     this.alchEvent = false;
@@ -187,10 +186,6 @@ export default class Main extends Phaser.Scene implements SceneOneState {
     this.ghostFollow = false;
     this.lastDirection = "down";
     this.movementDisabled = false;
-
-    console.log("[INIT] AFTER defaults:", {
-      cultHeadSceneNum: this.cultHeadSceneNum,
-    });
   }
 
   preload() {
@@ -281,6 +276,8 @@ export default class Main extends Phaser.Scene implements SceneOneState {
       this.time.delayedCall(700, () => {
         cultHeadEvent(this);
       });
+    } else {
+      this.backgroundMusic.play();
     }
 
     Alch2Dialogue(this);
@@ -300,7 +297,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
           this.player.anims.stop();
           this.player.anims.play("pass-out", true);
 
-          this.scene.launch("HudScene", {
+          this.scene.get("HudScene").scene.restart({
             player: this.playerStats,
             enemy: this.enemyStats,
           });
@@ -345,9 +342,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
 
           this.player.anims.play("pass-out", true);
 
-          saveGame();
-
-          this.scene.launch("HudScene", {
+          this.scene.get("HudScene").scene.restart({
             player: this.playerStats,
             enemy: this.enemyStats,
           });
@@ -370,6 +365,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
               }
             );
           });
+          saveGame();
         } else if (this.cultHeadSceneNum === 4) {
           (this.npcs.getChildren() as Phaser.Physics.Arcade.Sprite[]).forEach(
             (npc, i) => {
@@ -479,8 +475,56 @@ export default class Main extends Phaser.Scene implements SceneOneState {
       }
     });
 
+    // HUD UPDATES
+    this.scene.launch("HudScene", {
+      player: this.playerStats,
+      enemy: {
+        enemyPresence: false,
+        health: 0,
+        maxHealth: 0,
+        magic: 0,
+        maxMagic: 0,
+      },
+    });
+
+    // CAMERA
+    this.physics.world.setBounds(0, 0, 2555, 1280);
+    this.cameras.main.setZoom(2.5);
+    this.cameras.main.startFollow(this.player);
+    // PATROLS
+    pathingAlch1(this);
+    pathingSkel(this);
+    pathingZombie1(this);
+    pathingZombie2(this);
+    pathingZombie3(this);
+
     this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
-      if (!pointer.leftButtonDown() || this.saraOneSceneNum !== 2) return;
+      if (pointer.button !== 0) return;
+      if (this.movementDisabled) return;
+
+      this.movementDisabled = true;
+      this.player.setVelocity(0, 0);
+      this.player.anims.stop();
+
+      switch (this.lastDirection) {
+        case "up":
+          this.player.anims.play("halfslash-up", true);
+          break;
+        case "left":
+          this.player.anims.play("halfslash-left", true);
+          break;
+        case "down":
+          this.player.anims.play("halfslash-down", true);
+          break;
+        case "right":
+          this.player.anims.play("halfslash-right", true);
+          break;
+      }
+
+      this.player.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+        this.movementDisabled = false;
+      });
+      if (this.saraOneSceneNum !== 2) return;
       const zombies = [
         { sprite: this.zom1, num: 1 },
         { sprite: this.zom2, num: 2 },
@@ -510,34 +554,9 @@ export default class Main extends Phaser.Scene implements SceneOneState {
         }
       }
     });
-
-    // HUD UPDATES
-    this.scene.launch("HudScene", {
-      player: this.playerStats,
-      enemy: {
-        enemyPresence: false,
-        health: 0,
-        maxHealth: 0,
-        magic: 0,
-        maxMagic: 0,
-      },
-    });
-
-    // CAMERA
-    this.physics.world.setBounds(0, 0, 2555, 1280);
-    this.cameras.main.setZoom(2.5);
-    this.cameras.main.startFollow(this.player);
-    // PATROLS
-    pathingAlch1(this);
-    pathingSkel(this);
-    pathingZombie1(this);
-    pathingZombie2(this);
-    pathingZombie3(this);
   }
   create() {
     preLoadedAssets(this);
-
-    console.log("[CREATE] pendingSave:", this.pendingSave);
 
     this.createWorld(); // <-- player is created here
 
@@ -545,9 +564,11 @@ export default class Main extends Phaser.Scene implements SceneOneState {
       this.applySaveState(this.pendingSave);
       this.pendingSave = undefined;
       this.isLoadingSave = false;
+      this.scene.get("HudScene").scene.restart({
+        player: this.playerStats,
+        enemy: this.enemyStats,
+      });
     }
-
-    console.log("[CREATE] AFTER apply:", this.cultHeadSceneNum);
   }
 
   update(delta: number) {

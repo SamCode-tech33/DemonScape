@@ -209,25 +209,6 @@ const playerMovement = (scene: Phaser.Scene & SceneOneState) => {
       scene.player.anims.play("idle-down", true);
     }
   }
-  scene.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
-    if (pointer.leftButtonDown()) {
-      scene.movementDisabled = true;
-      scene.player.setVelocity(0, 0);
-      scene.player.anims.stop();
-      if (scene.lastDirection === "up") {
-        scene.player.anims.play("halfslash-up", true);
-      } else if (scene.lastDirection === "left") {
-        scene.player.anims.play("halfslash-left", true);
-      } else if (scene.lastDirection === "down") {
-        scene.player.anims.play("halfslash-down", true);
-      } else if (scene.lastDirection === "right") {
-        scene.player.anims.play("halfslash-right", true);
-      }
-      scene.player.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
-        scene.movementDisabled = false;
-      });
-    }
-  });
 };
 
 export default playerMovement;
