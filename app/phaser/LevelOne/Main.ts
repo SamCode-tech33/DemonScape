@@ -332,6 +332,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
           guysAlterDialogue(this);
           girlsLeftWallDialogue(this);
           threeMenGroup(this);
+          saveGame();
         }
       } else if (data?.from === "CultHead") {
         if (this.cultHeadSceneNum === 1) {
@@ -467,6 +468,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
         zomBoss.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
           this.time.delayedCall(500, () => zomBoss.destroy());
         });
+        saveGame();
       }
       if (this.backgroundMusic.isPaused) {
         this.backgroundMusic.resume();
