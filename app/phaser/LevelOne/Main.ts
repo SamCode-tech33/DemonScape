@@ -103,6 +103,9 @@ export default class Main extends Phaser.Scene implements SceneOneState {
   public movementDisabled: boolean = false;
   private pendingSave?: SaveState;
   private isLoadingSave?: boolean = true;
+  private isNewGame?: boolean;
+  private slot!: 1 | 2 | 3;
+  private savedPlayerPosition?: { x: number; y: number };
 
   constructor() {
     super({ key: "SceneOne" });
@@ -111,6 +114,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
   getSaveState(): SaveState {
     return {
       userId: this.registry.get("userId"),
+      slot: this.registry.get("slot"),
 
       scene: {
         alchSceneNum: this.alchSceneNum,
@@ -147,7 +151,6 @@ export default class Main extends Phaser.Scene implements SceneOneState {
     this.saraOneSceneNum = save.scene.saraOneSceneNum;
     this.cultHeadSceneNum = save.scene.cultHeadSceneNum;
 
-    this.player.setPosition(save.player.x, save.player.y);
     this.lastDirection = save.player.lastDirection;
     this.playerStats = save.player.stats;
     this.ghostFollow = save.player.ghostFollow;
@@ -157,13 +160,22 @@ export default class Main extends Phaser.Scene implements SceneOneState {
 
     this.alchEvent = save.flags.alchEvent;
     this.movementDisabled = false;
+
+    this.savedPlayerPosition = {
+      x: save.player.x,
+      y: save.player.y,
+    };
   }
 
-  init(data: { save?: SaveState }) {
-    this.pendingSave = data.save;
-    this.isLoadingSave = !!data.save;
+  init() {
+    this.slot = this.registry.get("slot") as 1 | 2 | 3;
+    this.isNewGame = this.registry.get("isNewGame");
 
-    //defaults on newgame
+    const save = this.registry.get("saveData");
+
+    this.isLoadingSave = !!(!this.isNewGame && save);
+
+    // defaults ONLY for new game
     this.alchEvent = false;
     this.playerStats = {
       health: 50,
@@ -267,7 +279,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
           window.innerWidth,
           window.innerHeight,
           0xff0000,
-          0.3
+          0.3,
         )
         .setDepth(50)
         .setOrigin(0.5);
@@ -322,7 +334,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
                 this.scene.launch("AlchTwins", {
                   alchSceneNum: this.alchSceneNum,
                 });
-              }
+              },
             );
           });
         } else if (this.alchSceneNum === 2) {
@@ -363,7 +375,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
               Phaser.Animations.Events.ANIMATION_COMPLETE,
               () => {
                 this.movementDisabled = false;
-              }
+              },
             );
           });
           saveGame();
@@ -385,17 +397,19 @@ export default class Main extends Phaser.Scene implements SceneOneState {
                   },
                 });
               }
-            }
+            },
           );
+          saveGame();
         }
       } else if (data?.from === "Ghost") {
         this.tweens.killTweensOf(this.ghost);
         this.ghost.destroy();
         ghostNpc(this, 5000, 5000);
         this.ghostCompanion = this.physics.add
-          .sprite(this.player.x, this.player.y, "sgr", 0)
+          .sprite(this.player.x, this.player.y + 1, "sgr", 0)
           .setCollideWorldBounds(true);
         this.ghostFollow = true;
+        this.ghostCompanion.setDepth(12);
       } else if (data?.from === "ZombieCombat") {
         this.enemyStats.enemyPresence = false;
         this.playerStats.health = data.playerStats.health ?? 50;
@@ -469,6 +483,21 @@ export default class Main extends Phaser.Scene implements SceneOneState {
           this.time.delayedCall(500, () => zomBoss.destroy());
         });
         saveGame();
+      } else if (data?.from === "SaraOne" && this.saraOneSceneNum === 3) {
+        this.enemyStats.enemyPresence = true;
+        this.time.delayedCall(500, () => {
+          this.scene.pause("SceneOne");
+          this.backgroundMusic.stop();
+          this.scene.launch("ZombieCombat", {
+            playerStats: this.playerStats,
+            enemy: {
+              health: 40,
+              maxHealth: 40,
+              magic: 2,
+              maxMagic: 2,
+            },
+          });
+        });
       }
       if (this.backgroundMusic.isPaused) {
         this.backgroundMusic.resume();
@@ -491,7 +520,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
 
     // CAMERA
     this.physics.world.setBounds(0, 0, 2555, 1280);
-    this.cameras.main.setZoom(2.5);
+    this.cameras.main.setZoom(2.8);
     this.cameras.main.startFollow(this.player);
     // PATROLS
     pathingAlch1(this);
@@ -538,7 +567,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
           this.player.x,
           this.player.y,
           sprite.x,
-          sprite.y
+          sprite.y,
         );
 
         if (dist < 32) {
@@ -558,22 +587,75 @@ export default class Main extends Phaser.Scene implements SceneOneState {
     });
   }
   create() {
-    preLoadedAssets(this);
+    const save = this.registry.get("saveData");
 
-    this.createWorld(); // <-- player is created here
+    if (!this.isNewGame && save) {
+      console.log("[SceneOne] applying save", save);
 
-    if (this.pendingSave) {
-      this.applySaveState(this.pendingSave);
-      this.pendingSave = undefined;
-      this.isLoadingSave = false;
-      this.scene.get("HudScene").scene.restart({
-        player: this.playerStats,
-        enemy: this.enemyStats,
-      });
+      this.applySaveState(save);
+      this.registry.remove("saveData");
+    }
+
+    this.createWorld();
+
+    if (this.savedPlayerPosition) {
+      this.player.setPosition(
+        this.savedPlayerPosition.x,
+        this.savedPlayerPosition.y,
+      );
+    }
+
+    if (this.ghostFollow) {
+      this.tweens.killTweensOf(this.ghost);
+      this.ghost.destroy();
+      ghostNpc(this, 5000, 5000);
+      this.ghostCompanion = this.physics.add
+        .sprite(this.player.x, this.player.y, "sgr", 0)
+        .setCollideWorldBounds(true);
+    }
+    if (this.alchSceneNum === 3 && !this.ghostFollow) {
+      demonGhost(this);
+    }
+    if (this.zomDeathCount === 3) {
+      this.tweens.killTweensOf(this.zom1);
+      this.zom1.anims?.stop();
+      this.zom1.destroy();
+      this.tweens.killTweensOf(this.zom2);
+      this.zom2.anims?.stop();
+      this.zom2.destroy();
+      this.tweens.killTweensOf(this.zom3);
+      this.zom3.anims?.stop();
+      this.zom3.destroy();
+      this.time.delayedCall(6000, () =>
+        (this.npcs.getChildren() as Phaser.Physics.Arcade.Sprite[]).forEach(
+          (npc, i) => {
+            if (i === 12) {
+              this.tweens.add({
+                targets: npc,
+                x: 722,
+                y: 115,
+                duration: 1000,
+                onStart: () => {
+                  npc.anims.play("cultist-male-walk-right", true);
+                },
+                onComplete: () => {
+                  npc.anims.stop();
+                  npc.setFrame(9);
+                },
+              });
+            }
+          },
+        ),
+      );
+      fillerNpcs(this);
+      hallwayGirlsDialogue(this);
+      guysAlterDialogue(this);
+      girlsLeftWallDialogue(this);
+      threeMenGroup(this);
     }
   }
 
-  update(delta: number) {
+  update(_time: number, delta: number) {
     // INTERACTION LOGIC
     interactionLogic(this);
     if (this.alchEvent && this.cultHeadSceneNum === 4) {
@@ -587,7 +669,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
     depthSetting(this);
     pathingAlch2(this); //index
 
-    if (this.ghostFollow && this.ghost) {
+    if (this.ghostFollow && this.ghostCompanion) {
       // pick an offset based on the player's lastDirection
       let offsetX = 0;
       let offsetY = 0;
@@ -615,12 +697,12 @@ export default class Main extends Phaser.Scene implements SceneOneState {
       this.ghostCompanion.x = Phaser.Math.Linear(
         this.ghostCompanion.x,
         targetX,
-        speed
+        speed,
       );
       this.ghostCompanion.y = Phaser.Math.Linear(
         this.ghostCompanion.y,
         targetY,
-        speed
+        speed,
       );
     }
   }

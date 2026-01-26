@@ -2,6 +2,7 @@
 
 import { useRef, useEffect } from "react";
 import Phaser from "phaser";
+import BootScene from "../phaser/BootScene";
 import Main from "../phaser/LevelOne/Main";
 import SceneHud from "../phaser/UtilityScenes/HudScene";
 import CultHead from "../phaser/LevelOne/Conversations/CultHead";
@@ -51,6 +52,7 @@ export default function CanvasOne() {
     gameRef.current = game;
     window.phaserGame = game;
 
+    game.scene.add("BootScene", BootScene);
     game.scene.add("SceneOne", Main);
     game.scene.add("SceneHud", SceneHud);
     game.scene.add("CultHead", CultHead);
@@ -62,20 +64,7 @@ export default function CanvasOne() {
     game.scene.add("ZombieCombat", ZombieCombat);
     game.scene.add("GameOver", GameOver);
 
-    const startGame = async () => {
-      const userId = "test-user-001"; // later: auth / session
-
-      const res = await fetch(`/api/load?userId=${userId}`);
-      const save = await res.json();
-      console.log("[CANVAS] loaded save:", save);
-
-      if (cancelled || !game.scene) return;
-
-      game.registry.set("userId", userId);
-      game.scene.start("SceneOne", { save });
-    };
-
-    startGame();
+    game.scene.start("BootScene");
 
     window.addEventListener("resize", () => {
       gameRef.current?.scale.resize(window.innerWidth, window.innerHeight);

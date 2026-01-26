@@ -8,7 +8,7 @@ export const depthSetting = (scene: Phaser.Scene & SceneOneState) => {
       } else {
         npc.setDepth(7);
       }
-    }
+    },
   );
 
   if (scene.player.y < scene.boxNpc.y) {
@@ -68,7 +68,7 @@ export const depthSetting = (scene: Phaser.Scene & SceneOneState) => {
     scene.zom3.setDepth(7);
   }
 
-  if (scene.ghostCompanion) {
+  if (scene.ghostCompanion && scene.ghostFollow) {
     if (scene.player.y < scene.ghostCompanion.y) {
       scene.ghostCompanion.setDepth(12);
     } else {
