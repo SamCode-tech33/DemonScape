@@ -97,31 +97,13 @@ export default function HomePage() {
             Demon Scape
           </div>
           <div className="flex flex-col gap-8">
-            <Link href="/game">
+            <Link href="/saveSlots">
               <button
                 type="button"
-                className={`${mostean.className} silver text-[48px] h-20 w-56 bg-red-950 border-2 border-amber-500 rounded-lg hover:bg-red-800 cursor-pointer opacity-50 hover:opacity-90`}
+                className={`${mostean.className} silver text-[48px] h-20 w-72 bg-red-950 border-2 border-amber-500 rounded-md hover:bg-red-800 cursor-pointer opacity-50 hover:opacity-90 mb-24`}
                 onClick={handleStopAudio}
               >
-                Continue
-              </button>
-            </Link>
-            <Link href="/game">
-              <button
-                type="button"
-                className={`${mostean.className} silver text-[48px] h-20 w-56 bg-red-950 border-2 border-amber-500 rounded-lg hover:bg-red-800 cursor-pointer opacity-50 hover:opacity-90`}
-                onClick={handleStopAudio}
-              >
-                New Game
-              </button>
-            </Link>
-            <Link href="/game">
-              <button
-                type="button"
-                className={`${mostean.className} silver text-[48px] h-20 w-56 bg-red-950 border-2 border-amber-500 rounded-lg hover:bg-red-800 cursor-pointer opacity-50 hover:opacity-90`}
-                onClick={handleStopAudio}
-              >
-                Options
+                Click to Start
               </button>
             </Link>
           </div>

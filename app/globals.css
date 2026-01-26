@@ -70,7 +70,7 @@ path {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  border: solid red 8px;
+  border: solid red 2px;
 }
 
 #game-container canvas {
@@ -78,7 +78,7 @@ path {
 }
 
 .hero {
-  font-size: 232px;
+  font-size: 180px;
   -webkit-text-stroke: 4px gold;
   font-weight: 700;
   color: black;
@@ -96,20 +96,60 @@ path {
   z-index: 0;
 }
 
+.save-slot-background {
+  background-image: url("/assets/saveSlot.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  z-index: 0;
+}
+
 .flame-background {
   background-image: url("/assets/flames.gif");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  top: 0;
+  left: 0;
   height: 100vh;
   width: 100%;
-  z-index: -1;
   opacity: 0.1;
+  z-index: -1;
   position: absolute;
 }
 
 .silver {
   color: #eaecec;
+}
+
+.save-slot {
+  color: rgb(255, 184, 4);
+  font-size: 32px;
+  opacity: 0.8;
+  z-index: 2;
+  border-radius: 16px;
+  height: 112px;
+  width: 384px;
+  border: solid rgb(255, 184, 4) 2px;
+  cursor: pointer;
+  display: flex;
+  margin-bottom: 16px;
+  justify-content: center;
+  align-items: center;
+}
+
+.background-div {
+  height: 112px;
+  width: 384px;
+}
+
+.save-slot:hover {
+  background: black;
+  color: white;
+  border: solid white 2px;
 }
 
 .silver:hover {

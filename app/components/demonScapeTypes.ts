@@ -74,7 +74,7 @@ export interface ConvoSceneState {
 }
 export interface SaveState {
   userId: string;
-
+  slot: 1 | 2 | 3;
   scene: {
     alchSceneNum: number;
     saraOneSceneNum: number;
