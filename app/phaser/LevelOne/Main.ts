@@ -264,8 +264,8 @@ export default class Main extends Phaser.Scene implements SceneOneState {
     cultHeadAnimation(this);
     maleCultistAnimation(this);
     femaleCultistAnimation(this);
-    torchAnimation(this, torchPositions);
-    alchTorchAnimation(this, alchemyPositions);
+    //torchAnimation(this, torchPositions);
+    //alchTorchAnimation(this, alchemyPositions);
     alchTwinsAnimation(this);
     skelManAnimation(this);
 

@@ -1,13 +1,18 @@
 import type { SceneOneState } from "./SceneOneTypes";
+import { setupManualTileAnimations } from "../../components/tiledAnimator";
 
 export const mapLayering = (scene: Phaser.Scene & SceneOneState) => {
-  const map = scene.make.tilemap({ key: "map" });
+  const map = scene.add.tilemap("map");
   const tiledMap = map.addTilesetImage(
     "level1-master-tileset",
-    "level1-master-tileset"
+    "level1-master-tileset",
   );
 
   const floorLayer = tiledMap && map.createLayer("floor", tiledMap, 0, 0);
+  const puzzleBook1 =
+    tiledMap && map.createLayer("puzzlebook1-ani", tiledMap, 0, 0);
+  const puzzleBook2 =
+    tiledMap && map.createLayer("puzzlebook2-ani", tiledMap, 0, 0);
   const rugLayer = tiledMap && map.createLayer("rug", tiledMap, 0, 0);
   const wallsLayer = tiledMap && map.createLayer("walls", tiledMap, 0, 0);
   const wallThingsLayer =
@@ -20,17 +25,41 @@ export const mapLayering = (scene: Phaser.Scene & SceneOneState) => {
     tiledMap && map.createLayer("floor-objects2", tiledMap, 0, 0);
   const surfaceItemsLayer =
     tiledMap && map.createLayer("surface-items", tiledMap, 0, 0);
-  const fireLayer = tiledMap && map.createLayer("fire", tiledMap, 0, 0);
+  const fire = tiledMap && map.createLayer("fire", tiledMap, 0, 0);
+  const fire2 = tiledMap && map.createLayer("fire2", tiledMap, 0, 0);
+  const fire3 = tiledMap && map.createLayer("fire3", tiledMap, 0, 0);
+  const chest = tiledMap && map.createLayer("chest1-ani", tiledMap, 0, 0);
+  const portal = tiledMap && map.createLayer("portal-ani", tiledMap, 0, 0);
+  const door = tiledMap && map.createLayer("door-ani", tiledMap, 0, 0);
+  const alchemy1 = tiledMap && map.createLayer("alchemy1", tiledMap, 0, 0);
+  const alchemy2 = tiledMap && map.createLayer("alchemy2", tiledMap, 0, 0);
 
   floorLayer?.setDepth(1);
   rugLayer?.setDepth(2);
   wallsLayer?.setDepth(3);
   wallThingsLayer?.setDepth(4);
+  door?.setDepth(4);
+  puzzleBook1?.setDepth(4);
+  puzzleBook2?.setDepth(4);
   hiddenFloorLayer?.setDepth(5);
+  chest?.setDepth(6);
+  portal?.setDepth(6);
+  alchemy1?.setDepth(6);
+  alchemy2?.setDepth(6);
   floorObjectsLayer?.setDepth(6);
   largeFloorObjects?.setDepth(20);
   surfaceItemsLayer?.setDepth(21);
-  fireLayer?.setDepth(23);
+  fire?.setDepth(23);
+  fire2?.setDepth(23);
+  fire3?.setDepth(23);
+
+  setupManualTileAnimations(
+    scene,
+    map,
+    [fire, fire2, fire3, puzzleBook1, puzzleBook2, alchemy1, alchemy2].filter(
+      (layer): layer is Phaser.Tilemaps.TilemapLayer => layer !== null,
+    ),
+  );
 };
 
 export const collisions = (scene: Phaser.Scene & SceneOneState) => {
@@ -49,7 +78,7 @@ export const collisions = (scene: Phaser.Scene & SceneOneState) => {
         obj.x + obj.width / 2,
         obj.y + obj.height / 2,
         obj.width,
-        obj.height
+        obj.height,
       );
       scene.physics.add.existing(collisionRect, true);
       collisionRect.setVisible(false);

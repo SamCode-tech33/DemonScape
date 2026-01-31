@@ -4,9 +4,11 @@ const preLoadedAssets = (scene: Phaser.Scene & SceneOneState) => {
   scene.load.tilemapTiledJSON("map", "/assets/level1-master-map.json");
   scene.load.image(
     "level1-master-tileset",
-    "/assets/level1-master-tileset.png"
+    "/assets/level1-master-tileset.png",
   );
   scene.load.audio("bgm-1", "assets/music/deskMys.mp3");
+
+  scene.load.scenePlugin("AnimatedTiles");
 
   scene.load.spritesheet(
     "torch",
@@ -14,7 +16,7 @@ const preLoadedAssets = (scene: Phaser.Scene & SceneOneState) => {
     {
       frameWidth: 32,
       frameHeight: 32,
-    }
+    },
   );
 
   scene.load.spritesheet(
@@ -23,7 +25,7 @@ const preLoadedAssets = (scene: Phaser.Scene & SceneOneState) => {
     {
       frameWidth: 32,
       frameHeight: 32,
-    }
+    },
   );
 
   // PLAYER
@@ -98,7 +100,7 @@ const preLoadedAssets = (scene: Phaser.Scene & SceneOneState) => {
     {
       frameWidth: 64,
       frameHeight: 64,
-    }
+    },
   );
   scene.load.spritesheet("cult-head-emote", "assets/npc/cult-head/emote.png", {
     frameWidth: 64,
@@ -113,7 +115,7 @@ const preLoadedAssets = (scene: Phaser.Scene & SceneOneState) => {
     {
       frameWidth: 64,
       frameHeight: 64,
-    }
+    },
   );
   scene.load.spritesheet(
     "cultist-female-sit",
@@ -121,7 +123,7 @@ const preLoadedAssets = (scene: Phaser.Scene & SceneOneState) => {
     {
       frameWidth: 64,
       frameHeight: 64,
-    }
+    },
   );
   scene.load.spritesheet(
     "cultist-female-spell",
@@ -129,7 +131,7 @@ const preLoadedAssets = (scene: Phaser.Scene & SceneOneState) => {
     {
       frameWidth: 64,
       frameHeight: 64,
-    }
+    },
   );
   scene.load.spritesheet(
     "cultist-female-emote",
@@ -137,7 +139,7 @@ const preLoadedAssets = (scene: Phaser.Scene & SceneOneState) => {
     {
       frameWidth: 64,
       frameHeight: 64,
-    }
+    },
   );
 
   // MALE CULTISTS
@@ -148,7 +150,7 @@ const preLoadedAssets = (scene: Phaser.Scene & SceneOneState) => {
     {
       frameWidth: 64,
       frameHeight: 64,
-    }
+    },
   );
   scene.load.spritesheet(
     "cultist-male-sit",
@@ -156,7 +158,7 @@ const preLoadedAssets = (scene: Phaser.Scene & SceneOneState) => {
     {
       frameWidth: 64,
       frameHeight: 64,
-    }
+    },
   );
   scene.load.spritesheet(
     "cultist-male-spell",
@@ -164,7 +166,7 @@ const preLoadedAssets = (scene: Phaser.Scene & SceneOneState) => {
     {
       frameWidth: 64,
       frameHeight: 64,
-    }
+    },
   );
   scene.load.spritesheet(
     "cultist-male-emote",
@@ -172,7 +174,7 @@ const preLoadedAssets = (scene: Phaser.Scene & SceneOneState) => {
     {
       frameWidth: 64,
       frameHeight: 64,
-    }
+    },
   );
 
   // SARA

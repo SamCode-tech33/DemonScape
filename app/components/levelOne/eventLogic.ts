@@ -136,6 +136,6 @@ export const fillerNpcs = (scene: Phaser.Scene & SceneOneState) => {
           },
         });
       }
-    }
+    },
   );
 };

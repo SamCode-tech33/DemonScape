@@ -19,7 +19,7 @@ export const Alch2Dialogue = (scene: Phaser.Scene & SceneOneState) => {
           scene.alchTwin2.y - 40,
           56,
           16,
-          6
+          6,
         )
         .setDepth(50);
 
@@ -52,7 +52,7 @@ export const hallwayGirlsDialogue = (scene: Phaser.Scene & SceneOneState) => {
     "hmmm...",
   ];
   scene.time.delayedCall(4000, () =>
-    convo(scene, participants, lines, 48, 48, 43, 43, false)
+    convo(scene, participants, lines, 48, 48, 43, 43, false),
   );
 };
 
@@ -73,7 +73,7 @@ export const guysAlterDialogue = (scene: Phaser.Scene & SceneOneState) => {
     "Yeah...",
   ];
   scene.time.delayedCall(8000, () =>
-    convo(scene, participants, lines, 48, 48, 43, 43, false)
+    convo(scene, participants, lines, 48, 48, 43, 43, false),
   );
 };
 
@@ -94,7 +94,7 @@ export const girlsLeftWallDialogue = (scene: Phaser.Scene & SceneOneState) => {
     "Yeah...",
   ];
   scene.time.delayedCall(12000, () =>
-    convo(scene, participants, lines, -16, 16, -21, 12, false)
+    convo(scene, participants, lines, -16, 16, -21, 12, false),
   );
 };
 
@@ -110,13 +110,13 @@ export const threeMenGroup = (scene: Phaser.Scene & SceneOneState) => {
     "Either you're hiding your incompetence, or the Humans are getting help...",
   ];
   scene.time.delayedCall(16000, () =>
-    convo(scene, participants, lines, 48, 48, 43, 45, true)
+    convo(scene, participants, lines, 48, 48, 43, 45, true),
   );
 };
 
 export const singleTriggerDialogue = (
   scene: Phaser.Scene & SceneOneState,
-  levelFinish: boolean
+  levelFinish: boolean,
 ) => {
   const npcs = scene.npcs.getChildren() as Phaser.Physics.Arcade.Sprite[];
   const targets = [npcs[7], npcs[11], npcs[10], npcs[12]];
@@ -186,7 +186,7 @@ const convo = (
   boxOffsetY: number,
   textOffsetX: number,
   textOffsetY: number,
-  group: boolean
+  group: boolean,
 ) => {
   let npc: Phaser.Physics.Arcade.Sprite | undefined;
   let count = 0;
@@ -214,8 +214,8 @@ const convo = (
         boxOffsetY,
         textOffsetX,
         textOffsetY,
-        group
-      )
+        group,
+      ),
     );
     return;
   }
@@ -246,7 +246,7 @@ const convo = (
       boxOffsetY,
       textOffsetX,
       textOffsetY,
-      group
-    )
+      group,
+    ),
   );
 };

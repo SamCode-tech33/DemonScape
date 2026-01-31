@@ -538,7 +538,7 @@ export const alchTwinsAnimation = (scene: Phaser.Scene & SceneOneState) => {
 // FLAME ANIMATION
 export const torchAnimation = (
   scene: Phaser.Scene & SceneOneState,
-  torchPositions: Array<{ x: number; y: number }>
+  torchPositions: Array<{ x: number; y: number }>,
 ) => {
   scene.anims.create({
     key: "torch",
@@ -561,7 +561,7 @@ export const torchAnimation = (
 // TORCHES
 export const alchTorchAnimation = (
   scene: Phaser.Scene & SceneOneState,
-  alchemyPositions: Array<{ x: number; y: number }>
+  alchemyPositions: Array<{ x: number; y: number }>,
 ) => {
   scene.anims.create({
     key: "alch",
