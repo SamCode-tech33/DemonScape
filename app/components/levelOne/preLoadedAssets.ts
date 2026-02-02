@@ -230,6 +230,28 @@ const preLoadedAssets = (scene: Phaser.Scene & SceneOneState) => {
     frameWidth: 64,
     frameHeight: 64,
   });
+
+  //INTERACTION OBJECTS
+  scene.load.spritesheet("portal", "assets/animated-objects/portal.png", {
+    frameWidth: 96,
+    frameHeight: 96,
+  });
+  scene.load.spritesheet("door", "assets/animated-objects/wood-door.png", {
+    frameWidth: 72,
+    frameHeight: 72,
+  });
+  scene.load.spritesheet("chest", "assets/animated-objects/chest.png", {
+    frameWidth: 32,
+    frameHeight: 64,
+  });
+  scene.load.spritesheet(
+    "puzzleBook",
+    "assets/animated-objects/puzzle-book.png",
+    {
+      frameWidth: 64,
+      frameHeight: 64,
+    },
+  );
 };
 
 export default preLoadedAssets;

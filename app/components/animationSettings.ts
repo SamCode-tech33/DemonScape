@@ -535,51 +535,6 @@ export const alchTwinsAnimation = (scene: Phaser.Scene & SceneOneState) => {
   });
 };
 
-// FLAME ANIMATION
-export const torchAnimation = (
-  scene: Phaser.Scene & SceneOneState,
-  torchPositions: Array<{ x: number; y: number }>,
-) => {
-  scene.anims.create({
-    key: "torch",
-    frames: scene.anims.generateFrameNumbers("torch", { start: 0, end: 2 }),
-    frameRate: 8,
-    repeat: -1,
-  });
-  scene.animatedTorches = torchPositions.map((pos, index) => {
-    const torch = scene.add.sprite(pos.x, pos.y, "torch");
-    torch.play("torch");
-    if (index < 6) {
-      torch.setDepth(24);
-    } else {
-      torch.setDepth(7);
-    }
-    return torch;
-  });
-};
-
-// TORCHES
-export const alchTorchAnimation = (
-  scene: Phaser.Scene & SceneOneState,
-  alchemyPositions: Array<{ x: number; y: number }>,
-) => {
-  scene.anims.create({
-    key: "alch",
-    frames: scene.anims.generateFrameNumbers("alchemy", {
-      start: 0,
-      end: 2,
-    }),
-    frameRate: 8,
-    repeat: -1,
-  });
-  scene.animatedTorches = alchemyPositions.map((pos) => {
-    const torch = scene.add.sprite(pos.x, pos.y, "alch");
-    torch.play("alch");
-    torch.setDepth(6);
-    return torch;
-  });
-};
-
 // SKEL MAN
 export const skelManAnimation = (scene: Phaser.Scene & SceneOneState) => {
   scene.anims.create({

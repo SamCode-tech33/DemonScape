@@ -80,7 +80,7 @@ export default class SkelMan extends Phaser.Scene implements ConvoSceneState {
       ],
     },
     {
-      text: "GEHEHEHEHEH ANYWAYS DO YOU LIKE PUZZLES? THERE IS ONE IN THIS VERY ROOM WOOWEEWOOWEE - ;aslkdfja;sldkfj;aslkdfj;aslkdjflsadkjfljakfdhgqadjf;aslkdjf;lkdjafs;ldkfjas;ldkfj;asldkfj;aslkdjf;alskdjf;alskdjf;aslkdfj;aslkdfj;aslkdjfieut;lknasdlkguatia;sldkcna;sjdfgtyhpasiert5u;laskdcnm;aljshdgkuatplaisjd;flkasndfuituheoiaj;sdlkfjna;lskdjuytreiqp;osdkfjnalsdkfjhadiapueirer Oh yeah...",
+      text: "GEHEHEHEHEH ANYWAYS DO YOU LIKE PUZZLES? THERE IS ONE IN THIS VERY ROOM WOOWEEWOOWEE - wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-Oh yeah...",
       emote: "*He winks at you, somehow without eyelids*",
       dialogueLine: "SkelManVoice",
     },
