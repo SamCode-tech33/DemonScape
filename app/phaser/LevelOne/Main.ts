@@ -12,10 +12,8 @@ import interactionLogic from "@/app/components/interactionLogic";
 import {
   playerAnimation,
   zombieAnimation,
-  torchAnimation,
   cultHeadAnimation,
   alchTwinsAnimation,
-  alchTorchAnimation,
   skelManAnimation,
   maleCultistAnimation,
   femaleCultistAnimation,
@@ -57,6 +55,12 @@ import {
   singleTriggerDialogue,
   threeMenGroup,
 } from "@/app/components/levelOne/floatingDialogue";
+import {
+  portal,
+  door,
+  chest,
+  puzzleBooks,
+} from "@/app/components/levelOne/interactableObjects";
 import type { SceneOneState } from "@/app/components/levelOne/SceneOneTypes";
 import { saveGame } from "@/app/phaser/saveGame";
 export default class Main extends Phaser.Scene implements SceneOneState {
@@ -101,11 +105,16 @@ export default class Main extends Phaser.Scene implements SceneOneState {
   public ghostFollow: boolean = false;
   public lastDirection: string = "down";
   public movementDisabled: boolean = false;
-  private pendingSave?: SaveState;
-  private isLoadingSave?: boolean = true;
-  private isNewGame?: boolean;
-  private slot!: 1 | 2 | 3;
-  private savedPlayerPosition?: { x: number; y: number };
+  public pendingSave?: SaveState;
+  public isLoadingSave?: boolean = true;
+  public isNewGame?: boolean;
+  public slot!: 1 | 2 | 3;
+  public savedPlayerPosition?: { x: number; y: number };
+  public portal!: Phaser.GameObjects.Sprite;
+  public door!: Phaser.GameObjects.Sprite;
+  public puzzleBook1!: Phaser.GameObjects.Sprite;
+  public puzzleBook2!: Phaser.GameObjects.Sprite;
+  public chest!: Phaser.GameObjects.Sprite;
 
   constructor() {
     super({ key: "SceneOne" });
@@ -230,42 +239,22 @@ export default class Main extends Phaser.Scene implements SceneOneState {
     // FILLER NPCS
     demonCultMembers(this);
 
+    //INTERACTABLE OBJECTS
+
+    door(this);
+    portal(this);
+    chest(this);
+    puzzleBooks(this);
+
     // ENEMIES
     zombies(this);
 
     //ANIMATIONS
-    const torchPositions = [
-      { x: 369, y: 462.5 },
-      { x: 369, y: 366 },
-      { x: 369, y: 270 },
-      { x: 272.5, y: 462.5 },
-      { x: 272.5, y: 366 },
-      { x: 272.5, y: 270 },
-      { x: 465, y: 624 },
-      { x: 561, y: 624 },
-      { x: 817, y: 624 },
-      { x: 1009, y: 624 },
-      { x: 1105, y: 624 },
-      { x: 1265, y: 624 },
-      { x: 1521, y: 402 },
-      { x: 1137, y: 402 },
-      { x: 497, y: 1010 },
-      { x: 337, y: 784 },
-      { x: 113, y: 624 },
-      { x: 240, y: 48 },
-      { x: 400, y: 48 },
-    ];
-    const alchemyPositions = [
-      { x: 1552, y: 656 },
-      { x: 1616, y: 656 },
-    ];
     playerAnimation(this);
     zombieAnimation(this);
     cultHeadAnimation(this);
     maleCultistAnimation(this);
     femaleCultistAnimation(this);
-    //torchAnimation(this, torchPositions);
-    //alchTorchAnimation(this, alchemyPositions);
     alchTwinsAnimation(this);
     skelManAnimation(this);
 
@@ -304,7 +293,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
           ghostNpc(this, this.player.x, this.player.y);
           demonGhost(this);
 
-          this.playerStats.health = Math.max(0, this.playerStats.health - 15);
+          this.playerStats.health = Math.max(0, this.playerStats.health - 5);
           this.alchEvent = true;
           this.player.anims.stop();
           this.player.anims.play("pass-out", true);
@@ -351,7 +340,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
           walkBackCultHead(this);
           this.cultHeadSceneNum++;
           this.movementDisabled = true;
-          this.playerStats.health = Math.max(0, this.playerStats.health - 15);
+          this.playerStats.health = Math.max(0, this.playerStats.health - 10);
 
           this.player.anims.play("pass-out", true);
 

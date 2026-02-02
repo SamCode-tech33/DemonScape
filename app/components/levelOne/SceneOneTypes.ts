@@ -47,4 +47,9 @@ export interface SceneOneState {
   ghostFollow: boolean;
   lastDirection: string;
   movementDisabled: boolean;
+  portal: Phaser.GameObjects.Sprite;
+  door: Phaser.GameObjects.Sprite;
+  chest: Phaser.GameObjects.Sprite;
+  puzzleBook1: Phaser.GameObjects.Sprite;
+  puzzleBook2: Phaser.GameObjects.Sprite;
 }
