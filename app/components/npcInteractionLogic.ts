@@ -1,7 +1,7 @@
 import type { NpcInRange, NpcsInteraction } from "./demonScapeTypes";
 import type { SceneOneState } from "./levelOne/SceneOneTypes";
 
-const interactionLogic = (scene: Phaser.Scene & SceneOneState) => {
+const npcInteractionLogic = (scene: Phaser.Scene & SceneOneState) => {
   const npcs: NpcsInteraction = [
     {
       name: "AlchTwins",
@@ -86,7 +86,7 @@ const interactionLogic = (scene: Phaser.Scene & SceneOneState) => {
 
       scene.interactionBox.setPosition(
         npcInRange.sprite.x,
-        npcInRange.sprite.y - npcInRange.floatRect
+        npcInRange.sprite.y - npcInRange.floatRect,
       );
 
       if (scene.alchEvent || npcInRange.name === "AlchTwins") {
@@ -98,7 +98,7 @@ const interactionLogic = (scene: Phaser.Scene & SceneOneState) => {
             {
               fontSize: "18px",
               color: "#ffffff",
-            }
+            },
           )
           .setDepth(50);
       } else {
@@ -110,7 +110,7 @@ const interactionLogic = (scene: Phaser.Scene & SceneOneState) => {
             {
               fontSize: "18px",
               color: "#ffffff",
-            }
+            },
           )
           .setDepth(50);
         scene.noInteraction = scene.add
@@ -121,7 +121,7 @@ const interactionLogic = (scene: Phaser.Scene & SceneOneState) => {
             {
               fontSize: "18px",
               color: "#ff0000",
-            }
+            },
           )
           .setDepth(50);
       }
@@ -130,8 +130,12 @@ const interactionLogic = (scene: Phaser.Scene & SceneOneState) => {
 
       scene.input.keyboard?.on("keydown-E", () => {
         if (
-          (scene.activeNpc && scene.alchEvent) ||
-          (scene.activeNpc && scene.activeNpc.name === "AlchTwins")
+          (scene.activeNpc &&
+            scene.alchEvent &&
+            scene.activeNpc.scene !== "none") ||
+          (scene.activeNpc &&
+            scene.activeNpc.name === "AlchTwins" &&
+            scene.activeNpc.scene !== "none")
         ) {
           scene.backgroundMusic.pause();
           scene.scene.pause("SceneOne");
@@ -157,26 +161,26 @@ const interactionLogic = (scene: Phaser.Scene & SceneOneState) => {
           } else {
             scene.scene.launch(scene.activeNpc.scene);
           }
-          clearInteraction();
         }
+        clearInteraction();
       });
     }
     if (scene.interactionBox) {
       scene.interactionBox.setPosition(
         npcInRange.sprite.x,
-        npcInRange.sprite.y - npcInRange.floatRect
+        npcInRange.sprite.y - npcInRange.floatRect,
       );
     }
     if (scene.interactionKey) {
       scene.interactionKey.setPosition(
         npcInRange.sprite.x - 5.5,
-        npcInRange.sprite.y - npcInRange.floatText
+        npcInRange.sprite.y - npcInRange.floatText,
       );
     }
     if (scene.noInteraction) {
       scene.noInteraction.setPosition(
         npcInRange.sprite.x - 5.5,
-        npcInRange.sprite.y - npcInRange.floatText
+        npcInRange.sprite.y - npcInRange.floatText,
       );
     }
   } else if (scene.activeNpc) {
@@ -184,4 +188,4 @@ const interactionLogic = (scene: Phaser.Scene & SceneOneState) => {
   }
 };
 
-export default interactionLogic;
+export default npcInteractionLogic;

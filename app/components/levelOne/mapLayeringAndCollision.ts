@@ -36,12 +36,12 @@ export const mapLayering = (scene: Phaser.Scene & SceneOneState) => {
   wallThingsLayer?.setDepth(4);
   brokenRunes?.setDepth(4);
   hiddenFloorLayer?.setDepth(5);
-  runes?.setDepth(6);
   alchemy1?.setDepth(6);
   alchemy2?.setDepth(6);
   floorObjectsLayer?.setDepth(6);
   largeFloorObjects?.setDepth(20);
   surfaceItemsLayer?.setDepth(21);
+  runes?.setDepth(21);
   fire1?.setDepth(23);
   fire2?.setDepth(23);
   fire3?.setDepth(23);
@@ -49,15 +49,9 @@ export const mapLayering = (scene: Phaser.Scene & SceneOneState) => {
   setupManualTileAnimations(
     scene,
     map,
-    [
-      fire1,
-      fire2,
-      fire3,
-      brokenRunes,
-      alchemy1,
-      alchemy2,
-      surfaceItemsLayer,
-    ].filter((layer): layer is Phaser.Tilemaps.TilemapLayer => layer !== null),
+    [fire1, fire2, fire3, runes, alchemy1, alchemy2].filter(
+      (layer): layer is Phaser.Tilemaps.TilemapLayer => layer !== null,
+    ),
   );
 };
 

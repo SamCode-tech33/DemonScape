@@ -5,7 +5,7 @@ export const portal = (scene: Phaser.Scene & SceneOneState) => {
 };
 
 export const door = (scene: Phaser.Scene & SceneOneState) => {
-  scene.door = scene.add.sprite(676, 76, "door", 0).setDepth(4);
+  scene.door = scene.add.sprite(688, 82, "door", 1).setDepth(4);
 };
 
 export const puzzleBooks = (scene: Phaser.Scene & SceneOneState) => {

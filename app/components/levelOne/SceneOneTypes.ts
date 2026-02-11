@@ -52,4 +52,8 @@ export interface SceneOneState {
   chest: Phaser.GameObjects.Sprite;
   puzzleBook1: Phaser.GameObjects.Sprite;
   puzzleBook2: Phaser.GameObjects.Sprite;
+  skelTalk: boolean;
+  itemInteractionBox: Phaser.GameObjects.Graphics | undefined;
+  itemInteractionKey: Phaser.GameObjects.Text | undefined;
+  level1Complete: boolean;
 }
