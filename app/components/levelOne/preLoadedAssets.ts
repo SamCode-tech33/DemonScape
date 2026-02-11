@@ -237,8 +237,8 @@ const preLoadedAssets = (scene: Phaser.Scene & SceneOneState) => {
     frameHeight: 96,
   });
   scene.load.spritesheet("door", "assets/animated-objects/wood-door.png", {
-    frameWidth: 72,
-    frameHeight: 72,
+    frameWidth: 96,
+    frameHeight: 96,
   });
   scene.load.spritesheet("chest", "assets/animated-objects/chest.png", {
     frameWidth: 32,

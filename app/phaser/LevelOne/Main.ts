@@ -8,7 +8,8 @@ import {
   pathingAlch1,
   pathingSkel,
 } from "@/app/components/npcLogic";
-import interactionLogic from "@/app/components/interactionLogic";
+import npcInteractionLogic from "@/app/components/npcInteractionLogic";
+import itemInteractionLogic from "@/app/components/itemInteractionLogic";
 import {
   playerAnimation,
   zombieAnimation,
@@ -115,6 +116,10 @@ export default class Main extends Phaser.Scene implements SceneOneState {
   public puzzleBook1!: Phaser.GameObjects.Sprite;
   public puzzleBook2!: Phaser.GameObjects.Sprite;
   public chest!: Phaser.GameObjects.Sprite;
+  public skelTalk: boolean = false;
+  public itemInteractionBox: Phaser.GameObjects.Graphics | undefined;
+  public itemInteractionKey: Phaser.GameObjects.Text | undefined;
+  public level1Complete: boolean = false;
 
   constructor() {
     super({ key: "SceneOne" });
@@ -147,6 +152,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
       flags: {
         alchEvent: this.alchEvent,
         movementDisabled: this.movementDisabled,
+        skelTalk: this.skelTalk,
       },
 
       meta: {
@@ -169,6 +175,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
 
     this.alchEvent = save.flags.alchEvent;
     this.movementDisabled = false;
+    this.skelTalk = save.flags.skelTalk;
 
     this.savedPlayerPosition = {
       x: save.player.x,
@@ -388,6 +395,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
               }
             },
           );
+          this.level1Complete = true;
           saveGame();
         }
       } else if (data?.from === "Ghost") {
@@ -399,6 +407,8 @@ export default class Main extends Phaser.Scene implements SceneOneState {
           .setCollideWorldBounds(true);
         this.ghostFollow = true;
         this.ghostCompanion.setDepth(12);
+      } else if (data?.from === "SkelMan") {
+        this.skelTalk = true;
       } else if (data?.from === "ZombieCombat") {
         this.enemyStats.enemyPresence = false;
         this.playerStats.health = data.playerStats.health ?? 50;
@@ -646,7 +656,8 @@ export default class Main extends Phaser.Scene implements SceneOneState {
 
   update(_time: number, delta: number) {
     // INTERACTION LOGIC
-    interactionLogic(this);
+    npcInteractionLogic(this);
+    itemInteractionLogic(this);
     if (this.alchEvent && this.cultHeadSceneNum === 4) {
       singleTriggerDialogue(this, true);
     } else {

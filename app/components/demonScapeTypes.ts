@@ -43,6 +43,19 @@ export type NpcInRange = {
   scene: string;
 } | null;
 
+export type ItemsInteraction = {
+  name: string;
+  sprite?: Phaser.GameObjects.Sprite | Phaser.Physics.Arcade.Sprite;
+  float: number;
+  range: number;
+}[];
+
+export type ItemInRange = {
+  name: string;
+  sprite?: Phaser.GameObjects.Sprite | Phaser.Physics.Arcade.Sprite;
+  float: number;
+} | null;
+
 export interface DialogueChoice {
   text: string;
   next: number; // index of next dialogue node
@@ -97,6 +110,7 @@ export interface SaveState {
   flags: {
     alchEvent: boolean;
     movementDisabled: boolean;
+    skelTalk: boolean;
   };
 
   meta: {
