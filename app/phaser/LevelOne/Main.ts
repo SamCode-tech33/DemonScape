@@ -653,16 +653,15 @@ export default class Main extends Phaser.Scene implements SceneOneState {
       threeMenGroup(this);
     }
 
-      const escKey = this.input.keyboard?.addKey(
-        Phaser.Input.Keyboard.KeyCodes.ESC
-      );
-      this.input.keyboard?.on("keydown-ESC", () => {
-        this.scene.pause("SceneOne");
-        this.scene.launch("PauseMenu", {
-          playerStats: this.playerStats,
-        });
-      })
-
+    const escKey = this.input.keyboard?.addKey(
+      Phaser.Input.Keyboard.KeyCodes.ESC,
+    );
+    escKey?.on("down", () => {
+      this.scene.pause("SceneOne");
+      this.scene.launch("GamePause", {
+        playerStats: this.playerStats,
+      });
+    });
   }
 
   update(_time: number, delta: number) {
