@@ -13,7 +13,11 @@ export default class GamePause extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image("pause-background", "/assets/pause-menu/pause-menu-background.png");
+    this.load.image(
+      "pause-background",
+      "/assets/pause-menu/pause-menu-background.png",
+    );
+    this.load.image("character", "/assets/main-character1.png");
   }
 
   create() {
@@ -25,12 +29,12 @@ export default class GamePause extends Phaser.Scene {
     background.displayWidth = this.scale.width;
     background.displayHeight = this.scale.height;
 
-    const menuWidth = 900;
-    const menuHeight = 550;
+    const menuWidth = this.scale.width * 0.75;
+    const menuHeight = this.scale.height * 0.75;
 
     const menu = this.add.container(
       this.scale.width / 2,
-      this.scale.height / 2
+      this.scale.height / 2,
     );
 
     // Main menu background
@@ -44,7 +48,7 @@ export default class GamePause extends Phaser.Scene {
       -menuHeight / 2,
       menuWidth,
       menuHeight,
-      18
+      18,
     );
 
     bg.strokeRoundedRect(
@@ -52,7 +56,7 @@ export default class GamePause extends Phaser.Scene {
       -menuHeight / 2,
       menuWidth,
       menuHeight,
-      18
+      18,
     );
 
     menu.add(bg);
@@ -71,23 +75,18 @@ export default class GamePause extends Phaser.Scene {
 
     tabs.forEach((name, index) => {
       const tab = this.add
-        .text(
-          -menuWidth / 2 + 20 + index * 170,
-          -menuHeight / 2 - 42,
-          name,
-          {
-            fontFamily: "Arial",
-            fontSize: "20px",
-            color: "#ffffff",
-            backgroundColor: "#444444",
-            padding: {
-              left: 12,
-              right: 12,
-              top: 8,
-              bottom: 8,
-            },
-          }
-        )
+        .text(-menuWidth / 2 + 20 + index * 170, -menuHeight / 2 - 42, name, {
+          fontFamily: "Arial",
+          fontSize: "20px",
+          color: "#ffffff",
+          backgroundColor: "#444444",
+          padding: {
+            left: 12,
+            right: 12,
+            top: 8,
+            bottom: 8,
+          },
+        })
         .setInteractive({ useHandCursor: true });
 
       tabButtons.push(tab);
@@ -95,13 +94,78 @@ export default class GamePause extends Phaser.Scene {
 
       const page = this.add.container(0, 0);
       page.visible = false;
-
-      page.add(
-        this.add.text(-380, -180, `${name} Page`, {
-          fontSize: "28px",
-          color: "#ffffff",
-        })
-      );
+      switch (name) {
+        case "Inventory":
+          page.add(
+            this.add.text(
+              -this.scale.width * 0.375,
+              -this.scale.height * 0.375,
+              "Nothing",
+              {
+                fontSize: "28px",
+                color: "#ffffff",
+              },
+            ),
+          );
+          break;
+        case "Character":
+          page.add(
+            this.add.text(
+              -this.scale.width * 0.375,
+              -this.scale.height * 0.375,
+              `Equipment`,
+              {
+                fontSize: "28px",
+                color: "#ffffff",
+              },
+            ),
+          );
+          this.add
+            .image(this.scale.width / 2, this.scale.height / 2, "character")
+            .setOrigin(0.5);
+          break;
+        case "Suspicion":
+          page.add(
+            this.add.text(
+              -this.scale.width * 0.375,
+              -this.scale.height * 0.375,
+              `0% Suspicion`,
+              {
+                fontSize: "28px",
+                color: "#ffffff",
+              },
+            ),
+          );
+          break;
+        case "World Corruption":
+          page.add(
+            this.add.text(
+              -this.scale.width * 0.375,
+              -this.scale.height * 0.375,
+              `93% World Corruption`,
+              {
+                fontSize: "28px",
+                color: "#ffffff",
+              },
+            ),
+          );
+          break;
+        case "Rebel Forces":
+          page.add(
+            this.add.text(
+              -this.scale.width * 0.375,
+              -this.scale.height * 0.375,
+              `Scattered`,
+              {
+                fontSize: "28px",
+                color: "#ffffff",
+              },
+            ),
+          );
+          break;
+        default:
+          console.log("error in menu tab selection");
+      }
 
       pages[name] = page;
       menu.add(page);
@@ -125,5 +189,15 @@ export default class GamePause extends Phaser.Scene {
     };
 
     switchMenu("Inventory");
+
+    const escKey = this.input.keyboard?.addKey(
+      Phaser.Input.Keyboard.KeyCodes.ESC,
+    );
+    escKey?.on("down", () => {
+      this.scene.stop("GamePause");
+      this.scene.resume("SceneOne", {
+        playerStats: this.playerStats,
+      });
+    });
   }
 }
