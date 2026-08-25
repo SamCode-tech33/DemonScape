@@ -16,14 +16,15 @@ export interface PlayerStats {
   maxHealth: number;
   magic: number;
   maxMagic: number;
-}
-
-export interface EnemyStats {
-  enemyPresence: boolean;
-  health: number;
-  maxHealth: number;
-  magic: number;
-  maxMagic: number;
+  experience: number;
+  experienceGoal: number;
+  str: number;
+  int: number;
+  wis: number;
+  sta: number;
+  agi: number;
+  hit: number;
+  level: number;
 }
 
 export type NpcsInteraction = {

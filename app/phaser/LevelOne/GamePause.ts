@@ -3,6 +3,7 @@ import type { PlayerStats } from "../../components/demonScapeTypes";
 export default class GamePause extends Phaser.Scene {
   public music!: Phaser.Sound.BaseSound;
   public playerStats!: PlayerStats;
+  public pauseMusic!: Phaser.Sound.BaseSound;
 
   constructor() {
     super({ key: "GamePause" });
@@ -18,10 +19,19 @@ export default class GamePause extends Phaser.Scene {
       "/assets/pause-menu/pause-menu-background.png",
     );
     this.load.image("character", "/assets/main-character1.png");
+    this.load.audio("dark-logic", "/assets/music/dark-logic.mp3");
   }
 
   create() {
     // Background image (fills the whole screen, sits behind everything)
+
+    this.pauseMusic = this.sound.add("dark-logic", {
+      loop: true,
+      volume: 1,
+    });
+
+    this.pauseMusic.play();
+
     const background = this.add
       .image(this.scale.width / 2, this.scale.height / 2, "pause-background")
       .setOrigin(0.5);
@@ -43,6 +53,18 @@ export default class GamePause extends Phaser.Scene {
 
     bg.fillStyle(0x444444, 0.65);
     bg.lineStyle(1, 0xcccccc, 0.3);
+
+    const charStatDisplay = [
+      `Health: ${this.playerStats.health} / ${this.playerStats.maxHealth}`,
+      `Mana: ${this.playerStats.magic} / ${this.playerStats.maxMagic}`,
+      `Experience: ${this.playerStats.experience} / ${this.playerStats.experienceGoal}`,
+      `Strength: ${this.playerStats.str}`,
+      `Intelligence: ${this.playerStats.int}`,
+      `Stamina: ${this.playerStats.sta}`,
+      `Wisdom: ${this.playerStats.wis}`,
+      `Agility: ${this.playerStats.agi}`,
+      `Hit: ${this.playerStats.hit}`,
+    ];
 
     bg.fillRoundedRect(
       -menuWidth / 2,
@@ -99,18 +121,18 @@ export default class GamePause extends Phaser.Scene {
 
       const tab = this.add
         .text(tabX, tabTop, `(${key}) ${name}`, {
-          fontFamily: "Arial",
-          fontSize: "18px",
-          color: "#ffffff",
-          backgroundColor: "#444444",
+          fontFamily: "mostean",
+          fontSize: "32px",
+          color: "gold",
+          backgroundColor: "#960000",
           align: "center",
           fixedWidth: tabWidth,
           fixedHeight: tabHeight,
           padding: {
             left: 8,
             right: 8,
-            top: 14,
-            bottom: 14,
+            top: 8,
+            bottom: 8,
           },
         })
         .setOrigin(0, 0)
@@ -133,8 +155,35 @@ export default class GamePause extends Phaser.Scene {
           break;
         case "Character":
           page.add(
-            this.add.text(-menuWidth / 2 + 20, contentTop + 20, `Equipment`, {
-              fontSize: "28px",
+            this.add.text(
+              -menuWidth / 2 + 100,
+              contentTop + 20,
+              `Level: ${this.playerStats.level}`,
+              {
+                fontFamily: "mostean",
+                fontSize: "56px",
+                color: "#ffffff",
+              },
+            ),
+          );
+          charStatDisplay.map((stat: string, i: number) =>
+            page.add(
+              this.add.text(
+                -menuWidth / 2 + 100,
+                contentTop + i * 40 + 150,
+                stat,
+                {
+                  fontFamily: "mostean",
+                  fontSize: "36px",
+                  color: "#ffffff",
+                },
+              ),
+            ),
+          );
+          page.add(
+            this.add.text(-menuWidth / 2 + 800, contentTop + 20, `Equipment`, {
+              fontFamily: "mostean",
+              fontSize: "48px",
               color: "#ffffff",
             }),
           );
@@ -191,11 +240,11 @@ export default class GamePause extends Phaser.Scene {
       pages[tabName].visible = true;
 
       tabButtons.forEach((button) => {
-        button.setBackgroundColor("#444444");
+        button.setBackgroundColor("#721616");
       });
 
       const active = tabButtons.find((b) => b.text.endsWith(tabName));
-      active?.setBackgroundColor("#777777");
+      active?.setBackgroundColor("#825656");
 
       // Character only shows in the right half of the box on these tabs
       characterImage.visible = tabsWithCharacter.has(tabName);
@@ -217,6 +266,7 @@ export default class GamePause extends Phaser.Scene {
     );
     escKey?.on("down", () => {
       this.scene.stop("GamePause");
+      this.pauseMusic.pause();
       this.scene.resume("SceneOne", {
         playerStats: this.playerStats,
       });
