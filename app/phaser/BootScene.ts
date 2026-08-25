@@ -28,6 +28,8 @@ export default class BootScene extends Phaser.Scene {
   }
 
   create() {
-    this.scene.start("SceneOne");
+    document.fonts.load("32px mostean").then(() => {
+      this.scene.start("SceneOne");
+    });
   }
 }

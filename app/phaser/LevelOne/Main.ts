@@ -43,11 +43,11 @@ import preLoadedAssets from "@/app/components/levelOne/preLoadedAssets";
 import type {
   WASDAndArrowKeys,
   PlayerStats,
-  EnemyStats,
   SaveState,
 } from "@/app/components/demonScapeTypes";
 import keySettings from "@/app/components/keySettings";
 import { zombies } from "@/app/components/enemyNpcs";
+import type { Zombie } from "@/app/components/enemyTypes";
 import {
   Alch2Dialogue,
   girlsLeftWallDialogue,
@@ -97,7 +97,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
   public approachText!: Phaser.GameObjects.Text | undefined;
   public alchEvent: boolean = false;
   public playerStats!: PlayerStats;
-  public enemyStats!: EnemyStats;
+  public zombieStats!: Zombie;
   public zomNum: number = 0;
   public zomDeathCount: number = 0;
   public alchSceneNum: number = 1;
@@ -198,8 +198,17 @@ export default class Main extends Phaser.Scene implements SceneOneState {
       maxHealth: 50,
       magic: 20,
       maxMagic: 20,
+      experience: 0,
+      experienceGoal: 50,
+      str: 1,
+      int: 1,
+      wis: 1,
+      sta: 1,
+      agi: 1,
+      hit: 1,
+      level: 1,
     };
-    this.enemyStats = {
+    this.zombieStats = {
       enemyPresence: false,
       health: 20,
       maxHealth: 20,
@@ -307,7 +316,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
 
           this.scene.get("HudScene").scene.restart({
             player: this.playerStats,
-            enemy: this.enemyStats,
+            enemy: this.zombieStats,
           });
 
           for (let i = 0; i < 5; i++) {
@@ -353,7 +362,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
 
           this.scene.get("HudScene").scene.restart({
             player: this.playerStats,
-            enemy: this.enemyStats,
+            enemy: this.zombieStats,
           });
 
           for (let i = 0; i < 5; i++) {
@@ -410,7 +419,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
       } else if (data?.from === "SkelMan") {
         this.skelTalk = true;
       } else if (data?.from === "ZombieCombat") {
-        this.enemyStats.enemyPresence = false;
+        this.zombieStats.enemyPresence = false;
         this.playerStats.health = data.playerStats.health ?? 50;
         this.playerStats.maxHealth = data.playerStats.maxHealth ?? 50;
         this.playerStats.magic = data.playerStats.magic ?? 20;
@@ -483,7 +492,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
         });
         saveGame();
       } else if (data?.from === "SaraOne" && this.saraOneSceneNum === 3) {
-        this.enemyStats.enemyPresence = true;
+        this.zombieStats.enemyPresence = true;
         this.time.delayedCall(500, () => {
           this.scene.pause("SceneOne");
           this.backgroundMusic.stop();
@@ -570,14 +579,14 @@ export default class Main extends Phaser.Scene implements SceneOneState {
         );
 
         if (dist < 32) {
-          this.enemyStats.enemyPresence = true;
+          this.zombieStats.enemyPresence = true;
           this.time.delayedCall(500, () => {
             this.zomNum = num;
             this.scene.pause("SceneOne");
             this.backgroundMusic.stop();
             this.scene.launch("ZombieCombat", {
               playerStats: this.playerStats,
-              enemy: this.enemyStats,
+              enemy: this.zombieStats,
             });
           });
           break;
@@ -658,6 +667,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
     );
     escKey?.on("down", () => {
       this.scene.pause("SceneOne");
+      this.backgroundMusic.pause();
       this.scene.launch("GamePause", {
         playerStats: this.playerStats,
       });
