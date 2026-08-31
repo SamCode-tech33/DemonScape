@@ -1,3 +1,5 @@
+import PlayerStatsManager from "../state/PlayerStats";
+
 export default class BootScene extends Phaser.Scene {
   constructor() {
     super("BootScene");
@@ -22,8 +24,15 @@ export default class BootScene extends Phaser.Scene {
     if (save) {
       this.registry.set("saveData", save);
       this.registry.set("isNewGame", false);
+      // rehydrate playerStats from saved values
+      this.registry.set(
+        "playerStats",
+        PlayerStatsManager.fromSave(save.playerStats),
+      );
     } else {
       this.registry.set("isNewGame", true);
+      // fresh default stats for a new game
+      this.registry.set("playerStats", new PlayerStatsManager());
     }
   }
 

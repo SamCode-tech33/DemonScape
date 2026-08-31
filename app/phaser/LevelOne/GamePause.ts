@@ -86,8 +86,8 @@ export default class GamePause extends Phaser.Scene {
 
     // Tabs — each has a display name, a keyboard shortcut letter, and a page id
     const tabs = [
-      { name: "Inventory", key: "I" },
       { name: "Character", key: "C" },
+      { name: "Inventory", key: "I" },
       { name: "Suspicion", key: "S" },
       { name: "World Corruption", key: "W" },
       { name: "Rebel Forces", key: "R" },
@@ -250,7 +250,7 @@ export default class GamePause extends Phaser.Scene {
       characterImage.visible = tabsWithCharacter.has(tabName);
     };
 
-    switchMenu("Inventory");
+    switchMenu("Character");
 
     // Keyboard shortcuts: I / C / S / W / R switch tabs directly
     tabs.forEach(({ name, key }) => {

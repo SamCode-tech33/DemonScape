@@ -10,6 +10,7 @@ import {
 } from "@/app/components/npcLogic";
 import npcInteractionLogic from "@/app/components/npcInteractionLogic";
 import itemInteractionLogic from "@/app/components/itemInteractionLogic";
+import PlayerStatsManager from "@/app/state/PlayerStats";
 import {
   playerAnimation,
   zombieAnimation,
@@ -140,7 +141,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
         x: this.player.x,
         y: this.player.y,
         lastDirection: this.lastDirection,
-        stats: this.playerStats,
+        stats: this.registry.get("playerStats") as PlayerStatsManager,
         ghostFollow: this.ghostFollow,
       },
 
@@ -167,7 +168,8 @@ export default class Main extends Phaser.Scene implements SceneOneState {
     this.cultHeadSceneNum = save.scene.cultHeadSceneNum;
 
     this.lastDirection = save.player.lastDirection;
-    this.playerStats = save.player.stats;
+    this.playerStats = PlayerStatsManager.fromSave(save.player.stats);
+    this.registry.set("playerStats", this.playerStats);
     this.ghostFollow = save.player.ghostFollow;
 
     this.zomDeathCount = save.combat.zomDeathCount;
@@ -193,27 +195,13 @@ export default class Main extends Phaser.Scene implements SceneOneState {
 
     // defaults ONLY for new game
     this.alchEvent = false;
-    this.playerStats = {
-      health: 50,
-      maxHealth: 50,
-      magic: 20,
-      maxMagic: 20,
-      experience: 0,
-      experienceGoal: 50,
-      str: 1,
-      int: 1,
-      wis: 1,
-      sta: 1,
-      agi: 1,
-      hit: 1,
-      level: 1,
-    };
     this.zombieStats = {
       enemyPresence: false,
       health: 20,
       maxHealth: 20,
       magic: 2,
       maxMagic: 2,
+      experience: 10,
     };
     this.zomNum = 0;
     this.zomDeathCount = 0;
@@ -237,6 +225,8 @@ export default class Main extends Phaser.Scene implements SceneOneState {
       loop: true,
       volume: 1,
     });
+
+    this.playerStats = this.registry.get("playerStats");
 
     // KEY SETTINGS
     keySettings(this);
@@ -315,7 +305,6 @@ export default class Main extends Phaser.Scene implements SceneOneState {
           this.player.anims.play("pass-out", true);
 
           this.scene.get("HudScene").scene.restart({
-            player: this.playerStats,
             enemy: this.zombieStats,
           });
 
@@ -361,7 +350,6 @@ export default class Main extends Phaser.Scene implements SceneOneState {
           this.player.anims.play("pass-out", true);
 
           this.scene.get("HudScene").scene.restart({
-            player: this.playerStats,
             enemy: this.zombieStats,
           });
 
@@ -424,6 +412,8 @@ export default class Main extends Phaser.Scene implements SceneOneState {
         this.playerStats.maxHealth = data.playerStats.maxHealth ?? 50;
         this.playerStats.magic = data.playerStats.magic ?? 20;
         this.playerStats.maxMagic = data.playerStats.maxMagic ?? 20;
+        this.playerStats.experience =
+          this.playerStats.experience + data.enemyStats.experience;
 
         // Map zomNum to corresponding sprite
         const zomMap: Record<number, Phaser.Physics.Arcade.Sprite> = {
@@ -516,7 +506,6 @@ export default class Main extends Phaser.Scene implements SceneOneState {
 
     // HUD UPDATES
     this.scene.launch("HudScene", {
-      player: this.playerStats,
       enemy: {
         enemyPresence: false,
         health: 0,
