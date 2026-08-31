@@ -8,7 +8,8 @@ import {
   playerJumpAttack,
   playerUI,
 } from "@/app/components/combatLogic";
-import type { PlayerStats, EnemyStats } from "@/app/components/demonScapeTypes";
+import type { PlayerStats } from "@/app/components/demonScapeTypes";
+import type { Zombie } from "@/app/components/enemyTypes";
 import type { CombatSceneState } from "@/app/components/combatSceneTypes";
 export default class ZombieCombat
   extends Phaser.Scene
@@ -26,7 +27,7 @@ export default class ZombieCombat
   qte: Phaser.GameObjects.Graphics | undefined;
   qteText: Phaser.GameObjects.Text | undefined;
   playerStats!: PlayerStats;
-  enemyStats!: EnemyStats;
+  enemyStats!: Zombie;
   timerValue!: number;
   timerText: Phaser.GameObjects.Text | undefined;
   timerEvent: Phaser.Time.TimerEvent | undefined;
@@ -40,20 +41,30 @@ export default class ZombieCombat
     super({ key: "ZombieCombat" });
   }
 
-  init(data: { playerStats: PlayerStats; enemy: EnemyStats }) {
+  init(data: { playerStats: PlayerStats; enemyStats: Zombie }) {
     this.playerStats = {
       health: data.playerStats.health ?? 50,
       maxHealth: data.playerStats.maxHealth ?? 50,
       magic: data.playerStats.magic ?? 20,
       maxMagic: data.playerStats.maxMagic ?? 20,
+      level: data.playerStats.level,
+      str: data.playerStats.str,
+      int: data.playerStats.int,
+      sta: data.playerStats.sta,
+      wis: data.playerStats.wis,
+      agi: data.playerStats.agi,
+      hit: data.playerStats.hit,
+      experience: data.playerStats.experience,
+      experienceGoal: data.playerStats.experience,
     };
 
     this.enemyStats = {
-      enemyPresence: data.enemy.enemyPresence ?? true,
-      health: data.enemy.health ?? 20,
-      maxHealth: data.enemy.maxHealth ?? 20,
-      magic: data.enemy.magic ?? 2,
-      maxMagic: data.enemy.maxMagic ?? 2,
+      enemyPresence: data.enemyStats.enemyPresence ?? true,
+      health: data.enemyStats.health ?? 20,
+      maxHealth: data.enemyStats.maxHealth ?? 20,
+      magic: data.enemyStats.magic ?? 2,
+      maxMagic: data.enemyStats.maxMagic ?? 2,
+      experience: data.enemyStats.experience ?? 10,
     };
   }
 
@@ -66,7 +77,7 @@ export default class ZombieCombat
       {
         frameWidth: 64,
         frameHeight: 64,
-      }
+      },
     );
     this.load.spritesheet(
       "zombie-combat-idle",
@@ -74,7 +85,7 @@ export default class ZombieCombat
       {
         frameWidth: 64,
         frameHeight: 64,
-      }
+      },
     );
   }
 
@@ -136,6 +147,7 @@ export default class ZombieCombat
       this.enemy.clearTint();
       this.enemy.setTint(0xff0000);
       this.enemy.setScale(7);
+      this.enemyStats.experience = 20;
     }
   }
 
@@ -175,6 +187,7 @@ export default class ZombieCombat
       this.scene.resume("SceneOne", {
         from: "ZombieCombat-boss",
         playerStats: this.playerStats,
+        enemyStats: this.enemyStats,
       });
     } else if (this.enemyStats.health < 1) {
       this.scene.stop("ZombieCombat");
@@ -189,6 +202,7 @@ export default class ZombieCombat
       this.scene.resume("SceneOne", {
         from: "ZombieCombat",
         playerStats: this.playerStats,
+        enemyStats: this.enemyStats,
       });
     }
   }

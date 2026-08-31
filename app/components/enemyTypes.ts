@@ -4,4 +4,5 @@ export interface Zombie {
   maxHealth: number;
   magic: number;
   maxMagic: number;
+  experience: number;
 }
