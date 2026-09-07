@@ -8,7 +8,7 @@ import {
   playerJumpAttack,
   playerUI,
 } from "@/app/components/combatLogic";
-import type { PlayerStats } from "@/app/components/demonScapeTypes";
+import type PlayerStatsManager from "@/app/state/PlayerStats";
 import type { Zombie } from "@/app/components/enemyTypes";
 import type { CombatSceneState } from "@/app/components/combatSceneTypes";
 export default class ZombieCombat
@@ -26,7 +26,7 @@ export default class ZombieCombat
   attackVectorSpecialText: Phaser.GameObjects.Text | undefined;
   qte: Phaser.GameObjects.Graphics | undefined;
   qteText: Phaser.GameObjects.Text | undefined;
-  playerStats!: PlayerStats;
+  playerStats!: PlayerStatsManager;
   enemyStats!: Zombie;
   timerValue!: number;
   timerText: Phaser.GameObjects.Text | undefined;
@@ -41,23 +41,7 @@ export default class ZombieCombat
     super({ key: "ZombieCombat" });
   }
 
-  init(data: { playerStats: PlayerStats; enemyStats: Zombie }) {
-    this.playerStats = {
-      health: data.playerStats.health ?? 50,
-      maxHealth: data.playerStats.maxHealth ?? 50,
-      magic: data.playerStats.magic ?? 20,
-      maxMagic: data.playerStats.maxMagic ?? 20,
-      level: data.playerStats.level,
-      str: data.playerStats.str,
-      int: data.playerStats.int,
-      sta: data.playerStats.sta,
-      wis: data.playerStats.wis,
-      agi: data.playerStats.agi,
-      hit: data.playerStats.hit,
-      experience: data.playerStats.experience,
-      experienceGoal: data.playerStats.experience,
-    };
-
+  init(data: { enemyStats: Zombie }) {
     this.enemyStats = {
       enemyPresence: data.enemyStats.enemyPresence ?? true,
       health: data.enemyStats.health ?? 20,
@@ -90,10 +74,10 @@ export default class ZombieCombat
   }
 
   create() {
+    this.playerStats = this.registry.get("playerStats") as PlayerStatsManager;
     this.scene.bringToTop("HudScene");
     this.scene.launch("HudScene", {
-      player: this.playerStats,
-      enemy: this.enemyStats,
+      enemyStats: this.enemyStats,
     });
 
     if (!this.textures.exists("spark")) {
@@ -175,33 +159,31 @@ export default class ZombieCombat
     }
 
     if (this.enemyStats.health < 1 && this.enemyStats.maxHealth === 40) {
+      this.playerStats.experience += 20;
       this.scene.stop("ZombieCombat");
       this.music.stop();
       this.enemyStats.enemyPresence = false;
       this.playerAttack = false;
       this.playerTurn = false;
       this.scene.launch("HudScene", {
-        player: this.playerStats,
-        enemy: this.enemyStats,
+        enemyStats: this.enemyStats,
       });
       this.scene.resume("SceneOne", {
         from: "ZombieCombat-boss",
-        playerStats: this.playerStats,
         enemyStats: this.enemyStats,
       });
     } else if (this.enemyStats.health < 1) {
+      this.playerStats.experience += this.enemyStats.experience;
       this.scene.stop("ZombieCombat");
       this.music.stop();
       this.enemyStats.enemyPresence = false;
       this.playerAttack = false;
       this.playerTurn = false;
       this.scene.launch("HudScene", {
-        player: this.playerStats,
-        enemy: this.enemyStats,
+        enemyStats: this.enemyStats,
       });
       this.scene.resume("SceneOne", {
         from: "ZombieCombat",
-        playerStats: this.playerStats,
         enemyStats: this.enemyStats,
       });
     }

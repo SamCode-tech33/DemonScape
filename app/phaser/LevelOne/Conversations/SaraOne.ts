@@ -1,8 +1,8 @@
 import type {
-  PlayerStats,
   DialogueNode,
   ConvoSceneState,
 } from "@/app/components/demonScapeTypes";
+import type PlayerStatsManager from "@/app/state/PlayerStats";
 import { conversationLogic } from "@/app/components/conversationLogic";
 export default class SaraOne extends Phaser.Scene implements ConvoSceneState {
   public dialogue1Nodes: DialogueNode[] = [
@@ -151,13 +151,13 @@ export default class SaraOne extends Phaser.Scene implements ConvoSceneState {
   public speakerName: string = "Sara:";
   public voiceLoop: boolean = false;
   public manyOptionsNode: number = 0;
-  playerStats!: PlayerStats;
+  playerStats!: PlayerStatsManager;
 
   constructor() {
     super({ key: "SaraOne" });
   }
 
-  init(data: { saraOneSceneNum: number; playerStats: PlayerStats }) {
+  init(data: { saraOneSceneNum: number }) {
     switch (data.saraOneSceneNum) {
       case 1:
         this.dialogueNodes = this.dialogue1Nodes;
@@ -170,14 +170,6 @@ export default class SaraOne extends Phaser.Scene implements ConvoSceneState {
         this.dialogueNodes = this.dialogue3Nodes;
         this.dialogueScene = 3;
         this.bossFight = true;
-
-        this.playerStats = {
-          health: data.playerStats.health ?? 50,
-          maxHealth: data.playerStats.maxHealth ?? 50,
-          magic: data.playerStats.magic ?? 20,
-          maxMagic: data.playerStats.maxMagic ?? 20,
-        };
-
         break;
       case 4:
         this.dialogueNodes = this.dialogue4Nodes;
@@ -201,19 +193,20 @@ export default class SaraOne extends Phaser.Scene implements ConvoSceneState {
     this.load.audio("sara-line-9", "/assets/dialogue/sara/sara-dialogue10.wav");
     this.load.audio(
       "sara-line-10",
-      "/assets/dialogue/sara/sara-dialogue11.wav"
+      "/assets/dialogue/sara/sara-dialogue11.wav",
     );
     this.load.audio(
       "sara-line-11",
-      "/assets/dialogue/sara/sara-dialogue12.wav"
+      "/assets/dialogue/sara/sara-dialogue12.wav",
     );
     this.load.audio(
       "sara-line-12",
-      "/assets/dialogue/sara/sara-dialogue13.wav"
+      "/assets/dialogue/sara/sara-dialogue13.wav",
     );
   }
 
   create() {
+    this.playerStats = this.registry.get("playerStats") as PlayerStatsManager;
     conversationLogic(this, "pink", "black", "saraOneBg", "saraOneMusic");
   }
 }

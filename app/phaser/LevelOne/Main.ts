@@ -43,7 +43,6 @@ import {
 import preLoadedAssets from "@/app/components/levelOne/preLoadedAssets";
 import type {
   WASDAndArrowKeys,
-  PlayerStats,
   SaveState,
 } from "@/app/components/demonScapeTypes";
 import keySettings from "@/app/components/keySettings";
@@ -97,7 +96,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
   public approachBox!: Phaser.GameObjects.Graphics | undefined;
   public approachText!: Phaser.GameObjects.Text | undefined;
   public alchEvent: boolean = false;
-  public playerStats!: PlayerStats;
+  public playerStats!: PlayerStatsManager;
   public zombieStats!: Zombie;
   public zomNum: number = 0;
   public zomDeathCount: number = 0;
@@ -226,7 +225,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
       volume: 1,
     });
 
-    this.playerStats = this.registry.get("playerStats");
+    this.playerStats = this.registry.get("playerStats") as PlayerStatsManager;
 
     // KEY SETTINGS
     keySettings(this);
@@ -305,7 +304,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
           this.player.anims.play("pass-out", true);
 
           this.scene.get("HudScene").scene.restart({
-            enemy: this.zombieStats,
+            enemyStats: this.zombieStats,
           });
 
           for (let i = 0; i < 5; i++) {
@@ -350,7 +349,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
           this.player.anims.play("pass-out", true);
 
           this.scene.get("HudScene").scene.restart({
-            enemy: this.zombieStats,
+            enemyStats: this.zombieStats,
           });
 
           for (let i = 0; i < 5; i++) {
@@ -408,12 +407,6 @@ export default class Main extends Phaser.Scene implements SceneOneState {
         this.skelTalk = true;
       } else if (data?.from === "ZombieCombat") {
         this.zombieStats.enemyPresence = false;
-        this.playerStats.health = data.playerStats.health ?? 50;
-        this.playerStats.maxHealth = data.playerStats.maxHealth ?? 50;
-        this.playerStats.magic = data.playerStats.magic ?? 20;
-        this.playerStats.maxMagic = data.playerStats.maxMagic ?? 20;
-        this.playerStats.experience =
-          this.playerStats.experience + data.enemyStats.experience;
 
         // Map zomNum to corresponding sprite
         const zomMap: Record<number, Phaser.Physics.Arcade.Sprite> = {
@@ -438,7 +431,6 @@ export default class Main extends Phaser.Scene implements SceneOneState {
               this.scene.pause("SceneOne");
               this.scene.launch("SaraOne", {
                 saraOneSceneNum: this.saraOneSceneNum,
-                playerStats: this.playerStats,
               });
             }
           });
@@ -487,8 +479,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
           this.scene.pause("SceneOne");
           this.backgroundMusic.stop();
           this.scene.launch("ZombieCombat", {
-            playerStats: this.playerStats,
-            enemy: {
+            enemyStats: {
               health: 40,
               maxHealth: 40,
               magic: 2,
@@ -506,13 +497,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
 
     // HUD UPDATES
     this.scene.launch("HudScene", {
-      enemy: {
-        enemyPresence: false,
-        health: 0,
-        maxHealth: 0,
-        magic: 0,
-        maxMagic: 0,
-      },
+      enemyStats: this.zombieStats,
     });
 
     // CAMERA
@@ -574,8 +559,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
             this.scene.pause("SceneOne");
             this.backgroundMusic.stop();
             this.scene.launch("ZombieCombat", {
-              playerStats: this.playerStats,
-              enemy: this.zombieStats,
+              enemyStats: this.zombieStats,
             });
           });
           break;
@@ -656,6 +640,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
     );
     escKey?.on("down", () => {
       this.scene.pause("SceneOne");
+      this.scene.pause("HudScene");
       this.backgroundMusic.pause();
       this.scene.launch("GamePause", {
         playerStats: this.playerStats,
