@@ -47,7 +47,6 @@ import type {
 } from "@/app/components/demonScapeTypes";
 import keySettings from "@/app/components/keySettings";
 import { zombies } from "@/app/components/enemyNpcs";
-import type { Zombie } from "@/app/components/enemyTypes";
 import {
   Alch2Dialogue,
   girlsLeftWallDialogue,
@@ -97,7 +96,6 @@ export default class Main extends Phaser.Scene implements SceneOneState {
   public approachText!: Phaser.GameObjects.Text | undefined;
   public alchEvent: boolean = false;
   public playerStats!: PlayerStatsManager;
-  public zombieStats!: Zombie;
   public zomNum: number = 0;
   public zomDeathCount: number = 0;
   public alchSceneNum: number = 1;
@@ -194,14 +192,6 @@ export default class Main extends Phaser.Scene implements SceneOneState {
 
     // defaults ONLY for new game
     this.alchEvent = false;
-    this.zombieStats = {
-      enemyPresence: false,
-      health: 20,
-      maxHealth: 20,
-      magic: 2,
-      maxMagic: 2,
-      experience: 10,
-    };
     this.zomNum = 0;
     this.zomDeathCount = 0;
     this.alchSceneNum = 1;
@@ -303,10 +293,6 @@ export default class Main extends Phaser.Scene implements SceneOneState {
           this.player.anims.stop();
           this.player.anims.play("pass-out", true);
 
-          this.scene.get("HudScene").scene.restart({
-            enemyStats: this.zombieStats,
-          });
-
           for (let i = 0; i < 5; i++) {
             this.time.delayedCall(50 * i * 2, () => {
               this.redScreen = flashRedScreen();
@@ -347,10 +333,6 @@ export default class Main extends Phaser.Scene implements SceneOneState {
           this.playerStats.health = Math.max(0, this.playerStats.health - 10);
 
           this.player.anims.play("pass-out", true);
-
-          this.scene.get("HudScene").scene.restart({
-            enemyStats: this.zombieStats,
-          });
 
           for (let i = 0; i < 5; i++) {
             this.time.delayedCall(50 * i * 2, () => {
@@ -406,8 +388,6 @@ export default class Main extends Phaser.Scene implements SceneOneState {
       } else if (data?.from === "SkelMan") {
         this.skelTalk = true;
       } else if (data?.from === "ZombieCombat") {
-        this.zombieStats.enemyPresence = false;
-
         // Map zomNum to corresponding sprite
         const zomMap: Record<number, Phaser.Physics.Arcade.Sprite> = {
           1: this.zom1,
@@ -474,17 +454,11 @@ export default class Main extends Phaser.Scene implements SceneOneState {
         });
         saveGame();
       } else if (data?.from === "SaraOne" && this.saraOneSceneNum === 3) {
-        this.zombieStats.enemyPresence = true;
         this.time.delayedCall(500, () => {
           this.scene.pause("SceneOne");
           this.backgroundMusic.stop();
           this.scene.launch("ZombieCombat", {
-            enemyStats: {
-              health: 40,
-              maxHealth: 40,
-              magic: 2,
-              maxMagic: 2,
-            },
+            boss: true,
           });
         });
       }
@@ -496,9 +470,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
     });
 
     // HUD UPDATES
-    this.scene.launch("HudScene", {
-      enemyStats: this.zombieStats,
-    });
+    this.scene.launch("HudScene");
 
     // CAMERA
     this.physics.world.setBounds(0, 0, 2555, 1280);
@@ -553,14 +525,11 @@ export default class Main extends Phaser.Scene implements SceneOneState {
         );
 
         if (dist < 32) {
-          this.zombieStats.enemyPresence = true;
           this.time.delayedCall(500, () => {
             this.zomNum = num;
             this.scene.pause("SceneOne");
             this.backgroundMusic.stop();
-            this.scene.launch("ZombieCombat", {
-              enemyStats: this.zombieStats,
-            });
+            this.scene.launch("ZombieCombat");
           });
           break;
         }

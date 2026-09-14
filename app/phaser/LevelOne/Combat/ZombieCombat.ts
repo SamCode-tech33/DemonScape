@@ -9,8 +9,8 @@ import {
   playerUI,
 } from "@/app/components/combatLogic";
 import type PlayerStatsManager from "@/app/state/PlayerStats";
-import type { Zombie } from "@/app/components/enemyTypes";
 import type { CombatSceneState } from "@/app/components/combatSceneTypes";
+import type { enemyStats } from "@/app/components/demonScapeTypes";
 export default class ZombieCombat
   extends Phaser.Scene
   implements CombatSceneState
@@ -27,7 +27,7 @@ export default class ZombieCombat
   qte: Phaser.GameObjects.Graphics | undefined;
   qteText: Phaser.GameObjects.Text | undefined;
   playerStats!: PlayerStatsManager;
-  enemyStats!: Zombie;
+  enemyStats!: enemyStats;
   timerValue!: number;
   timerText: Phaser.GameObjects.Text | undefined;
   timerEvent: Phaser.Time.TimerEvent | undefined;
@@ -36,20 +36,15 @@ export default class ZombieCombat
   parry: Phaser.GameObjects.Graphics | undefined;
   parryText: Phaser.GameObjects.Text | undefined;
   sparkles?: Phaser.GameObjects.Particles.ParticleEmitter[];
+  enemyHealthBarBg!: Phaser.GameObjects.Graphics;
+  enemyMagicBarBg!: Phaser.GameObjects.Graphics;
+  enemyHealthBar!: Phaser.GameObjects.Graphics;
+  enemyMagicBar!: Phaser.GameObjects.Graphics;
+  enemyHealthText!: Phaser.GameObjects.Text;
+  enemyMagicText!: Phaser.GameObjects.Text;
 
   constructor() {
     super({ key: "ZombieCombat" });
-  }
-
-  init(data: { enemyStats: Zombie }) {
-    this.enemyStats = {
-      enemyPresence: data.enemyStats.enemyPresence ?? true,
-      health: data.enemyStats.health ?? 20,
-      maxHealth: data.enemyStats.maxHealth ?? 20,
-      magic: data.enemyStats.magic ?? 2,
-      maxMagic: data.enemyStats.maxMagic ?? 2,
-      experience: data.enemyStats.experience ?? 10,
-    };
   }
 
   preload() {
@@ -75,10 +70,20 @@ export default class ZombieCombat
 
   create() {
     this.playerStats = this.registry.get("playerStats") as PlayerStatsManager;
+
+    this.enemyStats = {
+      health: 1,
+      maxHealth: 20,
+      magic: 5,
+      maxMagic: 5,
+      experience: 10,
+    };
+
+    this.scene.launch("HudScene");
     this.scene.bringToTop("HudScene");
-    this.scene.launch("HudScene", {
-      enemyStats: this.enemyStats,
-    });
+
+    this.scene.launch("EnemyHudScene", { enemyStats: this.enemyStats });
+    this.scene.bringToTop("EnemyHudScene");
 
     if (!this.textures.exists("spark")) {
       const g = this.add.graphics();
@@ -143,49 +148,43 @@ export default class ZombieCombat
     }
 
     if (this.playerStats.health < 1) {
+      this.registry.set("playerStats", this.playerStats);
       this.scene.stop("ZombieCombat");
+      this.scene.stop("EnemyHudScene");
       this.music.stop();
-      this.enemyStats.enemyPresence = false;
       this.playerAttack = false;
       this.playerTurn = false;
-      this.scene.launch("HudScene", {
-        player: this.playerStats,
-        enemy: this.enemyStats,
-      });
       this.scene.resume("SceneOne", {
         from: "PlayerDeath",
-        playerStats: this.playerStats,
       });
     }
 
     if (this.enemyStats.health < 1 && this.enemyStats.maxHealth === 40) {
       this.playerStats.experience += 20;
+      this.registry.set("playerStats", this.playerStats);
       this.scene.stop("ZombieCombat");
+      this.scene.stop("EnemyHudScene");
       this.music.stop();
-      this.enemyStats.enemyPresence = false;
       this.playerAttack = false;
       this.playerTurn = false;
-      this.scene.launch("HudScene", {
-        enemyStats: this.enemyStats,
-      });
       this.scene.resume("SceneOne", {
         from: "ZombieCombat-boss",
-        enemyStats: this.enemyStats,
       });
     } else if (this.enemyStats.health < 1) {
       this.playerStats.experience += this.enemyStats.experience;
+      this.registry.set("playerStats", this.playerStats);
       this.scene.stop("ZombieCombat");
+      this.scene.stop("EnemyHudScene");
       this.music.stop();
-      this.enemyStats.enemyPresence = false;
       this.playerAttack = false;
       this.playerTurn = false;
-      this.scene.launch("HudScene", {
-        enemyStats: this.enemyStats,
-      });
       this.scene.resume("SceneOne", {
         from: "ZombieCombat",
-        enemyStats: this.enemyStats,
       });
     }
+    this.enemyStats.health = this.enemyStats.health;
+    this.enemyStats.maxHealth = this.enemyStats.maxHealth;
+    this.enemyStats.magic = this.enemyStats.magic;
+    this.enemyStats.maxMagic = this.enemyStats.maxMagic;
   }
 }

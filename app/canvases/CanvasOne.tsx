@@ -14,6 +14,7 @@ import SkelMan from "../phaser/LevelOne/Conversations/SkelMan";
 import ZombieCombat from "../phaser/LevelOne/Combat/ZombieCombat";
 import GameOver from "../phaser/LevelOne/GameOver";
 import GamePause from "../phaser/LevelOne/GamePause";
+import EnemyHudScene from "../phaser/UtilityScenes/EnemyHudScene";
 declare global {
   interface Window {
     phaserGame?: Phaser.Game;
@@ -63,6 +64,7 @@ export default function CanvasOne() {
     game.scene.add("Ghost", Ghost);
     game.scene.add("SkelMan", SkelMan);
     game.scene.add("ZombieCombat", ZombieCombat);
+    game.scene.add("EnemyHudScene", EnemyHudScene);
     game.scene.add("GameOver", GameOver);
     game.scene.add("GamePause", GamePause);
 

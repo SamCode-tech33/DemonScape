@@ -1,5 +1,3 @@
-import type { PlayerStats } from "@/app/components/demonScapeTypes";
-import type { Zombie } from "@/app/components/enemyTypes";
 import type PlayerStatsManager from "@/app/state/PlayerStats";
 
 export default class HudScene extends Phaser.Scene {
@@ -20,30 +18,8 @@ export default class HudScene extends Phaser.Scene {
   // Top panel (bronze backing behind health/magic/exp bars)
   topPanelBg!: Phaser.GameObjects.Graphics;
 
-  // Enemy
-  enemyPresence: boolean = false;
-  enemyHealth!: number;
-  enemyMaxHealth!: number;
-  enemyMagic!: number;
-  enemyMaxMagic!: number;
-  enemyHealthBarBg!: Phaser.GameObjects.Graphics;
-  enemyMagicBarBg!: Phaser.GameObjects.Graphics;
-  enemyHealthBar!: Phaser.GameObjects.Graphics;
-  enemyMagicBar!: Phaser.GameObjects.Graphics;
-  enemyHealthText!: Phaser.GameObjects.Text;
-  enemyMagicText!: Phaser.GameObjects.Text;
-
   constructor() {
     super({ key: "HudScene" });
-  }
-
-  init(data: { enemyStats: Zombie }) {
-    // Enemy stats
-    this.enemyPresence = data.enemyStats.enemyPresence;
-    this.enemyHealth = data.enemyStats.health;
-    this.enemyMaxHealth = data.enemyStats.maxHealth;
-    this.enemyMagic = data.enemyStats.magic;
-    this.enemyMaxMagic = data.enemyStats.maxMagic;
   }
 
   create() {
@@ -51,6 +27,14 @@ export default class HudScene extends Phaser.Scene {
     const screenWidth = this.scale.width;
 
     this.playerStats = this.registry.get("playerStats") as PlayerStatsManager;
+
+    this.registry.events.on(
+      "changedata-playerStats",
+      (_parent: unknown, value: PlayerStatsManager) => {
+        this.playerStats = value;
+        this.updateBars();
+      },
+    );
 
     // --- Bronze backing panel (drawn first so bars render on top) ---
     this.createTopPanel(screenWidth);
@@ -60,11 +44,6 @@ export default class HudScene extends Phaser.Scene {
 
     // --- Experience HUD (mirrors the health bar's x position) ---
     this.createExpHUD(radius, screenWidth);
-
-    // --- Enemy HUD ---
-    if (this.enemyPresence) {
-      this.createEnemyHUD(radius, screenWidth);
-    }
 
     // Listen for updates
     this.game.events.on("updateHUD", this.updateBars, this);
@@ -236,105 +215,7 @@ export default class HudScene extends Phaser.Scene {
     );
   }
 
-  createEnemyHUD(radius: number, screenWidth: number) {
-    this.enemyHealthBarBg = this.add.graphics().setScrollFactor(0);
-    this.enemyMagicBarBg = this.add.graphics().setScrollFactor(0);
-    this.enemyHealthBar = this.add.graphics().setScrollFactor(0);
-    this.enemyMagicBar = this.add.graphics().setScrollFactor(0);
-
-    this.enemyHealthBarBg.fillStyle(0x555555, 1);
-    this.enemyHealthBarBg.lineStyle(2, 0xffd700, 1);
-    this.enemyHealthBarBg.fillRoundedRect(
-      screenWidth - 32 - 272,
-      10,
-      272,
-      30,
-      radius,
-    );
-    this.enemyHealthBarBg.strokeRoundedRect(
-      screenWidth - 32 - 272,
-      10,
-      272,
-      30,
-      radius,
-    );
-
-    this.enemyMagicBarBg.lineStyle(2, 0xc0c0c0, 1);
-    this.enemyMagicBarBg.fillStyle(0x555555, 1);
-    this.enemyMagicBarBg.fillRoundedRect(
-      screenWidth - 340 - 272,
-      10,
-      272,
-      30,
-      radius,
-    );
-    this.enemyMagicBarBg.strokeRoundedRect(
-      screenWidth - 340 - 272,
-      10,
-      272,
-      30,
-      radius,
-    );
-
-    this.enemyHealthText = this.add
-      .text(
-        screenWidth - 32 - 242,
-        14,
-        `HP: ${this.enemyHealth}/${this.enemyMaxHealth}`,
-        { fontSize: "20px", color: "#fff" },
-      )
-      .setScrollFactor(0);
-
-    this.enemyMagicText = this.add
-      .text(
-        screenWidth - 340 - 242,
-        14,
-        `MP: ${this.enemyMagic}/${this.enemyMaxMagic}`,
-        { fontSize: "20px", color: "#fff" },
-      )
-      .setScrollFactor(0);
-
-    this.updateEnemyBars();
-  }
-
-  updateEnemyBars() {
-    if (this.enemyPresence) {
-      const radius = 8;
-      const screenWidth = this.scale.width;
-
-      this.enemyHealthBar.clear();
-      this.enemyHealthBar.fillStyle(0xff0000, 1);
-      this.enemyHealthBar.fillRoundedRect(
-        screenWidth - 32 - 266 * (this.enemyHealth / this.enemyMaxHealth) - 4,
-        12,
-        268 * (this.enemyHealth / this.enemyMaxHealth),
-        26,
-        radius,
-      );
-
-      this.enemyMagicBar.clear();
-      this.enemyMagicBar.fillStyle(0x0000ff, 1);
-      this.enemyMagicBar.fillRoundedRect(
-        screenWidth - 340 - 266 * (this.enemyMagic / this.enemyMaxMagic) - 4,
-        12,
-        268 * (this.enemyMagic / this.enemyMaxMagic),
-        26,
-        radius,
-      );
-    } else {
-      this.enemyHealthBarBg?.clear();
-      this.enemyMagicBarBg?.clear();
-      this.enemyHealthBar?.clear();
-      this.enemyMagicBar?.clear();
-    }
-  }
-
-  updateBars({ player, enemy }: { player: PlayerStats; enemy: Zombie }) {
-    // Update player stats
-    this.playerStats.health = player.health;
-    this.playerStats.maxHealth = player.maxHealth;
-    this.playerStats.magic = player.magic;
-    this.playerStats.maxMagic = player.maxMagic;
+  updateBars() {
     this.updatePlayerBars();
     this.healthText.setText(
       `HP: ${this.playerStats.health}/${this.playerStats.maxHealth}`,
@@ -343,23 +224,10 @@ export default class HudScene extends Phaser.Scene {
       `MP: ${this.playerStats.magic}/${this.playerStats.maxMagic}`,
     );
 
-    // Update experience
-    this.playerStats.experience = player.experience;
-    this.playerStats.experienceGoal = player.experienceGoal;
+    // Experience
     this.updateExpBar();
     this.expText.setText(
       `XP: ${this.playerStats.experience}/${this.playerStats.experienceGoal}`,
     );
-
-    // Update enemy stats
-    this.enemyHealth = enemy.health;
-    this.enemyMaxHealth = enemy.maxHealth;
-    this.enemyMagic = enemy.magic;
-    this.enemyMaxMagic = enemy.maxMagic;
-    this.updateEnemyBars();
-    this.enemyHealthText.setText(
-      `HP: ${this.enemyHealth}/${this.enemyMaxHealth}`,
-    );
-    this.enemyMagicText.setText(`MP: ${this.enemyMagic}/${this.enemyMaxMagic}`);
   }
 }
