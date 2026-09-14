@@ -1,3 +1,5 @@
+import type PlayerStatsManager from "@/app/state/PlayerStats";
+
 export type WASDAndArrowKeys = {
   up: Phaser.Input.Keyboard.Key;
   down: Phaser.Input.Keyboard.Key;
@@ -11,20 +13,12 @@ export type WASDAndArrowKeys = {
   shift: Phaser.Input.Keyboard.Key;
 };
 
-export interface PlayerStats {
+export interface enemyStats {
   health: number;
   maxHealth: number;
   magic: number;
   maxMagic: number;
   experience: number;
-  experienceGoal: number;
-  str: number;
-  int: number;
-  wis: number;
-  sta: number;
-  agi: number;
-  hit: number;
-  level: number;
 }
 
 export type NpcsInteraction = {
@@ -99,7 +93,7 @@ export interface SaveState {
     x: number;
     y: number;
     lastDirection: string;
-    stats: PlayerStats;
+    stats: PlayerStatsManager;
     ghostFollow: boolean;
   };
 

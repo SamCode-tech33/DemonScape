@@ -1,6 +1,6 @@
 import type Phaser from "phaser";
-import type { PlayerStats, WASDAndArrowKeys } from "../demonScapeTypes";
-import type { Zombie } from "../enemyTypes";
+import type { WASDAndArrowKeys } from "../demonScapeTypes";
+import type PlayerStatsManager from "@/app/state/PlayerStats";
 
 export interface SceneOneState {
   player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
@@ -35,8 +35,7 @@ export interface SceneOneState {
   approachBox: Phaser.GameObjects.Graphics | undefined;
   approachText: Phaser.GameObjects.Text | undefined;
   alchEvent: boolean;
-  playerStats: PlayerStats;
-  zombieStats: Zombie;
+  playerStats: PlayerStatsManager;
   zomNum: number;
   zomDeathCount: number;
   alchSceneNum: number;

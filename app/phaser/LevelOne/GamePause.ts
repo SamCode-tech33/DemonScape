@@ -1,16 +1,12 @@
-import type { PlayerStats } from "../../components/demonScapeTypes";
+import type PlayerStatsManager from "@/app/state/PlayerStats";
 
 export default class GamePause extends Phaser.Scene {
   public music!: Phaser.Sound.BaseSound;
-  public playerStats!: PlayerStats;
+  public playerStats!: PlayerStatsManager;
   public pauseMusic!: Phaser.Sound.BaseSound;
 
   constructor() {
     super({ key: "GamePause" });
-  }
-
-  init(data: { playerStats: PlayerStats }) {
-    this.playerStats = data.playerStats;
   }
 
   preload() {
@@ -23,7 +19,7 @@ export default class GamePause extends Phaser.Scene {
   }
 
   create() {
-    // Background image (fills the whole screen, sits behind everything)
+    this.playerStats = this.registry.get("playerStats") as PlayerStatsManager;
 
     this.pauseMusic = this.sound.add("dark-logic", {
       loop: true,
@@ -267,8 +263,15 @@ export default class GamePause extends Phaser.Scene {
     escKey?.on("down", () => {
       this.scene.stop("GamePause");
       this.pauseMusic.pause();
-      this.scene.resume("SceneOne", {
-        playerStats: this.playerStats,
+      this.scene.resume("SceneOne");
+      this.scene.resume("HudScene", {
+        enemyStats: {
+          enemyPresence: false,
+          health: 0,
+          maxHealth: 0,
+          magic: 0,
+          maxMagic: 0,
+        },
       });
     });
   }
