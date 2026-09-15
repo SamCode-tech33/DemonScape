@@ -63,6 +63,7 @@ import {
 } from "@/app/components/levelOne/interactableObjects";
 import type { SceneOneState } from "@/app/components/levelOne/SceneOneTypes";
 import { saveGame } from "@/app/phaser/saveGame";
+import floatXP from "@/app/components/floatXP";
 export default class Main extends Phaser.Scene implements SceneOneState {
   public player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   public keys!: WASDAndArrowKeys;
@@ -289,6 +290,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
           demonGhost(this);
 
           this.playerStats.health = Math.max(0, this.playerStats.health - 5);
+          this.registry.set("playerStats", this.playerStats);
           this.alchEvent = true;
           this.player.anims.stop();
           this.player.anims.play("pass-out", true);
@@ -331,6 +333,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
           this.cultHeadSceneNum++;
           this.movementDisabled = true;
           this.playerStats.health = Math.max(0, this.playerStats.health - 10);
+          this.registry.set("playerStats", this.playerStats);
 
           this.player.anims.play("pass-out", true);
 
@@ -400,6 +403,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
           this.tweens.killTweensOf(zom);
           this.zomDeathCount += 1;
           zom.anims.play("z-pass-out");
+          floatXP(this, zom.x, zom.y, `+${data.experience}`);
 
           zom.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
             this.time.delayedCall(500, () => zom.destroy());
@@ -449,6 +453,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
         this.saraOneSceneNum++;
         this.cultHeadSceneNum = 4;
         zomBoss.anims.play("z-pass-out");
+        floatXP(this, zomBoss.x, zomBoss.y, `+${data.experience}`);
         zomBoss.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
           this.time.delayedCall(500, () => zomBoss.destroy());
         });

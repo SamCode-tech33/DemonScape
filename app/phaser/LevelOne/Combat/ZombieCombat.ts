@@ -11,6 +11,10 @@ import {
 import type PlayerStatsManager from "@/app/state/PlayerStats";
 import type { CombatSceneState } from "@/app/components/combatSceneTypes";
 import type { enemyStats } from "@/app/components/demonScapeTypes";
+
+interface SceneInitData {
+  boss: boolean;
+}
 export default class ZombieCombat
   extends Phaser.Scene
   implements CombatSceneState
@@ -18,6 +22,7 @@ export default class ZombieCombat
   music!: Phaser.Sound.BaseSound;
   player!: Phaser.Physics.Arcade.Sprite;
   enemy!: Phaser.Physics.Arcade.Sprite;
+  boss: boolean = false;
   playerTurn: boolean = false;
   playerAttack: boolean = false;
   attackVectorBase: Phaser.GameObjects.Graphics | undefined;
@@ -47,6 +52,10 @@ export default class ZombieCombat
     super({ key: "ZombieCombat" });
   }
 
+  init(data: SceneInitData) {
+    this.boss = !!data?.boss;
+  }
+
   preload() {
     this.load.image("ZombieCombatBG", "/assets/combat/combat-dung-cath-bg.png");
     this.load.audio("dungeon-combat", "/assets/music/first-fights.mp3");
@@ -72,11 +81,11 @@ export default class ZombieCombat
     this.playerStats = this.registry.get("playerStats") as PlayerStatsManager;
 
     this.enemyStats = {
-      health: 1,
-      maxHealth: 20,
+      health: this.boss ? 1 : 1,
+      maxHealth: this.boss ? 40 : 20,
       magic: 5,
       maxMagic: 5,
-      experience: 10,
+      experience: this.boss ? 20 : 10,
     };
 
     this.scene.launch("HudScene");
@@ -112,9 +121,14 @@ export default class ZombieCombat
       .setScale(5.5);
 
     this.enemy = this.physics.add
-      .sprite(1150, 600, "zombie-combat-idle", 2)
+      .sprite(1150, this.boss ? 680 : 600, "zombie-combat-idle", 2)
       .setDepth(8)
-      .setScale(5.5);
+      .setScale(this.boss ? 6.5 : 5.5);
+
+    if (this.boss) {
+      this.enemy.clearTint();
+      this.enemy.setTint(0xff0000);
+    }
 
     this.player.anims.play("player-combat-idle-right");
     this.enemy.anims.play("zombie-combat-idle-left");
@@ -132,12 +146,6 @@ export default class ZombieCombat
         playerJumpAttack(this);
       }
     });
-    if (this.enemyStats.maxHealth === 40) {
-      this.enemy.clearTint();
-      this.enemy.setTint(0xff0000);
-      this.enemy.setScale(7);
-      this.enemyStats.experience = 20;
-    }
   }
 
   update() {
@@ -169,6 +177,7 @@ export default class ZombieCombat
       this.playerTurn = false;
       this.scene.resume("SceneOne", {
         from: "ZombieCombat-boss",
+        experience: this.enemyStats.experience,
       });
     } else if (this.enemyStats.health < 1) {
       this.playerStats.experience += this.enemyStats.experience;
@@ -180,6 +189,7 @@ export default class ZombieCombat
       this.playerTurn = false;
       this.scene.resume("SceneOne", {
         from: "ZombieCombat",
+        experience: this.enemyStats.experience,
       });
     }
     this.enemyStats.health = this.enemyStats.health;
