@@ -6,7 +6,7 @@ export const conversationLogic = (
   color: string,
   stroke: string,
   convoBg: string,
-  convoMusic: string
+  convoMusic: string,
 ) => {
   const portrait = scene.add
     .image(scene.scale.width / 2, scene.scale.height / 2, convoBg)
@@ -19,9 +19,9 @@ export const conversationLogic = (
     scene.scale.width / 2,
     scene.scale.height - 150,
     scene.scale.width,
-    320,
+    500,
     0x000000,
-    0.4
+    0.4,
   );
 
   scene.add.rectangle(
@@ -30,12 +30,12 @@ export const conversationLogic = (
     scene.scale.width,
     50,
     0x000000,
-    0.7
+    0.7,
   );
 
   scene.speakerText = scene.add.text(
     60,
-    scene.scale.height - 278,
+    scene.scale.height - 360,
     scene.speakerName,
     {
       fontFamily: "Mostean",
@@ -44,10 +44,10 @@ export const conversationLogic = (
       stroke: stroke,
       strokeThickness: 1,
       wordWrap: { width: 150 },
-    }
+    },
   );
 
-  scene.playerSpeaker = scene.add.text(60, scene.scale.height - 110, "You:", {
+  scene.playerSpeaker = scene.add.text(60, scene.scale.height - 180, "You:", {
     fontFamily: "Mostean",
     fontSize: "52px",
     color: "#ffcc00",
@@ -55,7 +55,7 @@ export const conversationLogic = (
     strokeThickness: 1,
   });
 
-  scene.dialogueText = scene.add.text(240, scene.scale.height - 270, "", {
+  scene.dialogueText = scene.add.text(240, scene.scale.height - 360, "", {
     fontFamily: "Mostean",
     fontSize: "40px",
     color: color,
@@ -70,7 +70,7 @@ export const conversationLogic = (
     scene.scale.width,
     140,
     0x000000,
-    0.4
+    0.4,
   );
 
   scene.emoteText = scene.add.text(0, 15, "", {
@@ -108,7 +108,7 @@ export const conversationLogic = (
 
 const onChoiceKey = function (
   this: Phaser.Scene & ConvoSceneState,
-  event: KeyboardEvent
+  event: KeyboardEvent,
 ) {
   if (this.voiceDialogue) {
     this.voiceDialogue.stop();
@@ -159,7 +159,7 @@ const showNode = (index: number, scene: Phaser.Scene & ConvoSceneState) => {
     scene.speakerText.setText(scene.speakerName);
     scene.voiceDialogue = scene.sound.add(
       scene.dialogueNodes[index].dialogueLine,
-      { volume: 2, loop: scene.voiceLoop }
+      { volume: 2, loop: scene.voiceLoop },
     );
   } else {
     scene.speakerText.setText("You Thinking:");
@@ -214,7 +214,7 @@ const showNode = (index: number, scene: Phaser.Scene & ConvoSceneState) => {
 
 const displayChoices = (
   scene: Phaser.Scene & ConvoSceneState,
-  node: DialogueNode
+  node: DialogueNode,
 ) => {
   // Remove old choices
   scene.choiceTexts.map((c) => c.destroy());
@@ -224,7 +224,7 @@ const displayChoices = (
   if (!node.choices || node.choices.length === 0) {
     scene.add.text(
       300,
-      scene.scale.height - 110,
+      scene.scale.height - 175,
       "Press space to exit conversation",
       {
         fontFamily: "Mostean",
@@ -233,7 +233,7 @@ const displayChoices = (
         stroke: "black",
         strokeThickness: 1,
         wordWrap: { width: scene.scale.width - 300 },
-      }
+      },
     );
     scene.input.keyboard?.once("keydown-SPACE", () => {
       scene.music.stop();
@@ -251,12 +251,12 @@ const displayChoices = (
 
   // Show new choices
   node.choices.forEach((choice, i) => {
-    let startY = scene.scale.height - 110;
-    let spacing = 40;
+    let startY = scene.scale.height - 175;
+    let spacing = 64;
 
     // Special spacing for when there are many player options
     if (scene.currentNodeIndex === scene.manyOptionsNode) {
-      startY = scene.scale.height - 220;
+      startY = scene.scale.height - 280;
       spacing = 35;
     }
 
