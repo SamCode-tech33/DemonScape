@@ -17,6 +17,7 @@ export default class HudScene extends Phaser.Scene {
 
   // Top panel (bronze backing behind health/magic/exp bars)
   topPanelBg!: Phaser.GameObjects.Graphics;
+  infoText!: Phaser.GameObjects.Text;
 
   constructor() {
     super({ key: "HudScene" });
@@ -44,6 +45,8 @@ export default class HudScene extends Phaser.Scene {
 
     // --- Experience HUD (mirrors the health bar's x position) ---
     this.createExpHUD(radius, screenWidth);
+
+    this.createInfoText(screenWidth);
 
     // Listen for updates
     this.game.events.on("updateHUD", this.updateBars, this);
@@ -229,5 +232,23 @@ export default class HudScene extends Phaser.Scene {
     this.expText.setText(
       `XP: ${this.playerStats.experience}/${this.playerStats.experienceGoal}`,
     );
+
+    this.infoText.setText(this.getInfoString());
+  }
+
+  createInfoText(screenWidth: number) {
+    this.infoText = this.add
+      .text(screenWidth / 2, 25, this.getInfoString(), {
+        fontSize: "40px",
+        color: "#6E260E",
+        fontFamily: "mostean",
+      })
+      .setOrigin(0.5) // centers on the x/y point instead of anchoring top-left
+      .setScrollFactor(0);
+  }
+
+  getInfoString() {
+    const { level, money, suspicion } = this.playerStats;
+    return `Level ${level} | ${money} Soul Shards | Suspicion: ${suspicion}%`;
   }
 }

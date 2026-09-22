@@ -37,7 +37,15 @@ export default class BootScene extends Phaser.Scene {
   }
 
   create() {
+    let dead = false;
+    const markDead = () => {
+      dead = true;
+    };
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, markDead);
+    this.events.once(Phaser.Scenes.Events.DESTROY, markDead);
+
     document.fonts.load("32px mostean").then(() => {
+      if (dead) return;
       this.scene.start("SceneOne");
     });
   }

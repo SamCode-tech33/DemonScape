@@ -119,6 +119,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
   public itemInteractionBox: Phaser.GameObjects.Graphics | undefined;
   public itemInteractionKey: Phaser.GameObjects.Text | undefined;
   public level1Complete: boolean = false;
+  public levelUpPending = false;
 
   constructor() {
     super({ key: "SceneOne" });
@@ -466,6 +467,8 @@ export default class Main extends Phaser.Scene implements SceneOneState {
             boss: true,
           });
         });
+      } else if (data?.from === "LevelUpScene") {
+        this.onLevelUpClosed();
       }
       if (this.backgroundMusic.isPaused) {
         this.backgroundMusic.resume();
@@ -552,6 +555,15 @@ export default class Main extends Phaser.Scene implements SceneOneState {
     }
 
     this.createWorld();
+
+    // Level up listener
+    this.registry.events.on(
+      "changedata-playerStats",
+      this.onStatsChanged,
+      this,
+    );
+
+    this.events.on(Phaser.Scenes.Events.RESUME, this.onStatsChanged, this);
 
     if (this.savedPlayerPosition) {
       this.player.setPosition(
@@ -673,5 +685,26 @@ export default class Main extends Phaser.Scene implements SceneOneState {
         speed,
       );
     }
+  }
+
+  private onStatsChanged() {
+    if (this.levelUpPending) return;
+    if (this.playerStats.experience < this.playerStats.experienceGoal) return;
+
+    this.levelUpPending = true;
+    this.time.delayedCall(1000, () => {
+      this.scene.pause();
+      this.backgroundMusic.pause();
+      this.scene.launch("LevelUpScene");
+      this.scene.bringToTop("LevelUpScene");
+    });
+  }
+  private onLevelUpClosed() {
+    this.levelUpPending = false;
+    this.registry.set("playerStats", this.playerStats);
+    this.playerStats.health = this.playerStats.maxHealth;
+    this.playerStats.magic = this.playerStats.maxMagic;
+    this.registry.set("playerStats", this.playerStats);
+    this.onStatsChanged(); // chains another level-up if there's still enough XP
   }
 }
