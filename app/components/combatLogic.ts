@@ -34,7 +34,7 @@ export const enemyAttack = (scene: Phaser.Scene & CombatSceneState) => {
               scene.enemy.anims.play("zombie-combat-idle-left");
               scene.time.delayedCall(
                 1200,
-                () => enemyAttackBasic(scene)
+                () => enemyAttackBasic(scene),
                 //playerUI(scene)
               );
             },
@@ -72,7 +72,7 @@ export const playerBaseAttack = (scene: Phaser.Scene & CombatSceneState) => {
       // Open QTE window shortly before animation ends
       scene.time.delayedCall(220, () => {
         const spaceKey = scene.input.keyboard?.addKey(
-          Phaser.Input.Keyboard.KeyCodes.SPACE
+          Phaser.Input.Keyboard.KeyCodes.SPACE,
         );
 
         const onSpace = () => {
@@ -148,7 +148,7 @@ export const playerJumpAttack = (scene: Phaser.Scene & CombatSceneState) => {
           // Open QTE window shortly before animation ends
           scene.time.delayedCall(0, () => {
             const spaceKey = scene.input.keyboard?.addKey(
-              Phaser.Input.Keyboard.KeyCodes.SPACE
+              Phaser.Input.Keyboard.KeyCodes.SPACE,
             );
 
             const onSpace = () => {
@@ -203,7 +203,7 @@ export const playerJumpAttack = (scene: Phaser.Scene & CombatSceneState) => {
                         playerUI(scene);
                       },
                     });
-                  }
+                  },
                 );
               },
             });
@@ -224,7 +224,7 @@ export const timerUI = (scene: Phaser.Scene & CombatSceneState) => {
       {
         fontSize: "24px",
         color: "#FFFF00",
-      }
+      },
     )
     .setOrigin(0.5)
     .setDepth(52);
@@ -237,7 +237,7 @@ export const timerUI = (scene: Phaser.Scene & CombatSceneState) => {
       if (scene.timerValue > 0 && scene.timerText) {
         scene.timerValue -= 0.05; // decrease 50ms per tick
         scene.timerText.setText(
-          `Time to Strike: ${Math.max(scene.timerValue, 0).toFixed(2)}`
+          `Time to Strike: ${Math.max(scene.timerValue, 0).toFixed(2)}`,
         );
       } else if (scene.timerEvent) {
         scene.timerEvent.remove();
@@ -291,7 +291,7 @@ const popOut = (
   toX: number,
   toY: number,
   delay = 0,
-  onComplete?: () => void
+  onComplete?: () => void,
 ) => {
   targets.forEach((t) => {
     t.setPosition(fromX, fromY);
@@ -326,7 +326,7 @@ const floaty = (scene: Phaser.Scene, targets: TweenableGameObject[]) => {
 const createSparkles = (
   scene: Phaser.Scene & CombatSceneState,
   x: number,
-  y: number
+  y: number,
 ) => {
   const particles = scene.add.particles(x, y, "spark", {
     emitting: true,
@@ -406,7 +406,7 @@ const showPlayerUI = (scene: Phaser.Scene & CombatSceneState) => {
       if (scene.attackVectorBase && scene.attackVectorBaseText) {
         floaty(scene, [scene.attackVectorBase, scene.attackVectorBaseText]);
       }
-    }
+    },
   );
 
   popOut(
@@ -424,7 +424,7 @@ const showPlayerUI = (scene: Phaser.Scene & CombatSceneState) => {
           scene.attackVectorSpecialText,
         ]);
       }
-    }
+    },
   );
 
   // === SPARKLES ===
@@ -517,7 +517,7 @@ const showDefenseUI = (scene: Phaser.Scene & CombatSceneState) => {
       if (scene.dodge && scene.dodgeText) {
         floaty(scene, [scene.dodge, scene.dodgeText]);
       }
-    }
+    },
   );
 
   popOut(
@@ -532,7 +532,7 @@ const showDefenseUI = (scene: Phaser.Scene & CombatSceneState) => {
       if (scene.parry && scene.parryText) {
         floaty(scene, [scene.parry, scene.parryText]);
       }
-    }
+    },
   );
 
   // === SPARKLES ===
@@ -575,10 +575,10 @@ const enemyAttackBasic = (scene: Phaser.Scene & CombatSceneState) => {
       let parrySuccess = false;
 
       const eKey = scene.input.keyboard?.addKey(
-        Phaser.Input.Keyboard.KeyCodes.E
+        Phaser.Input.Keyboard.KeyCodes.E,
       );
       const qKey = scene.input.keyboard?.addKey(
-        Phaser.Input.Keyboard.KeyCodes.Q
+        Phaser.Input.Keyboard.KeyCodes.Q,
       );
 
       // Dodge: longer timing window
@@ -604,7 +604,7 @@ const enemyAttackBasic = (scene: Phaser.Scene & CombatSceneState) => {
       });
 
       // Parry: shorter, stricter timing window
-      scene.time.delayedCall(300, () => {
+      scene.time.delayedCall(200, () => {
         const onParry = () => {
           parrySuccess = true;
           scene.player.anims.play("parry");
@@ -615,7 +615,7 @@ const enemyAttackBasic = (scene: Phaser.Scene & CombatSceneState) => {
         };
         qKey?.on("down", onParry);
 
-        scene.time.delayedCall(150, () => {
+        scene.time.delayedCall(200, () => {
           if (!parrySuccess && !dodgeSuccess)
             scene.game.events.emit("updateHUD", {
               player: scene.playerStats,

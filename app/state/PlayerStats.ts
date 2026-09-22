@@ -12,16 +12,19 @@ interface PlayerStats {
   agi: number;
   hit: number;
   level: number;
+  money: number;
+  suspicion: number;
   atrPoints: number;
+  meleeDamage: number;
+  magicDamage: number;
+  reactWindow: number;
+  speed: number;
 }
 
 export default class PlayerStatsManager implements PlayerStats {
   health: number;
-  maxHealth: number;
   magic: number;
-  maxMagic: number;
   experience: number;
-  experienceGoal: number;
   str: number;
   int: number;
   wis: number;
@@ -30,30 +33,49 @@ export default class PlayerStatsManager implements PlayerStats {
   hit: number;
   level: number;
   atrPoints: number;
+  money: number;
+  suspicion: number;
 
   constructor(data: Partial<PlayerStats> = {}) {
-    this.health = data.health ?? 50;
-    this.maxHealth = data.maxHealth ?? 50;
-    this.magic = data.magic ?? 20;
-    this.maxMagic = data.maxMagic ?? 20;
-    this.experience = data.experience ?? 0;
-    this.experienceGoal = data.experienceGoal ?? 50;
-    this.str = data.str ?? 0;
-    this.int = data.int ?? 0;
-    this.wis = data.wis ?? 0;
-    this.sta = data.sta ?? 0;
-    this.agi = data.agi ?? 0;
-    this.hit = data.hit ?? 0;
+    this.str = data.str ?? 1;
+    this.int = data.int ?? 1;
+    this.wis = data.wis ?? 1;
+    this.sta = data.sta ?? 1;
+    this.agi = data.agi ?? 1;
+    this.hit = data.hit ?? 1;
     this.level = data.level ?? 1;
+    this.health = data.health ?? this.maxHealth;
+    this.magic = data.magic ?? this.maxMagic;
+    this.experience = data.experience ?? 0;
     this.atrPoints = data.atrPoints ?? 0;
+    this.money = data.money ?? 0;
+    this.suspicion = data.suspicion ?? 0;
   }
+
+  get maxHealth() {
+    return 45 + this.sta * 5;
+  }
+  get maxMagic() {
+    return 20 + this.wis * 5;
+  }
+  get experienceGoal() {
+    return Math.round(50 * this.level ** 1.5);
+  }
+  get meleeDamage() {
+    return 1 + this.str * 2;
+  }
+  get magicDamage() {
+    return 1 + this.int * 2;
+  }
+  get reactWindow() {
+    return 0.1 + this.hit * 0.02;
+  }
+  get speed() {
+    return this.agi * 100;
+  } // anim speed in ms
 
   static fromSave(savedStats: Partial<PlayerStats>): PlayerStatsManager {
     return new PlayerStatsManager(savedStats);
-  }
-
-  private getExperienceGoal(level: number): number {
-    return Math.floor(50 * level ** 1.5);
   }
 
   addExperience(amount: number): void {
@@ -65,49 +87,32 @@ export default class PlayerStatsManager implements PlayerStats {
     while (this.experience >= this.experienceGoal) {
       this.experience -= this.experienceGoal;
       this.level += 1;
-      this.experienceGoal = this.getExperienceGoal(this.level);
-      this.onLevelUp();
+      this.atrPoints += 3;
     }
   }
 
-  private onLevelUp(): void {
-    this.atrPoints += 3;
-    this.health = this.maxHealth;
-    this.magic = this.maxMagic;
-  }
-
   toJSON(): PlayerStats {
-    const {
-      health,
-      maxHealth,
-      magic,
-      maxMagic,
-      experience,
-      experienceGoal,
-      str,
-      int,
-      wis,
-      sta,
-      agi,
-      hit,
-      level,
-      atrPoints,
-    } = this;
     return {
-      health,
-      maxHealth,
-      magic,
-      maxMagic,
-      experience,
-      experienceGoal,
-      str,
-      int,
-      wis,
-      sta,
-      agi,
-      hit,
-      level,
-      atrPoints,
+      health: this.health,
+      maxHealth: this.maxHealth,
+      magic: this.magic,
+      maxMagic: this.maxMagic,
+      experience: this.experience,
+      experienceGoal: this.experienceGoal,
+      str: this.str,
+      int: this.int,
+      wis: this.wis,
+      sta: this.sta,
+      agi: this.agi,
+      hit: this.hit,
+      level: this.level,
+      atrPoints: this.atrPoints,
+      meleeDamage: this.meleeDamage,
+      magicDamage: this.magicDamage,
+      reactWindow: this.reactWindow,
+      speed: this.speed,
+      money: this.money,
+      suspicion: this.suspicion,
     };
   }
 }

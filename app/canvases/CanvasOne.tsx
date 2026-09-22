@@ -15,6 +15,7 @@ import ZombieCombat from "../phaser/LevelOne/Combat/ZombieCombat";
 import GameOver from "../phaser/LevelOne/GameOver";
 import GamePause from "../phaser/LevelOne/GamePause";
 import EnemyHudScene from "../phaser/UtilityScenes/EnemyHudScene";
+import LevelUpScene from "../phaser/UtilityScenes/levelUp";
 declare global {
   interface Window {
     phaserGame?: Phaser.Game;
@@ -67,6 +68,7 @@ export default function CanvasOne() {
     game.scene.add("EnemyHudScene", EnemyHudScene);
     game.scene.add("GameOver", GameOver);
     game.scene.add("GamePause", GamePause);
+    game.scene.add("LevelUpScene", LevelUpScene);
 
     game.scene.start("BootScene");
 
