@@ -263,71 +263,71 @@ export default class AlchTwins extends Phaser.Scene implements ConvoSceneState {
     this.load.audio("alchTwinsMusic", "/assets/music/rain.mp3");
     this.load.audio(
       "seuthala-line-0",
-      "/assets/dialogue/seuthala/seuthala-dialogue0.wav"
+      "/assets/dialogue/seuthala/seuthala-dialogue0.wav",
     );
     this.load.audio(
       "seuthala-line-1",
-      "/assets/dialogue/seuthala/seuthala-dialogue1.wav"
+      "/assets/dialogue/seuthala/seuthala-dialogue1.wav",
     );
     this.load.audio(
       "seuthala-line-2",
-      "/assets/dialogue/seuthala/seuthala-dialogue2.wav"
+      "/assets/dialogue/seuthala/seuthala-dialogue2.wav",
     );
     this.load.audio(
       "seuthala-line-3",
-      "/assets/dialogue/seuthala/seuthala-dialogue3.wav"
+      "/assets/dialogue/seuthala/seuthala-dialogue3.wav",
     );
     this.load.audio(
       "seuthala-line-4",
-      "/assets/dialogue/seuthala/seuthala-dialogue4.wav"
+      "/assets/dialogue/seuthala/seuthala-dialogue4.wav",
     );
     this.load.audio(
       "seuthala-line-5",
-      "/assets/dialogue/seuthala/seuthala-dialogue5.wav"
+      "/assets/dialogue/seuthala/seuthala-dialogue5.wav",
     );
     this.load.audio(
       "seuthala-line-6",
-      "/assets/dialogue/seuthala/seuthala-dialogue6.wav"
+      "/assets/dialogue/seuthala/seuthala-dialogue6.wav",
     );
     this.load.audio(
       "seuthala-line-7",
-      "/assets/dialogue/seuthala/seuthala-dialogue7.wav"
+      "/assets/dialogue/seuthala/seuthala-dialogue7.wav",
     );
     this.load.audio(
       "seuthala-line-8",
-      "/assets/dialogue/seuthala/seuthala-dialogue8.wav"
+      "/assets/dialogue/seuthala/seuthala-dialogue8.wav",
     );
     this.load.audio(
       "seuthala-line-9",
-      "/assets/dialogue/seuthala/seuthala-dialogue9.wav"
+      "/assets/dialogue/seuthala/seuthala-dialogue9.wav",
     );
     this.load.audio(
       "seuthala-line-10",
-      "/assets/dialogue/seuthala/seuthala-dialogue10.wav"
+      "/assets/dialogue/seuthala/seuthala-dialogue10.wav",
     );
     this.load.audio(
       "seuthala-line-11",
-      "/assets/dialogue/seuthala/seuthala-dialogue11.wav"
+      "/assets/dialogue/seuthala/seuthala-dialogue11.wav",
     );
     this.load.audio(
       "seuthala-line-12",
-      "/assets/dialogue/seuthala/seuthala-dialogue12.wav"
+      "/assets/dialogue/seuthala/seuthala-dialogue12.wav",
     );
     this.load.audio(
       "seuthala-line-13",
-      "/assets/dialogue/seuthala/seuthala-dialogue13.wav"
+      "/assets/dialogue/seuthala/seuthala-dialogue13.wav",
     );
     this.load.audio(
       "seuthala-line-14",
-      "/assets/dialogue/seuthala/seuthala-dialogue14.wav"
+      "/assets/dialogue/seuthala/seuthala-dialogue14.wav",
     );
     this.load.audio(
       "seuthala-line-15",
-      "/assets/dialogue/seuthala/seuthala-dialogue15.wav"
+      "/assets/dialogue/seuthala/seuthala-dialogue15.wav",
     );
     this.load.audio(
       "seuthala-line-16",
-      "/assets/dialogue/seuthala/seuthala-dialogue16.wav"
+      "/assets/dialogue/seuthala/seuthala-dialogue16.wav",
     );
   }
 
@@ -337,7 +337,7 @@ export default class AlchTwins extends Phaser.Scene implements ConvoSceneState {
       "#83A0A9",
       "black",
       "alchTwinsBg",
-      "alchTwinsMusic"
+      "alchTwinsMusic",
     );
   }
 }

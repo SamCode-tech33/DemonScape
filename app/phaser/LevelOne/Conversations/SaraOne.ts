@@ -150,8 +150,8 @@ export default class SaraOne extends Phaser.Scene implements ConvoSceneState {
   public fromScene: string = "SaraOne";
   public speakerName: string = "Sara:";
   public voiceLoop: boolean = false;
-  public manyOptionsNode: number = 0;
-  playerStats!: PlayerStatsManager;
+  public manyOptionsNode: number = -1;
+  public playerStats!: PlayerStatsManager;
 
   constructor() {
     super({ key: "SaraOne" });

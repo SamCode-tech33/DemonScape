@@ -168,51 +168,51 @@ export default class CultHead extends Phaser.Scene implements ConvoSceneState {
     this.load.audio("cultHeadMusic", "/assets/music/morbid.mp3");
     this.load.audio(
       "cultHead-line-0",
-      "/assets/dialogue/cultHead/cultHead-dialogue0.wav"
+      "/assets/dialogue/cultHead/cultHead-dialogue0.wav",
     );
     this.load.audio(
       "cultHead-line-1",
-      "/assets/dialogue/cultHead/cultHead-dialogue1.wav"
+      "/assets/dialogue/cultHead/cultHead-dialogue1.wav",
     );
     this.load.audio(
       "cultHead-line-2",
-      "/assets/dialogue/cultHead/cultHead-dialogue2.wav"
+      "/assets/dialogue/cultHead/cultHead-dialogue2.wav",
     );
     this.load.audio(
       "cultHead-line-3",
-      "/assets/dialogue/cultHead/cultHead-dialogue3.wav"
+      "/assets/dialogue/cultHead/cultHead-dialogue3.wav",
     );
     this.load.audio(
       "cultHead-line-4",
-      "/assets/dialogue/cultHead/cultHead-dialogue4.wav"
+      "/assets/dialogue/cultHead/cultHead-dialogue4.wav",
     );
     this.load.audio(
       "cultHead-line-5",
-      "/assets/dialogue/cultHead/cultHead-dialogue5.wav"
+      "/assets/dialogue/cultHead/cultHead-dialogue5.wav",
     );
     this.load.audio(
       "cultHead-line-6",
-      "/assets/dialogue/cultHead/cultHead-dialogue6.wav"
+      "/assets/dialogue/cultHead/cultHead-dialogue6.wav",
     );
     this.load.audio(
       "cultHead-line-7",
-      "/assets/dialogue/cultHead/cultHead-dialogue7.wav"
+      "/assets/dialogue/cultHead/cultHead-dialogue7.wav",
     );
     this.load.audio(
       "cultHead-line-8",
-      "/assets/dialogue/cultHead/cultHead-dialogue7.wav"
+      "/assets/dialogue/cultHead/cultHead-dialogue7.wav",
     );
     this.load.audio(
       "cultHead-line-9",
-      "/assets/dialogue/cultHead/cultHead-dialogue8.wav"
+      "/assets/dialogue/cultHead/cultHead-dialogue8.wav",
     );
     this.load.audio(
       "cultHead-line-10",
-      "/assets/dialogue/cultHead/cultHead-dialogue9.wav"
+      "/assets/dialogue/cultHead/cultHead-dialogue9.wav",
     );
     this.load.audio(
       "cultHead-line-11",
-      "/assets/dialogue/cultHead/cultHead-dialogue10.wav"
+      "/assets/dialogue/cultHead/cultHead-dialogue10.wav",
     );
   }
 
