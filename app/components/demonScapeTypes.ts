@@ -13,7 +13,7 @@ export type WASDAndArrowKeys = {
   shift: Phaser.Input.Keyboard.Key;
 };
 
-export interface enemyStats {
+export interface EnemyStats {
   health: number;
   maxHealth: number;
   magic: number;
@@ -53,7 +53,8 @@ export type ItemInRange = {
 
 export interface DialogueChoice {
   text: string;
-  next: number; // index of next dialogue node
+  next: number;
+  sus?: number;
 }
 
 export interface DialogueNode {
@@ -79,6 +80,8 @@ export interface ConvoSceneState {
   speakerName: string;
   voiceLoop: boolean;
   manyOptionsNode: number;
+  playerStats?: PlayerStatsManager;
+  susText: Phaser.GameObjects.Text;
 }
 export interface SaveState {
   userId: string;

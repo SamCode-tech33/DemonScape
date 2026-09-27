@@ -192,6 +192,7 @@ export default class BoxGuy extends Phaser.Scene implements ConvoSceneState {
   public speakerName: string = "Random Box Guy:";
   public voiceLoop: boolean = true;
   public manyOptionsNode: number = 6;
+  public susText!: Phaser.GameObjects.Text;
 
   constructor() {
     super({ key: "BoxGuy" });

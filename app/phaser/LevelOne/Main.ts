@@ -257,18 +257,6 @@ export default class Main extends Phaser.Scene implements SceneOneState {
 
     //EVENTS
 
-    const flashRedScreen = () =>
-      this.add
-        .rectangle(
-          this.player.x,
-          this.player.y,
-          window.innerWidth,
-          window.innerHeight,
-          0xff0000,
-          0.3,
-        )
-        .setDepth(50)
-        .setOrigin(0.5);
     if (!this.isLoadingSave && this.cultHeadSceneNum === 1) {
       this.movementDisabled = true;
       this.time.delayedCall(700, () => {
@@ -283,6 +271,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
     this.events.off("resume"); // listeners stack through reset so always turn off resume before setting it.
     // biome-ignore lint/suspicious/noExplicitAny: <explanation> to be properly typed on game completion. too many emerging factors
     this.events.on("resume", (_sys: Phaser.Scenes.Systems, data: any) => {
+      this.registry.set("playerStats", this.playerStats);
       if (data?.from === "AlchTwins") {
         if (this.alchSceneNum === 1) {
           this.alchSceneNum++;
@@ -298,7 +287,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
 
           for (let i = 0; i < 5; i++) {
             this.time.delayedCall(50 * i * 2, () => {
-              this.redScreen = flashRedScreen();
+              this.redScreen = this.flashRedScreen();
               this.time.delayedCall(50, () => {
                 this.redScreen.destroy();
               });
@@ -313,6 +302,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
                 this.movementDisabled = false;
                 this.backgroundMusic.stop();
                 this.scene.pause("SceneOne");
+                this.playerStats.prevSus = this.playerStats.suspicion;
                 this.scene.launch("AlchTwins", {
                   alchSceneNum: this.alchSceneNum,
                 });
@@ -340,7 +330,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
 
           for (let i = 0; i < 5; i++) {
             this.time.delayedCall(50 * i * 2, () => {
-              this.redScreen = flashRedScreen();
+              this.redScreen = this.flashRedScreen();
               this.time.delayedCall(50, () => {
                 this.redScreen.destroy();
               });
@@ -357,7 +347,10 @@ export default class Main extends Phaser.Scene implements SceneOneState {
             );
           });
           saveGame();
-        } else if (this.cultHeadSceneNum === 4) {
+        } else if (
+          this.cultHeadSceneNum === 4 &&
+          this.playerStats.suspicion < 100
+        ) {
           (this.npcs.getChildren() as Phaser.Physics.Arcade.Sprite[]).forEach(
             (npc, i) => {
               if (i === 12) {
@@ -414,6 +407,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
               this.saraOneSceneNum += 1;
               this.backgroundMusic.pause();
               this.scene.pause("SceneOne");
+              this.playerStats.prevSus = this.playerStats.suspicion;
               this.scene.launch("SaraOne", {
                 saraOneSceneNum: this.saraOneSceneNum,
               });
@@ -426,7 +420,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
         this.player.anims.play("pass-out");
         for (let i = 0; i < 5; i++) {
           this.time.delayedCall(50 * i * 2, () => {
-            this.redScreen = flashRedScreen();
+            this.redScreen = this.flashRedScreen();
             this.time.delayedCall(50, () => {
               this.redScreen.destroy();
             });
@@ -469,6 +463,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
         });
       } else if (data?.from === "LevelUpScene") {
         this.onLevelUpClosed();
+        saveGame();
       }
       if (this.backgroundMusic.isPaused) {
         this.backgroundMusic.resume();
@@ -649,6 +644,29 @@ export default class Main extends Phaser.Scene implements SceneOneState {
     depthSetting(this);
     pathingAlch2(this); //index
 
+    if (this.playerStats.suspicion >= 100) {
+      this.playerStats.suspicion = this.playerStats.prevSus;
+      this.player.anims.stop();
+      this.movementDisabled = true;
+      this.player.anims.play("pass-out");
+      for (let i = 0; i < 5; i++) {
+        this.time.delayedCall(50 * i * 2, () => {
+          this.redScreen = this.flashRedScreen();
+          this.time.delayedCall(50, () => {
+            this.redScreen.destroy();
+          });
+        });
+      }
+      this.player.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+        this.time.delayedCall(500, () => {
+          this.backgroundMusic.stop();
+          this.scene.stop("SceneOne");
+          this.scene.stop("HudScene");
+          this.scene.launch("GameOver");
+        });
+      });
+    }
+
     if (this.ghostFollow && this.ghostCompanion) {
       // pick an offset based on the player's lastDirection
       let offsetX = 0;
@@ -706,5 +724,18 @@ export default class Main extends Phaser.Scene implements SceneOneState {
     this.playerStats.magic = this.playerStats.maxMagic;
     this.registry.set("playerStats", this.playerStats);
     this.onStatsChanged(); // chains another level-up if there's still enough XP
+  }
+  private flashRedScreen() {
+    return this.add
+      .rectangle(
+        this.player.x,
+        this.player.y,
+        window.innerWidth,
+        window.innerHeight,
+        0xff0000,
+        0.3,
+      )
+      .setDepth(50)
+      .setOrigin(0.5);
   }
 }

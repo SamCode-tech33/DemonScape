@@ -10,7 +10,7 @@ import {
 } from "@/app/components/combatLogic";
 import type PlayerStatsManager from "@/app/state/PlayerStats";
 import type { CombatSceneState } from "@/app/components/combatSceneTypes";
-import type { enemyStats } from "@/app/components/demonScapeTypes";
+import type { EnemyStats } from "@/app/components/demonScapeTypes";
 
 interface SceneInitData {
   boss: boolean;
@@ -32,7 +32,7 @@ export default class ZombieCombat
   qte: Phaser.GameObjects.Graphics | undefined;
   qteText: Phaser.GameObjects.Text | undefined;
   playerStats!: PlayerStatsManager;
-  enemyStats!: enemyStats;
+  enemyStats!: EnemyStats;
   timerValue!: number;
   timerText: Phaser.GameObjects.Text | undefined;
   timerEvent: Phaser.Time.TimerEvent | undefined;
@@ -81,7 +81,7 @@ export default class ZombieCombat
     this.playerStats = this.registry.get("playerStats") as PlayerStatsManager;
 
     this.enemyStats = {
-      health: this.boss ? 1 : 1,
+      health: this.boss ? 10 : 10,
       maxHealth: this.boss ? 40 : 20,
       magic: 5,
       maxMagic: 5,
@@ -89,10 +89,7 @@ export default class ZombieCombat
     };
 
     this.scene.launch("HudScene");
-    this.scene.bringToTop("HudScene");
-
     this.scene.launch("EnemyHudScene", { enemyStats: this.enemyStats });
-    this.scene.bringToTop("EnemyHudScene");
 
     if (!this.textures.exists("spark")) {
       const g = this.add.graphics();
@@ -121,13 +118,13 @@ export default class ZombieCombat
       .setScale(5.5);
 
     this.enemy = this.physics.add
-      .sprite(1150, this.boss ? 680 : 600, "zombie-combat-idle", 2)
+      .sprite(1150, this.boss ? 572 : 600, "zombie-combat-idle", 2)
       .setDepth(8)
       .setScale(this.boss ? 6.5 : 5.5);
 
     if (this.boss) {
       this.enemy.clearTint();
-      this.enemy.setTint(0xff0000);
+      this.enemy.setTint(0x660000);
     }
 
     this.player.anims.play("player-combat-idle-right");

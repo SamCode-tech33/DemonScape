@@ -57,15 +57,15 @@ export default function CanvasOne() {
 
     game.scene.add("BootScene", BootScene);
     game.scene.add("SceneOne", Main);
+    game.scene.add("ZombieCombat", ZombieCombat);
     game.scene.add("SceneHud", SceneHud);
+    game.scene.add("EnemyHudScene", EnemyHudScene);
     game.scene.add("CultHead", CultHead);
     game.scene.add("AlchTwins", AlchTwins);
     game.scene.add("BoxGuy", BoxGuy);
     game.scene.add("SaraOne", SaraOne);
     game.scene.add("Ghost", Ghost);
     game.scene.add("SkelMan", SkelMan);
-    game.scene.add("ZombieCombat", ZombieCombat);
-    game.scene.add("EnemyHudScene", EnemyHudScene);
     game.scene.add("GameOver", GameOver);
     game.scene.add("GamePause", GamePause);
     game.scene.add("LevelUpScene", LevelUpScene);

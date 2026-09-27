@@ -183,6 +183,7 @@ export default class Ghost extends Phaser.Scene implements ConvoSceneState {
   public speakerName: string = "Bloody Ghost:";
   public voiceLoop: boolean = true;
   public manyOptionsNode: number = -1;
+  public susText!: Phaser.GameObjects.Text;
 
   constructor() {
     super({ key: "Ghost" });

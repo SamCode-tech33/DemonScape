@@ -1,5 +1,32 @@
 import type { CombatSceneState, TweenableGameObject } from "./combatSceneTypes";
 
+// Create an array of objects for all possible player attacks, most set to hasAbility: false
+// if hasAbility: true, then the UI will show that attack
+// there will also be a slot: [0-8] for moves equipped, -1 if not equipped (later add to menu a move equip system)
+// build UI such that it can hold up to 9 moves
+
+// player speed to effect animation speed
+// player goes first if hits before enemy hits
+
+// check for isSpell? int modifier used instead of str
+
+// ringed UI for QTE
+
+// sound effects
+
+// floating damage text
+
+// infra for multi QTE attacks and defense
+// misses will show enemy dodge or parry and delete player attackTime
+
+// create an enemy object, 3 to start (bossZom, zom, and cultHead)
+// array of objects for all of that enemy's attacks which will be used at random or with different chance weights
+// some attacks will need to pass a hasMana? check
+
+// array of takeDamage animations for each enemy, likely just two items
+
+// enemy object will also contain enemyStats which will include level and attributes
+
 export const enemyAttack = (scene: Phaser.Scene & CombatSceneState) => {
   scene.playerTurn = false;
   hideTimerUI(scene);
@@ -77,7 +104,16 @@ export const playerBaseAttack = (scene: Phaser.Scene & CombatSceneState) => {
 
         const onSpace = () => {
           qteSuccess = true;
-          scene.enemyStats.health -= 1; // damage logic
+          scene.enemyStats.health -= scene.playerStats.meleeDamage - 1; // damage logic
+          for (let i = 0; i < 2; i++) {
+            scene.time.delayedCall(100 * i * 2, () => {
+              scene.enemy.setTint(0xff0000);
+              scene.time.delayedCall(100, () => {
+                scene.enemy.clearTint();
+              });
+            });
+          }
+          if (scene.boss) scene.enemy.setTint(0x660000);
           scene.game.events.emit("updateHUD", {
             player: scene.playerStats,
             enemy: scene.enemyStats,
@@ -153,7 +189,16 @@ export const playerJumpAttack = (scene: Phaser.Scene & CombatSceneState) => {
 
             const onSpace = () => {
               qteSuccess = true;
-              scene.enemyStats.health -= 2; // damage logic
+              scene.enemyStats.health -= scene.playerStats.meleeDamage; // damage logic
+              for (let i = 0; i < 2; i++) {
+                scene.time.delayedCall(100 * i * 2, () => {
+                  scene.enemy.setTint(0xff0000);
+                  scene.time.delayedCall(100, () => {
+                    scene.enemy.clearTint();
+                  });
+                });
+              }
+              if (scene.boss) scene.enemy.setTint(0x660000);
               scene.game.events.emit("updateHUD", {
                 player: scene.playerStats,
                 enemy: scene.enemyStats,
@@ -594,7 +639,17 @@ const enemyAttackBasic = (scene: Phaser.Scene & CombatSceneState) => {
         eKey?.on("down", onDodge);
 
         scene.time.delayedCall(300, () => {
-          if (!dodgeSuccess && !parrySuccess) scene.playerStats.health -= 10;
+          if (!dodgeSuccess && !parrySuccess) {
+            scene.playerStats.health -= 10;
+            for (let i = 0; i < 2; i++) {
+              scene.time.delayedCall(100 * i * 2, () => {
+                scene.player.setTint(0xff0000);
+                scene.time.delayedCall(100, () => {
+                  scene.player.clearTint();
+                });
+              });
+            }
+          }
           scene.game.events.emit("updateHUD", {
             player: scene.playerStats,
             enemy: scene.enemyStats,
@@ -661,6 +716,14 @@ const playerParried = (scene: Phaser.Scene & CombatSceneState) => {
     duration: 400,
     onStart: () => {
       scene.player.anims.play("pass-out");
+      for (let i = 0; i < 2; i++) {
+        scene.time.delayedCall(100 * i * 2, () => {
+          scene.player.setTint(0xff0000);
+          scene.time.delayedCall(100, () => {
+            scene.player.clearTint();
+          });
+        });
+      }
     },
     onComplete: () => {
       scene.playerStats.health -= 5;
