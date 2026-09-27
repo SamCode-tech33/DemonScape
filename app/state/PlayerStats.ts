@@ -1,3 +1,16 @@
+interface EquippedItem {
+  damageMultiplier?: number;
+  defense?: number;
+  look?: Phaser.GameObjects.Sprite;
+}
+
+interface Equipment {
+  melee: EquippedItem;
+  ranged: EquippedItem;
+  magick: EquippedItem;
+  armor: EquippedItem;
+}
+
 interface PlayerStats {
   health: number;
   maxHealth: number;
@@ -12,14 +25,27 @@ interface PlayerStats {
   agi: number;
   hit: number;
   level: number;
+  atrPoints: number;
   money: number;
   suspicion: number;
-  atrPoints: number;
+  prevSus: number;
+  equipment: Equipment;
+
+  //derived elements
   meleeDamage: number;
-  magicDamage: number;
+  magickDamage: number;
+  rangedDamage: number;
+  armorDefense: number;
   reactWindow: number;
   speed: number;
 }
+
+const defaultEquipment = {
+  melee: {},
+  ranged: {},
+  magick: {},
+  armor: {},
+};
 
 export default class PlayerStatsManager implements PlayerStats {
   health: number;
@@ -35,6 +61,8 @@ export default class PlayerStatsManager implements PlayerStats {
   atrPoints: number;
   money: number;
   suspicion: number;
+  prevSus: number;
+  equipment: Equipment;
 
   constructor(data: Partial<PlayerStats> = {}) {
     this.str = data.str ?? 1;
@@ -50,26 +78,45 @@ export default class PlayerStatsManager implements PlayerStats {
     this.atrPoints = data.atrPoints ?? 0;
     this.money = data.money ?? 0;
     this.suspicion = data.suspicion ?? 0;
+    this.prevSus = data.prevSus ?? 0;
+    this.equipment = data.equipment ?? defaultEquipment;
   }
 
   get maxHealth() {
     return 45 + this.sta * 5;
   }
+
   get maxMagic() {
     return 20 + this.wis * 5;
   }
+
   get experienceGoal() {
     return Math.round(50 * this.level ** 1.5);
   }
-  get meleeDamage() {
-    return 1 + this.str * 2;
+
+  get meleeDamage(): number {
+    const base = this.equipment.melee.damageMultiplier ?? 0;
+    return Math.floor(base + this.str * 2);
   }
-  get magicDamage() {
-    return 1 + this.int * 2;
+
+  get rangedDamage(): number {
+    const base = this.equipment.ranged.damageMultiplier ?? 0;
+    return Math.floor(base + this.str * 2);
   }
+
+  get magickDamage(): number {
+    const base = this.equipment.magick.damageMultiplier ?? 0;
+    return base + this.int * 2 + Math.floor(this.wis / 2);
+  }
+
+  get armorDefense(): number {
+    return this.equipment.armor.defense ?? 0;
+  }
+
   get reactWindow() {
     return 0.1 + this.hit * 0.02;
   }
+
   get speed() {
     return this.agi * 100;
   } // anim speed in ms
@@ -107,12 +154,16 @@ export default class PlayerStatsManager implements PlayerStats {
       hit: this.hit,
       level: this.level,
       atrPoints: this.atrPoints,
-      meleeDamage: this.meleeDamage,
-      magicDamage: this.magicDamage,
-      reactWindow: this.reactWindow,
-      speed: this.speed,
       money: this.money,
       suspicion: this.suspicion,
+      prevSus: this.prevSus,
+      equipment: this.equipment,
+      meleeDamage: this.meleeDamage,
+      magickDamage: this.magickDamage,
+      rangedDamage: this.rangedDamage,
+      armorDefense: this.armorDefense,
+      reactWindow: this.reactWindow,
+      speed: this.speed,
     };
   }
 }

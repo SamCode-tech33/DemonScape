@@ -3,6 +3,7 @@ import type {
   DialogueNode,
 } from "@/app/components/demonScapeTypes";
 import { conversationLogic } from "@/app/components/conversationLogic";
+import type PlayerStatsManager from "@/app/state/PlayerStats";
 
 export default class AlchTwins extends Phaser.Scene implements ConvoSceneState {
   public dialogue1Nodes: DialogueNode[] = [
@@ -14,6 +15,7 @@ export default class AlchTwins extends Phaser.Scene implements ConvoSceneState {
         {
           text: "1) U-um I uh don't know what's happening to me. It's all so creepy. Where is my house?",
           next: 1,
+          sus: 2,
         },
         {
           text: "2) Some annoying old man told me to come to you... I'm going along with it because it smells like moth-balls over there.",
@@ -39,10 +41,11 @@ export default class AlchTwins extends Phaser.Scene implements ConvoSceneState {
       emote:
         "*Seuthala's twin behind squirms awkwardly, her face is flush. She let's out a deep moan as her eyes roll back*",
       choices: [
-        { text: "1) Um is she ok back there?...", next: 4 },
+        { text: "1) Um is she ok back there?...", next: 4, sus: 5 },
         {
           text: "2) Looks like someone is having a little fun on the job *You smirk coyly*",
           next: 4,
+          sus: 2,
         },
       ],
     },
@@ -54,10 +57,12 @@ export default class AlchTwins extends Phaser.Scene implements ConvoSceneState {
         {
           text: "1) Me? u-um what does that mean? I mean are you like... Wait what?",
           next: 5,
+          sus: 3,
         },
         {
           text: "2) Yeah I don't really give a flying fuck about whatever kinky shit is going on in there *You grab the potion from her hands and down it in one gulp*",
           next: 6,
+          sus: -3,
         },
       ],
     },
@@ -69,6 +74,7 @@ export default class AlchTwins extends Phaser.Scene implements ConvoSceneState {
         {
           text: "1) W-well um that is all fine and all. I'm just gonna leave now *Don't drink the potion*",
           next: 6,
+          sus: 5,
         },
         {
           text: "2) I see... well nothing better than a random potion from a degenerate demon... *You take the potion and drink it hesitantly*",
@@ -91,6 +97,7 @@ export default class AlchTwins extends Phaser.Scene implements ConvoSceneState {
         {
           text: "1) No nothing. I still don't know what is going on here.",
           next: 1,
+          sus: 5,
         },
         {
           text: "2) Hell were you trying to kill me with that thing?!",
@@ -106,6 +113,7 @@ export default class AlchTwins extends Phaser.Scene implements ConvoSceneState {
         {
           text: "1) There is no damage to my mind damnit! I remember being a man. Where the hell am I?!?",
           next: 2,
+          sus: 5,
         },
         {
           text: "2) Damage? But my memories seem so real...",
@@ -132,6 +140,7 @@ export default class AlchTwins extends Phaser.Scene implements ConvoSceneState {
         {
           text: "1) I didn't integrate into shit. I am me and I was me like this when I was born.",
           next: 4,
+          sus: 5,
         },
         {
           text: "2) This makes no sense. I am me!",
@@ -147,6 +156,7 @@ export default class AlchTwins extends Phaser.Scene implements ConvoSceneState {
         {
           text: "1) Hold on. If I don't exist, then why don't I have memories up until that ceremony or whatever. That's when I was 'possessed' right?",
           next: 5,
+          sus: 10,
         },
         {
           text: "2) *Say nothing and let her continue*",
@@ -199,6 +209,7 @@ export default class AlchTwins extends Phaser.Scene implements ConvoSceneState {
         {
           text: "2) I uh-yeah so good having control again *You wink*",
           next: 10,
+          sus: 5,
         },
       ],
     },
@@ -237,6 +248,8 @@ export default class AlchTwins extends Phaser.Scene implements ConvoSceneState {
   public speakerName: string = "Seuthala:";
   public voiceLoop: boolean = false;
   public manyOptionsNode: number = -1;
+  public playerStats!: PlayerStatsManager;
+  public susText!: Phaser.GameObjects.Text;
 
   constructor() {
     super({ key: "AlchTwins" });
@@ -332,6 +345,7 @@ export default class AlchTwins extends Phaser.Scene implements ConvoSceneState {
   }
 
   create() {
+    this.playerStats = this.registry.get("playerStats") as PlayerStatsManager;
     conversationLogic(
       this,
       "#83A0A9",

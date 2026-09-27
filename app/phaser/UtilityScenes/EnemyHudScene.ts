@@ -1,7 +1,7 @@
-import type { enemyStats } from "@/app/components/demonScapeTypes";
+import type { EnemyStats } from "@/app/components/demonScapeTypes";
 
 export default class EnemyHudScene extends Phaser.Scene {
-  enemyStats!: enemyStats;
+  enemyStats!: EnemyStats;
   enemyHealthBarBg!: Phaser.GameObjects.Graphics;
   enemyMagicBarBg!: Phaser.GameObjects.Graphics;
   enemyHealthBar!: Phaser.GameObjects.Graphics;
@@ -13,7 +13,7 @@ export default class EnemyHudScene extends Phaser.Scene {
     super({ key: "EnemyHudScene" });
   }
 
-  create(data: { enemyStats: enemyStats }) {
+  create(data: { enemyStats: EnemyStats }) {
     this.enemyStats = data.enemyStats;
     this.createEnemyHUD(8, this.scale.width);
   }

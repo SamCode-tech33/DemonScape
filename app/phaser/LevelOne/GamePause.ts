@@ -189,7 +189,7 @@ export default class GamePause extends Phaser.Scene {
             this.add.text(
               -menuWidth / 2 + 20,
               contentTop + 20,
-              `0% Suspicion`,
+              `${this.playerStats.suspicion}% Suspicion`,
               {
                 fontSize: "28px",
                 color: "#ffffff",

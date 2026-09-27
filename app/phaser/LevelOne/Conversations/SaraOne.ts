@@ -2,8 +2,8 @@ import type {
   DialogueNode,
   ConvoSceneState,
 } from "@/app/components/demonScapeTypes";
-import type PlayerStatsManager from "@/app/state/PlayerStats";
 import { conversationLogic } from "@/app/components/conversationLogic";
+import type PlayerStatsManager from "@/app/state/PlayerStats";
 export default class SaraOne extends Phaser.Scene implements ConvoSceneState {
   public dialogue1Nodes: DialogueNode[] = [
     {
@@ -14,6 +14,7 @@ export default class SaraOne extends Phaser.Scene implements ConvoSceneState {
         {
           text: "1) I just drank this strange potion and I don't really know what is going on but I... passed. My um 'husk's' brain was the issue. Those um 'twins' said I should talk to you about taking the soul fragments from these zombies to heal?",
           next: 1,
+          sus: 5,
         },
         {
           text: "2) Your busy and I'm in a damn existential crisis. Pretty sure it's a dream though. I was told to kill your pet zombies for soul fragments or something. The hell is this world?",
@@ -33,6 +34,7 @@ export default class SaraOne extends Phaser.Scene implements ConvoSceneState {
         {
           text: "2) My conciousness is fine. It's you lot that are screwed in the head.",
           next: 4,
+          sus: 5,
         },
       ],
     },
@@ -48,6 +50,7 @@ export default class SaraOne extends Phaser.Scene implements ConvoSceneState {
         {
           text: "2) My conciousness is fine. It's you lot that are screwed in the head.",
           next: 4,
+          sus: 5,
         },
       ],
     },
@@ -113,6 +116,7 @@ export default class SaraOne extends Phaser.Scene implements ConvoSceneState {
         {
           text: "2) What the hell was that last one. Were you trying to kill me?!",
           next: 2,
+          sus: 5,
         },
       ],
     },
@@ -152,6 +156,7 @@ export default class SaraOne extends Phaser.Scene implements ConvoSceneState {
   public voiceLoop: boolean = false;
   public manyOptionsNode: number = -1;
   public playerStats!: PlayerStatsManager;
+  public susText!: Phaser.GameObjects.Text;
 
   constructor() {
     super({ key: "SaraOne" });

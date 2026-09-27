@@ -25,7 +25,7 @@ export default class GameOver extends Phaser.Scene {
     const flames = this.add.video(
       this.scale.width / 2,
       this.scale.height / 2,
-      "flames"
+      "flames",
     );
     flames.play(true);
     flames.setAlpha(0.25);
@@ -57,7 +57,7 @@ export default class GameOver extends Phaser.Scene {
           stroke: "#B8860B", // border color
           strokeThickness: 6, // thickness of border
           align: "center",
-        }
+        },
       )
       .setOrigin(0.5, 0.5)
       .setDepth(3);
@@ -74,8 +74,7 @@ export default class GameOver extends Phaser.Scene {
 
     this.input.keyboard?.once("keydown-SPACE", () => {
       this.music.stop();
-      this.scene.stop("GameOver");
-      this.scene.start("SceneOne");
+      this.scene.start("BootScene");
     });
   }
 }

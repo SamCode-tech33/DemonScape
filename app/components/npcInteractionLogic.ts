@@ -139,6 +139,7 @@ const npcInteractionLogic = (scene: Phaser.Scene & SceneOneState) => {
         ) {
           scene.backgroundMusic.pause();
           scene.scene.pause("SceneOne");
+          scene.playerStats.prevSus = scene.playerStats.suspicion;
           if (scene.activeNpc.name === "AlchTwins") {
             scene.scene.launch(scene.activeNpc.scene, {
               alchSceneNum: scene.alchSceneNum,

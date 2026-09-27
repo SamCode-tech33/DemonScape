@@ -101,6 +101,7 @@ export default class SkelMan extends Phaser.Scene implements ConvoSceneState {
   public speakerName: string = "Fedora Skeleton:";
   public voiceLoop: boolean = true;
   public manyOptionsNode: number = -1;
+  public susText!: Phaser.GameObjects.Text;
 
   constructor() {
     super({ key: "SkelMan" });

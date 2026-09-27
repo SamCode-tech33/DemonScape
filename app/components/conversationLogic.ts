@@ -64,6 +64,20 @@ export const conversationLogic = (
     wordWrap: { width: scene.scale.width - 300 },
   });
 
+  scene.susText = scene.add.text(
+    scene.scale.width - 260,
+    scene.scale.height - 160,
+    `Suspicion: ${scene.playerStats?.suspicion}%`,
+    {
+      fontFamily: "Mostean",
+      fontSize: "40px",
+      color: color,
+      stroke: stroke,
+      strokeThickness: 1,
+      wordWrap: { width: scene.scale.width - 300 },
+    },
+  );
+
   scene.emoteBg = scene.add.rectangle(
     scene.scale.width / 2,
     scene.scale.height - scene.scale.height,
@@ -120,11 +134,17 @@ const onChoiceKey = function (
   if (!Number.isNaN(key) && key >= 1 && key <= 9) {
     const choice = this.dialogueNodes[this.currentNodeIndex].choices?.[key - 1];
     if (choice) {
-      // Remove listener before recursing to next node
+      if (choice.sus && this.playerStats)
+        this.playerStats.suspicion += choice.sus;
+      updateSus(this);
       this.input.keyboard?.off("keydown", onChoiceKey, this);
       showNode(choice.next, this);
     }
   }
+};
+
+const updateSus = (scene: Phaser.Scene & ConvoSceneState) => {
+  scene.susText.setText(`Suspicion: ${scene.playerStats?.suspicion}%`);
 };
 
 const showNode = (index: number, scene: Phaser.Scene & ConvoSceneState) => {

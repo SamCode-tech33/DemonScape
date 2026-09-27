@@ -29,13 +29,14 @@ export default class HudScene extends Phaser.Scene {
 
     this.playerStats = this.registry.get("playerStats") as PlayerStatsManager;
 
-    this.registry.events.on(
-      "changedata-playerStats",
-      (_parent: unknown, value: PlayerStatsManager) => {
-        this.playerStats = value;
-        this.updateBars();
-      },
-    );
+    const onPlayerStatsChanged = (
+      _parent: unknown,
+      value: PlayerStatsManager,
+    ) => {
+      this.playerStats = value;
+      this.updateBars();
+    };
+    this.registry.events.on("changedata-playerStats", onPlayerStatsChanged);
 
     // --- Bronze backing panel (drawn first so bars render on top) ---
     this.createTopPanel(screenWidth);
@@ -53,6 +54,7 @@ export default class HudScene extends Phaser.Scene {
 
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       this.game.events.off("updateHUD", this.updateBars, this);
+      this.registry.events.off("changedata-playerStats", onPlayerStatsChanged);
     });
   }
 

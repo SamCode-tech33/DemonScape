@@ -3,6 +3,7 @@ import type {
   DialogueNode,
 } from "@/app/components/demonScapeTypes";
 import { conversationLogic } from "@/app/components/conversationLogic";
+import type PlayerStatsManager from "@/app/state/PlayerStats";
 
 export default class CultHead extends Phaser.Scene implements ConvoSceneState {
   public dialogue1Nodes: DialogueNode[] = [
@@ -14,6 +15,7 @@ export default class CultHead extends Phaser.Scene implements ConvoSceneState {
         {
           text: "1) Th-this heart in my hand. . . wh-where am I? I-I was just in my room...",
           next: 1,
+          sus: 2,
         },
         {
           text: "2) Who the hell are you?! I'll scream if I want to scream.",
@@ -102,6 +104,7 @@ export default class CultHead extends Phaser.Scene implements ConvoSceneState {
         {
           text: "1) No! I am telling you I am a Human!",
           next: 1,
+          sus: 100,
         },
         {
           text: "2) (Lie) Yes, of course. I am in complete control now.",
@@ -137,6 +140,8 @@ export default class CultHead extends Phaser.Scene implements ConvoSceneState {
   public speakerName: string = "Cult Head:";
   public voiceLoop: boolean = false;
   public manyOptionsNode: number = -1;
+  public playerStats!: PlayerStatsManager;
+  public susText!: Phaser.GameObjects.Text;
 
   constructor() {
     super({ key: "CultHead" });
@@ -217,7 +222,7 @@ export default class CultHead extends Phaser.Scene implements ConvoSceneState {
   }
 
   create() {
-    // Background portrait
+    this.playerStats = this.registry.get("playerStats") as PlayerStatsManager;
     conversationLogic(this, "red", "black", "cultHeadBg", "cultHeadMusic");
   }
 }
