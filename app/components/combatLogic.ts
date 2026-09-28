@@ -1,4 +1,11 @@
 import type { CombatSceneState, TweenableGameObject } from "./combatSceneTypes";
+import {
+  tweenTo,
+  playAnim,
+  startAnim,
+  openQteWindow,
+  applyHit,
+} from "./combatHelpers";
 
 // Create an array of objects for all possible player attacks, most set to hasAbility: false
 // if hasAbility: true, then the UI will show that attack
@@ -27,6 +34,232 @@ import type { CombatSceneState, TweenableGameObject } from "./combatSceneTypes";
 
 // enemy object will also contain enemyStats which will include level and attributes
 
+// TWEEN AND ANIMATION HELPERS
+
+// PLAYER ATTACKS SECTION
+export const playerJumpAttack = async (
+  scene: Phaser.Scene & CombatSceneState,
+) => {
+  const { player, enemy } = scene;
+  scene.playerAttack = true;
+  playerUI(scene);
+  qteUI(scene);
+
+  try {
+    // 1. Jump to the enemy
+    await tweenTo(scene, {
+      targets: player,
+      x: enemy.x - 300,
+      y: enemy.y - 300,
+      ease: "Linear",
+      duration: 400,
+      onStart: () => startAnim(player, "jump-right-attack"),
+    });
+
+    // 2. Jump on the enemy's head
+    await tweenTo(scene, {
+      targets: player,
+      x: enemy.x,
+      y: enemy.y - 255,
+      duration: 400,
+    });
+
+    // 3. Attack animation with QTE running alongside it (not awaited)
+    const qteResult = openQteWindow(scene, 0, 100).then(async (hit) => {
+      if (hit) {
+        applyHit(scene);
+      } else {
+        await playAnim(enemy, "z-dodge");
+        if (!enemy.active) return; // enemy destroyed or scene shut down
+        startAnim(enemy, "zombie-combat-idle-left");
+      }
+    });
+    await playAnim(player, "jump-attack");
+
+    // 4. Drop back down
+    await tweenTo(scene, {
+      targets: player,
+      x: enemy.x + 160,
+      y: 550,
+      duration: 400,
+      onStart: () => player.setFrame(19),
+    });
+
+    // 5. Jump-off, then run back
+    await playAnim(player, "jump-off");
+    await tweenTo(scene, {
+      targets: player,
+      x: 500,
+      y: 600,
+      duration: 800,
+      onStart: () => startAnim(player, "run-left"),
+    });
+    await qteResult;
+  } finally {
+    player.anims.stop();
+    player.anims.play("player-combat-idle-right");
+    scene.playerAttack = false;
+    qteUI(scene);
+    playerUI(scene);
+  }
+};
+
+export const playerBaseAttack = async (
+  scene: Phaser.Scene & CombatSceneState,
+) => {
+  const { player, enemy } = scene;
+  scene.playerAttack = true;
+  playerUI(scene);
+  qteUI(scene);
+  try {
+    // 1. Run to the enemy
+    await tweenTo(scene, {
+      targets: player,
+      x: enemy.x - 150,
+      ease: "Linear",
+      duration: 400,
+      onStart: () => startAnim(player, "run-right"),
+    });
+
+    // 2. Attack animation with QTE running alongside it (not awaited)
+    const qteResult = openQteWindow(scene, 220, 320).then(async (hit) => {
+      if (hit) {
+        applyHit(scene);
+      } else {
+        await playAnim(enemy, "z-dodge");
+        if (!enemy.active) return; // enemy destroyed or scene shut down
+        startAnim(enemy, "zombie-combat-idle-left");
+      }
+    });
+    await playAnim(player, "halfslash-right");
+
+    // 3. Run back
+    await playAnim(player, "jump-off");
+    await tweenTo(scene, {
+      targets: player,
+      x: 500,
+      y: 600,
+      duration: 800,
+      onStart: () => startAnim(player, "run-left"),
+    });
+    await qteResult;
+  } finally {
+    player.anims.stop();
+    player.anims.play("player-combat-idle-right");
+    scene.playerAttack = false;
+    qteUI(scene);
+    playerUI(scene);
+  }
+};
+
+const enemyAttackBasic = (scene: Phaser.Scene & CombatSceneState) => {
+  scene.enemy.scene.tweens.add({
+    targets: scene.enemy,
+    x: scene.player.x + 150,
+    ease: "Linear",
+    duration: 2000,
+    onStart: () => {
+      scene.enemy.anims.stop();
+      scene.enemy.anims.play("z-walk-left", true);
+    },
+    onComplete: () => {
+      scene.enemy.anims.stop();
+      scene.enemy.anims.play("z-halfslash-left");
+
+      // === DEFENSE QTE SETUP ===
+      let dodgeSuccess = false;
+      let parrySuccess = false;
+
+      const eKey = scene.input.keyboard?.addKey(
+        Phaser.Input.Keyboard.KeyCodes.E,
+      );
+      const qKey = scene.input.keyboard?.addKey(
+        Phaser.Input.Keyboard.KeyCodes.Q,
+      );
+
+      // Dodge: longer timing window
+      scene.time.delayedCall(200, () => {
+        const onDodge = () => {
+          dodgeSuccess = true;
+          scene.player.anims.play("dodge");
+          scene.player.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+            scene.player.anims.play("player-combat-idle-right", true);
+          });
+          eKey?.off("down", onDodge);
+        };
+        eKey?.on("down", onDodge);
+
+        scene.time.delayedCall(300, () => {
+          if (!dodgeSuccess && !parrySuccess) {
+            scene.playerStats.health -= 10;
+            for (let i = 0; i < 2; i++) {
+              scene.time.delayedCall(100 * i * 2, () => {
+                scene.player.setTint(0xff0000);
+                scene.time.delayedCall(100, () => {
+                  scene.player.clearTint();
+                });
+              });
+            }
+          }
+          scene.game.events.emit("updateHUD", {
+            player: scene.playerStats,
+            enemy: scene.enemyStats,
+          });
+          eKey?.off("down", onDodge);
+        });
+      });
+
+      // Parry: shorter, stricter timing window
+      scene.time.delayedCall(200, () => {
+        const onParry = () => {
+          parrySuccess = true;
+          scene.player.anims.play("parry");
+          scene.player.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+            scene.player.anims.play("player-combat-idle-right", true);
+          });
+          qKey?.off("down", onParry);
+        };
+        qKey?.on("down", onParry);
+
+        scene.time.delayedCall(200, () => {
+          if (!parrySuccess && !dodgeSuccess)
+            scene.game.events.emit("updateHUD", {
+              player: scene.playerStats,
+              enemy: scene.enemyStats,
+            });
+
+          qKey?.off("down", onParry);
+        });
+      });
+
+      // === After enemy attack animation ===
+      scene.enemy.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+        scene.tweens.add({
+          targets: scene.enemy,
+          x: 1250,
+          duration: 2000,
+          onStart: () => {
+            scene.enemy.anims.play("z-walk-right", true);
+          },
+          onComplete: () => {
+            scene.enemy.anims.stop();
+            scene.enemy.anims.play("zombie-combat-idle-left");
+            scene.playerTurn = true;
+            playerUI(scene);
+            timerUI(scene);
+            scene.time.addEvent({
+              delay: 12000,
+              callback: () => {
+                enemyAttack(scene);
+              },
+            });
+          },
+        });
+      });
+    },
+  });
+};
+
 export const enemyAttack = (scene: Phaser.Scene & CombatSceneState) => {
   scene.playerTurn = false;
   hideTimerUI(scene);
@@ -49,7 +282,7 @@ export const enemyAttack = (scene: Phaser.Scene & CombatSceneState) => {
           playerParried(scene);
           scene.tweens.add({
             targets: scene.enemy,
-            x: 1150,
+            x: 1250,
             y: 600,
             ease: "Linear",
             duration: 300,
@@ -76,184 +309,45 @@ export const enemyAttack = (scene: Phaser.Scene & CombatSceneState) => {
   }
 };
 
-export const playerBaseAttack = (scene: Phaser.Scene & CombatSceneState) => {
-  scene.playerAttack = true;
-  playerUI(scene);
-  qteUI(scene);
-  scene.player.scene.tweens.add({
+const playerParried = (scene: Phaser.Scene & CombatSceneState) => {
+  scene.tweens.add({
     targets: scene.player,
-    x: scene.enemy.x - 150,
-    ease: "Linear",
+    y: 400,
     duration: 400,
     onStart: () => {
-      scene.player.anims.stop();
-      scene.player.anims.play("run-right", true);
+      scene.player.anims.play("pass-out");
+      for (let i = 0; i < 2; i++) {
+        scene.time.delayedCall(100 * i * 2, () => {
+          scene.player.setTint(0xff0000);
+          scene.time.delayedCall(100, () => {
+            scene.player.clearTint();
+          });
+        });
+      }
     },
     onComplete: () => {
-      scene.player.anims.stop();
-      scene.player.anims.play("halfslash-right");
-
-      // === QTE SETUP ===
-      let qteSuccess = false;
-
-      // Open QTE window shortly before animation ends
-      scene.time.delayedCall(220, () => {
-        const spaceKey = scene.input.keyboard?.addKey(
-          Phaser.Input.Keyboard.KeyCodes.SPACE,
-        );
-
-        const onSpace = () => {
-          qteSuccess = true;
-          scene.enemyStats.health -= scene.playerStats.meleeDamage - 1; // damage logic
-          for (let i = 0; i < 2; i++) {
-            scene.time.delayedCall(100 * i * 2, () => {
-              scene.enemy.setTint(0xff0000);
-              scene.time.delayedCall(100, () => {
-                scene.enemy.clearTint();
-              });
-            });
-          }
-          if (scene.boss) scene.enemy.setTint(0x660000);
-          scene.game.events.emit("updateHUD", {
-            player: scene.playerStats,
-            enemy: scene.enemyStats,
-          });
-
-          // remove listener after success
-          spaceKey?.off("down", onSpace);
-        };
-
-        spaceKey?.on("down", onSpace);
-
-        // Close QTE window after a short time
-        scene.time.delayedCall(300, () => {
-          if (!qteSuccess) {
-            console.log("QTE failed, no damage.");
-          }
-          spaceKey?.off("down", onSpace);
-        });
+      scene.playerStats.health -= 5;
+      scene.game.events.emit("updateHUD", {
+        player: scene.playerStats,
+        enemy: scene.enemyStats,
       });
+      scene.player.anims.play("get-up");
       scene.player.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
         scene.tweens.add({
           targets: scene.player,
-          x: 600,
+          x: 400,
+          y: 600,
           duration: 400,
           onStart: () => {
-            scene.player.anims.play("run-left", true);
+            scene.player.anims.play("run-left");
           },
           onComplete: () => {
             scene.player.anims.stop();
-            scene.player.anims.play("player-combat-idle-right");
-            scene.playerAttack = false;
+            scene.player.anims.play("player-combat-idle-right", true);
             qteUI(scene);
             playerUI(scene);
           },
         });
-      });
-    },
-  });
-};
-
-export const playerJumpAttack = (scene: Phaser.Scene & CombatSceneState) => {
-  scene.playerAttack = true;
-  playerUI(scene);
-  qteUI(scene);
-  scene.player.scene.tweens.add({
-    targets: scene.player,
-    x: scene.enemy.x - 300,
-    y: scene.enemy.y - 300,
-    ease: "Linear",
-    duration: 400,
-    onStart: () => {
-      scene.player.anims.stop();
-      scene.player.anims.play("jump-right-attack", true);
-    },
-    onComplete: () => {
-      scene.tweens.add({
-        targets: scene.player,
-        x: scene.enemy.x,
-        y: scene.enemy.y - 255,
-        duration: 400,
-        onComplete: () => {
-          scene.player.anims.stop();
-          scene.player.anims.play("jump-attack");
-
-          // === QTE SETUP ===
-          let qteSuccess = false;
-
-          // Open QTE window shortly before animation ends
-          scene.time.delayedCall(0, () => {
-            const spaceKey = scene.input.keyboard?.addKey(
-              Phaser.Input.Keyboard.KeyCodes.SPACE,
-            );
-
-            const onSpace = () => {
-              qteSuccess = true;
-              scene.enemyStats.health -= scene.playerStats.meleeDamage; // damage logic
-              for (let i = 0; i < 2; i++) {
-                scene.time.delayedCall(100 * i * 2, () => {
-                  scene.enemy.setTint(0xff0000);
-                  scene.time.delayedCall(100, () => {
-                    scene.enemy.clearTint();
-                  });
-                });
-              }
-              if (scene.boss) scene.enemy.setTint(0x660000);
-              scene.game.events.emit("updateHUD", {
-                player: scene.playerStats,
-                enemy: scene.enemyStats,
-              });
-
-              // remove listener after success
-              spaceKey?.off("down", onSpace);
-            };
-
-            spaceKey?.on("down", onSpace);
-
-            // Close QTE window after a short time
-            scene.time.delayedCall(50, () => {
-              if (!qteSuccess) {
-                console.log("QTE failed, no damage.");
-              }
-              spaceKey?.off("down", onSpace);
-            });
-          });
-          scene.player.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
-            scene.tweens.add({
-              targets: scene.player,
-              y: 550,
-              x: scene.enemy.x + 160,
-              duration: 400,
-              onStart: () => {
-                scene.player.setFrame(19);
-              },
-              onComplete: () => {
-                scene.player.anims.play("jump-off");
-                scene.player.once(
-                  Phaser.Animations.Events.ANIMATION_COMPLETE,
-                  () => {
-                    scene.tweens.add({
-                      targets: scene.player,
-                      x: 600,
-                      y: 600,
-                      duration: 800,
-                      onStart: () => {
-                        scene.player.anims.play("run-left", true);
-                      },
-                      onComplete: () => {
-                        scene.player.anims.stop();
-                        scene.player.anims.play("player-combat-idle-right");
-                        scene.playerAttack = false;
-                        qteUI(scene);
-                        playerUI(scene);
-                      },
-                    });
-                  },
-                );
-              },
-            });
-          });
-        },
       });
     },
   });
@@ -599,156 +693,4 @@ const hideDefenseUI = (scene: Phaser.Scene & CombatSceneState) => {
   scene.dodgeText = undefined;
   scene.parry = undefined;
   scene.parry = undefined;
-};
-
-const enemyAttackBasic = (scene: Phaser.Scene & CombatSceneState) => {
-  scene.enemy.scene.tweens.add({
-    targets: scene.enemy,
-    x: scene.player.x + 150,
-    ease: "Linear",
-    duration: 2000,
-    onStart: () => {
-      scene.enemy.anims.stop();
-      scene.enemy.anims.play("z-walk-left", true);
-    },
-    onComplete: () => {
-      scene.enemy.anims.stop();
-      scene.enemy.anims.play("z-halfslash-left");
-
-      // === DEFENSE QTE SETUP ===
-      let dodgeSuccess = false;
-      let parrySuccess = false;
-
-      const eKey = scene.input.keyboard?.addKey(
-        Phaser.Input.Keyboard.KeyCodes.E,
-      );
-      const qKey = scene.input.keyboard?.addKey(
-        Phaser.Input.Keyboard.KeyCodes.Q,
-      );
-
-      // Dodge: longer timing window
-      scene.time.delayedCall(200, () => {
-        const onDodge = () => {
-          dodgeSuccess = true;
-          scene.player.anims.play("dodge");
-          scene.player.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
-            scene.player.anims.play("player-combat-idle-right", true);
-          });
-          eKey?.off("down", onDodge);
-        };
-        eKey?.on("down", onDodge);
-
-        scene.time.delayedCall(300, () => {
-          if (!dodgeSuccess && !parrySuccess) {
-            scene.playerStats.health -= 10;
-            for (let i = 0; i < 2; i++) {
-              scene.time.delayedCall(100 * i * 2, () => {
-                scene.player.setTint(0xff0000);
-                scene.time.delayedCall(100, () => {
-                  scene.player.clearTint();
-                });
-              });
-            }
-          }
-          scene.game.events.emit("updateHUD", {
-            player: scene.playerStats,
-            enemy: scene.enemyStats,
-          });
-          eKey?.off("down", onDodge);
-        });
-      });
-
-      // Parry: shorter, stricter timing window
-      scene.time.delayedCall(200, () => {
-        const onParry = () => {
-          parrySuccess = true;
-          scene.player.anims.play("parry");
-          scene.player.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
-            scene.player.anims.play("player-combat-idle-right", true);
-          });
-          qKey?.off("down", onParry);
-        };
-        qKey?.on("down", onParry);
-
-        scene.time.delayedCall(200, () => {
-          if (!parrySuccess && !dodgeSuccess)
-            scene.game.events.emit("updateHUD", {
-              player: scene.playerStats,
-              enemy: scene.enemyStats,
-            });
-
-          qKey?.off("down", onParry);
-        });
-      });
-
-      // === After enemy attack animation ===
-      scene.enemy.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
-        scene.tweens.add({
-          targets: scene.enemy,
-          x: 1150,
-          duration: 2000,
-          onStart: () => {
-            scene.enemy.anims.play("z-walk-right", true);
-          },
-          onComplete: () => {
-            scene.enemy.anims.stop();
-            scene.enemy.anims.play("zombie-combat-idle-left");
-            scene.playerTurn = true;
-            playerUI(scene);
-            timerUI(scene);
-            scene.time.addEvent({
-              delay: 12000,
-              callback: () => {
-                enemyAttack(scene);
-              },
-            });
-          },
-        });
-      });
-    },
-  });
-};
-
-const playerParried = (scene: Phaser.Scene & CombatSceneState) => {
-  scene.tweens.add({
-    targets: scene.player,
-    y: 600,
-    duration: 400,
-    onStart: () => {
-      scene.player.anims.play("pass-out");
-      for (let i = 0; i < 2; i++) {
-        scene.time.delayedCall(100 * i * 2, () => {
-          scene.player.setTint(0xff0000);
-          scene.time.delayedCall(100, () => {
-            scene.player.clearTint();
-          });
-        });
-      }
-    },
-    onComplete: () => {
-      scene.playerStats.health -= 5;
-      scene.game.events.emit("updateHUD", {
-        player: scene.playerStats,
-        enemy: scene.enemyStats,
-      });
-      scene.player.anims.play("get-up");
-      scene.player.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
-        scene.tweens.add({
-          targets: scene.player,
-          y: 600,
-          x: 600,
-          duration: 400,
-          onStart: () => {
-            scene.player.anims.play("run-left");
-          },
-          onComplete: () => {
-            scene.player.anims.stop();
-            scene.player.anims.play("player-combat-idle-right", true);
-            qteUI(scene);
-            playerUI(scene);
-          },
-        });
-      });
-    },
-  });
 };

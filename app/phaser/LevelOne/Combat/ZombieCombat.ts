@@ -113,12 +113,12 @@ export default class ZombieCombat
     playerCombatAnimation(this);
 
     this.player = this.physics.add
-      .sprite(600, 600, "player-combat-idle", 6)
+      .sprite(500, 600, "player-combat-idle", 6)
       .setDepth(8)
       .setScale(5.5);
 
     this.enemy = this.physics.add
-      .sprite(1150, this.boss ? 572 : 600, "zombie-combat-idle", 2)
+      .sprite(1250, this.boss ? 572 : 600, "zombie-combat-idle", 2)
       .setDepth(8)
       .setScale(this.boss ? 6.5 : 5.5);
 

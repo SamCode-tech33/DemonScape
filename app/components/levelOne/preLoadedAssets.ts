@@ -214,6 +214,10 @@ const preLoadedAssets = (scene: Phaser.Scene & SceneOneState) => {
     frameWidth: 64,
     frameHeight: 64,
   });
+  scene.load.spritesheet("z-dodge", "assets/enemies/zombie/emote.png", {
+    frameWidth: 64,
+    frameHeight: 64,
+  });
 
   // SKELETON
   scene.load.spritesheet("skel-walk", "assets/npc/skelMan/walk.png", {

@@ -1,7 +1,7 @@
 import type { CombatSceneState } from "./combatSceneTypes";
 
 export const playerCombatAnimation = (
-  scene: Phaser.Scene & CombatSceneState
+  scene: Phaser.Scene & CombatSceneState,
 ) => {
   scene.anims.create({
     key: "player-combat-idle-right",
@@ -54,7 +54,7 @@ export const playerCombatAnimation = (
 };
 
 export const zombieCombatAnimation = (
-  scene: Phaser.Scene & CombatSceneState
+  scene: Phaser.Scene & CombatSceneState,
 ) => {
   scene.anims.create({
     key: "zombie-combat-idle-left",
@@ -92,6 +92,16 @@ export const zombieCombatAnimation = (
       end: 11,
     }),
     frameRate: 18,
+    repeat: 0,
+  });
+  // DODGE
+  scene.anims.create({
+    key: "z-dodge",
+    frames: scene.anims.generateFrameNumbers("z-dodge", {
+      start: 3,
+      end: 5,
+    }),
+    frameRate: 7,
     repeat: 0,
   });
   // PASSOUT
