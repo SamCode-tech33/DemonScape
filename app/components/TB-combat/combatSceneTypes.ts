@@ -1,6 +1,6 @@
 import type Phaser from "phaser";
 import type PlayerStatsManager from "@/app/state/PlayerStats";
-import type { EnemyType } from "../enemies/zombie/baseZombie/enemy";
+import type { EnemyType } from "../enemies/enemyObjectType";
 
 export interface CombatSceneState {
   music: Phaser.Sound.BaseSound;
