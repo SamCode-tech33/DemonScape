@@ -1,11 +1,12 @@
 import type Phaser from "phaser";
-import type { EnemyStats } from "./demonScapeTypes";
-import type PlayerStatsManager from "../state/PlayerStats";
+import type PlayerStatsManager from "@/app/state/PlayerStats";
+import type { EnemyType } from "../enemies/zombie/baseZombie/enemy";
 
 export interface CombatSceneState {
   music: Phaser.Sound.BaseSound;
   player: Phaser.Physics.Arcade.Sprite;
-  enemy: Phaser.Physics.Arcade.Sprite;
+  enemy: EnemyType;
+  enemySprite: Phaser.Physics.Arcade.Sprite;
   boss: boolean;
   playerTurn: boolean;
   playerAttack: boolean;
@@ -16,7 +17,6 @@ export interface CombatSceneState {
   qte: Phaser.GameObjects.Graphics | undefined;
   qteText: Phaser.GameObjects.Text | undefined;
   playerStats: PlayerStatsManager;
-  enemyStats: EnemyStats;
   timerValue: number;
   timerText: Phaser.GameObjects.Text | undefined;
   timerEvent: Phaser.Time.TimerEvent | undefined;

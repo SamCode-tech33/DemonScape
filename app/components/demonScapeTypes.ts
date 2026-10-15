@@ -13,14 +13,6 @@ export type WASDAndArrowKeys = {
   shift: Phaser.Input.Keyboard.Key;
 };
 
-export interface EnemyStats {
-  health: number;
-  maxHealth: number;
-  magic: number;
-  maxMagic: number;
-  experience: number;
-}
-
 export type NpcsInteraction = {
   name: string;
   sprite?: Phaser.GameObjects.Sprite | Phaser.Physics.Arcade.Sprite;

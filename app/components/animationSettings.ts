@@ -295,8 +295,8 @@ export const cultHeadAnimation = (scene: Phaser.Scene & SceneOneState) => {
   scene.anims.create({
     key: "cult-head-walk-left",
     frames: scene.anims.generateFrameNumbers("cult-head-walk", {
-      start: 9,
-      end: 17,
+      start: 13,
+      end: 21,
     }),
     frameRate: 10,
     repeat: -1,
@@ -304,8 +304,8 @@ export const cultHeadAnimation = (scene: Phaser.Scene & SceneOneState) => {
   scene.anims.create({
     key: "cult-head-walk-down",
     frames: scene.anims.generateFrameNumbers("cult-head-walk", {
-      start: 18,
-      end: 26,
+      start: 26,
+      end: 34,
     }),
     frameRate: 10,
     repeat: -1,
@@ -313,8 +313,8 @@ export const cultHeadAnimation = (scene: Phaser.Scene & SceneOneState) => {
   scene.anims.create({
     key: "cult-head-walk-right",
     frames: scene.anims.generateFrameNumbers("cult-head-walk", {
-      start: 27,
-      end: 35,
+      start: 39,
+      end: 47,
     }),
     frameRate: 10,
     repeat: -1,

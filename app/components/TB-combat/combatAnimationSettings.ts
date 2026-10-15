@@ -1,7 +1,7 @@
 import type { CombatSceneState } from "./combatSceneTypes";
 
 export const playerCombatAnimation = (
-  scene: Phaser.Scene & CombatSceneState
+  scene: Phaser.Scene & CombatSceneState,
 ) => {
   scene.anims.create({
     key: "player-combat-idle-right",
@@ -54,7 +54,7 @@ export const playerCombatAnimation = (
 };
 
 export const zombieCombatAnimation = (
-  scene: Phaser.Scene & CombatSceneState
+  scene: Phaser.Scene & CombatSceneState,
 ) => {
   scene.anims.create({
     key: "zombie-combat-idle-left",
@@ -94,6 +94,16 @@ export const zombieCombatAnimation = (
     frameRate: 18,
     repeat: 0,
   });
+  // DODGE
+  scene.anims.create({
+    key: "z-dodge",
+    frames: scene.anims.generateFrameNumbers("z-dodge", {
+      start: 3,
+      end: 5,
+    }),
+    frameRate: 7,
+    repeat: 0,
+  });
   // PASSOUT
   scene.anims.create({
     key: "z-pass-out",
@@ -102,6 +112,68 @@ export const zombieCombatAnimation = (
       end: 5,
     }),
     frameRate: 4,
+    repeat: 0,
+  });
+};
+
+export const cultHeadCombatAnimation = (
+  scene: Phaser.Scene & CombatSceneState,
+) => {
+  scene.anims.create({
+    key: "cult_head_thrust_left",
+    frames: scene.anims.generateFrameNumbers("cult-head-thrust-lg", {
+      start: 8,
+      end: 14,
+    }),
+    frameRate: 16,
+    repeat: 0,
+  });
+  // RUN
+  scene.anims.create({
+    key: "cult_head_backstep",
+    frames: scene.anims.generateFrameNumbers("cult-head-walk", {
+      start: 13,
+      end: 21,
+    }),
+    frameRate: 36,
+    repeat: 0,
+  });
+  // DODGE
+  scene.anims.create({
+    key: "cult_head_dodge",
+    frames: scene.anims.generateFrameNumbers("cult-head-dodge", {
+      start: 13,
+      end: 15,
+    }),
+    frameRate: 7,
+    repeat: 0,
+  });
+  //IDLE
+  scene.anims.create({
+    key: "cult_head_combat_idle",
+    frames: scene.anims.generateFrameNumbers("cult-head-combat-idle", {
+      start: 13,
+      end: 14,
+    }),
+    frameRate: 3,
+    repeat: -1,
+  });
+  scene.anims.create({
+    key: "cult_head_jump_left",
+    frames: scene.anims.generateFrameNumbers("cult-head-jump-left", {
+      start: 13,
+      end: 17,
+    }),
+    frameRate: 7,
+    repeat: 0,
+  });
+  scene.anims.create({
+    key: "cult_head_parry",
+    frames: scene.anims.generateFrameNumbers("cult-head-parry", {
+      start: 13,
+      end: 18,
+    }),
+    frameRate: 7,
     repeat: 0,
   });
 };
