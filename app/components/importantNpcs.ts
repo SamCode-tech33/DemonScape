@@ -2,7 +2,7 @@ import type { SceneOneState } from "./levelOne/SceneOneTypes";
 
 export const cultHeadNpc = (scene: Phaser.Scene & SceneOneState) => {
   scene.cultHead = scene.physics.add
-    .sprite(320, 222, "cult-head-walk", 18)
+    .sprite(320, 222, "cult-head-walk", 26)
     .setCollideWorldBounds(true)
     .setImmovable(true);
   scene.cultHead
@@ -68,7 +68,7 @@ export const skelNpc = (scene: Phaser.Scene & SceneOneState) => {
 export const ghostNpc = (
   scene: Phaser.Scene & SceneOneState,
   x: number,
-  y: number
+  y: number,
 ) => {
   scene.ghost = scene.physics.add
     .sprite(x, y, "sgr", 0)

@@ -95,6 +95,34 @@ const preLoadedAssets = (scene: Phaser.Scene & SceneOneState) => {
     frameHeight: 64,
   });
   scene.load.spritesheet(
+    "cult-head-thrust-lg",
+    "assets/npc/cult-head/thrust-lg.png",
+    {
+      frameWidth: 196,
+      frameHeight: 196,
+    },
+  );
+  scene.load.spritesheet(
+    "cult-head-combat-idle",
+    "assets/npc/cult-head/combat.png",
+    {
+      frameWidth: 64,
+      frameHeight: 64,
+    },
+  );
+  scene.load.spritesheet(
+    "cult-head-jump-left",
+    "assets/npc/cult-head/jump.png",
+    {
+      frameWidth: 64,
+      frameHeight: 64,
+    },
+  );
+  scene.load.spritesheet("cult-head-parry", "assets/npc/cult-head/slash.png", {
+    frameWidth: 64,
+    frameHeight: 64,
+  });
+  scene.load.spritesheet(
     "cult-head-spell",
     "assets/npc/cult-head/spellcast.png",
     {
@@ -102,7 +130,7 @@ const preLoadedAssets = (scene: Phaser.Scene & SceneOneState) => {
       frameHeight: 64,
     },
   );
-  scene.load.spritesheet("cult-head-emote", "assets/npc/cult-head/emote.png", {
+  scene.load.spritesheet("cult-head-dodge", "assets/npc/cult-head/emote.png", {
     frameWidth: 64,
     frameHeight: 64,
   });

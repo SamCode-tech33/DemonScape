@@ -64,6 +64,9 @@ import {
 import type { SceneOneState } from "@/app/components/levelOne/SceneOneTypes";
 import { saveGame } from "@/app/phaser/saveGame";
 import floatXP from "@/app/components/floatXP";
+import { baseZombie } from "@/app/components/enemies/zombie/baseZombie/enemy";
+import { bossZombie } from "@/app/components/enemies/zombie/bossZombie/enemy";
+import { cultHead } from "@/app/components/enemies/cultHead/enemy";
 export default class Main extends Phaser.Scene implements SceneOneState {
   public player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   public keys!: WASDAndArrowKeys;
@@ -384,7 +387,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
         this.ghostCompanion.setDepth(12);
       } else if (data?.from === "SkelMan") {
         this.skelTalk = true;
-      } else if (data?.from === "ZombieCombat") {
+      } else if (data?.from === "baseZombie") {
         // Map zomNum to corresponding sprite
         const zomMap: Record<number, Phaser.Physics.Arcade.Sprite> = {
           1: this.zom1,
@@ -404,12 +407,14 @@ export default class Main extends Phaser.Scene implements SceneOneState {
             this.time.delayedCall(520, () => zom.setPosition(-9999, -9999));
 
             if (this.zomDeathCount === 3) {
-              this.saraOneSceneNum += 1;
-              this.backgroundMusic.pause();
-              this.scene.pause("SceneOne");
               this.playerStats.prevSus = this.playerStats.suspicion;
-              this.scene.launch("SaraOne", {
-                saraOneSceneNum: this.saraOneSceneNum,
+              this.saraOneSceneNum++;
+              this.time.delayedCall(1500, () => {
+                this.backgroundMusic.pause();
+                this.scene.pause("SceneOne");
+                this.scene.launch("SaraOne", {
+                  saraOneSceneNum: this.saraOneSceneNum,
+                });
               });
             }
           });
@@ -434,7 +439,8 @@ export default class Main extends Phaser.Scene implements SceneOneState {
             this.scene.launch("GameOver");
           });
         });
-      } else if (data?.from === "ZombieCombat-boss") {
+      } else if (data?.from === "bossZombie") {
+        this.saraOneSceneNum++;
         const zomBoss = this.add
           .sprite(this.player.x, this.player.y - 50, "zWalk", 18)
           .setScale(2)
@@ -445,7 +451,6 @@ export default class Main extends Phaser.Scene implements SceneOneState {
         } else {
           zomBoss.setDepth(7);
         }
-        this.saraOneSceneNum++;
         this.cultHeadSceneNum = 4;
         zomBoss.anims.play("z-pass-out");
         floatXP(this, zomBoss.x, zomBoss.y, `+${data.experience}`);
@@ -457,8 +462,8 @@ export default class Main extends Phaser.Scene implements SceneOneState {
         this.time.delayedCall(500, () => {
           this.scene.pause("SceneOne");
           this.backgroundMusic.stop();
-          this.scene.launch("ZombieCombat", {
-            boss: true,
+          this.scene.launch("CombatTB", {
+            enemy: bossZombie(),
           });
         });
       } else if (data?.from === "LevelUpScene") {
@@ -532,7 +537,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
             this.zomNum = num;
             this.scene.pause("SceneOne");
             this.backgroundMusic.stop();
-            this.scene.launch("ZombieCombat");
+            this.scene.launch("CombatTB", { enemy: baseZombie() });
           });
           break;
         }
@@ -646,23 +651,12 @@ export default class Main extends Phaser.Scene implements SceneOneState {
 
     if (this.playerStats.suspicion >= 100) {
       this.playerStats.suspicion = this.playerStats.prevSus;
-      this.player.anims.stop();
-      this.movementDisabled = true;
-      this.player.anims.play("pass-out");
-      for (let i = 0; i < 5; i++) {
-        this.time.delayedCall(50 * i * 2, () => {
-          this.redScreen = this.flashRedScreen();
-          this.time.delayedCall(50, () => {
-            this.redScreen.destroy();
-          });
-        });
-      }
-      this.player.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
-        this.time.delayedCall(500, () => {
-          this.backgroundMusic.stop();
-          this.scene.stop("SceneOne");
-          this.scene.stop("HudScene");
-          this.scene.launch("GameOver");
+      this.time.delayedCall(1000, () => {
+        //cultHeadEvent(this);
+        this.scene.pause("SceneOne");
+        this.backgroundMusic.stop();
+        this.scene.launch("CombatTB", {
+          enemy: cultHead(),
         });
       });
     }

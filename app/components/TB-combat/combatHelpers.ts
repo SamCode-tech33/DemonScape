@@ -1,4 +1,5 @@
 import type { CombatSceneState } from "./combatSceneTypes";
+import { qteUI, playerUI } from "./combatUI";
 
 type Tween = Phaser.Types.Tweens.TweenBuilderConfig;
 
@@ -52,18 +53,62 @@ export const openQteWindow = (
   });
 
 export const applyHit = (scene: Phaser.Scene & CombatSceneState) => {
-  scene.enemyStats.health -= scene.playerStats.meleeDamage;
+  scene.enemy.enemyStats.health -= scene.playerStats.meleeDamage;
 
   for (let i = 0; i < 2; i++) {
     scene.time.delayedCall(200 * i, () => {
-      scene.enemy.setTint(0xff0000);
-      scene.time.delayedCall(100, () => scene.enemy.clearTint());
+      scene.enemySprite.setTint(0xff0000);
+      scene.time.delayedCall(100, () => scene.enemySprite.clearTint());
     });
   }
-  if (scene.boss) scene.enemy.setTint(0x660000);
+  if (scene.boss) scene.enemySprite.setTint(0x660000);
 
   scene.game.events.emit("updateHUD", {
     player: scene.playerStats,
-    enemy: scene.enemyStats,
+    enemy: scene.enemy.enemyStats,
+  });
+};
+
+export const playerParried = (scene: Phaser.Scene & CombatSceneState) => {
+  scene.tweens.add({
+    targets: scene.player,
+    y: 400,
+    duration: 400,
+    onStart: () => {
+      scene.player.anims.play("pass-out");
+      for (let i = 0; i < 2; i++) {
+        scene.time.delayedCall(100 * i * 2, () => {
+          scene.player.setTint(0xff0000);
+          scene.time.delayedCall(100, () => {
+            scene.player.clearTint();
+          });
+        });
+      }
+    },
+    onComplete: () => {
+      scene.playerStats.health -= 5;
+      scene.game.events.emit("updateHUD", {
+        player: scene.playerStats,
+        enemy: scene.enemy.enemyStats,
+      });
+      scene.player.anims.play("get-up");
+      scene.player.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+        scene.tweens.add({
+          targets: scene.player,
+          x: 400,
+          y: 600,
+          duration: 400,
+          onStart: () => {
+            scene.player.anims.play("run-left");
+          },
+          onComplete: () => {
+            scene.player.anims.stop();
+            scene.player.anims.play("player-combat-idle-right", true);
+            qteUI(scene);
+            playerUI(scene);
+          },
+        });
+      });
+    },
   });
 };

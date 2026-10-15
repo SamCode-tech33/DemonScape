@@ -34,7 +34,6 @@ interface PlayerStats {
   //derived elements
   meleeDamage: number;
   magickDamage: number;
-  rangedDamage: number;
   armorDefense: number;
   reactWindow: number;
   speed: number;
@@ -99,14 +98,9 @@ export default class PlayerStatsManager implements PlayerStats {
     return Math.floor(base + this.str * 2);
   }
 
-  get rangedDamage(): number {
-    const base = this.equipment.ranged.damageMultiplier ?? 0;
-    return Math.floor(base + this.str * 2);
-  }
-
   get magickDamage(): number {
-    const base = this.equipment.magick.damageMultiplier ?? 0;
-    return base + this.int * 2 + Math.floor(this.wis / 2);
+    const base = this.equipment.magick.damageMultiplier ?? 1;
+    return Math.floor(base + this.int * 0.5);
   }
 
   get armorDefense(): number {
@@ -160,7 +154,6 @@ export default class PlayerStatsManager implements PlayerStats {
       equipment: this.equipment,
       meleeDamage: this.meleeDamage,
       magickDamage: this.magickDamage,
-      rangedDamage: this.rangedDamage,
       armorDefense: this.armorDefense,
       reactWindow: this.reactWindow,
       speed: this.speed,

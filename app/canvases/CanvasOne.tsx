@@ -11,7 +11,7 @@ import BoxGuy from "../phaser/LevelOne/Conversations/BoxGuy";
 import SaraOne from "../phaser/LevelOne/Conversations/SaraOne";
 import Ghost from "../phaser/LevelOne/Conversations/Ghost";
 import SkelMan from "../phaser/LevelOne/Conversations/SkelMan";
-import ZombieCombat from "../phaser/LevelOne/Combat/ZombieCombat";
+import CombatTB from "../phaser/LevelOne/Combat/combatTB";
 import GameOver from "../phaser/LevelOne/GameOver";
 import GamePause from "../phaser/LevelOne/GamePause";
 import EnemyHudScene from "../phaser/UtilityScenes/EnemyHudScene";
@@ -57,7 +57,7 @@ export default function CanvasOne() {
 
     game.scene.add("BootScene", BootScene);
     game.scene.add("SceneOne", Main);
-    game.scene.add("ZombieCombat", ZombieCombat);
+    game.scene.add("CombatTB", CombatTB);
     game.scene.add("SceneHud", SceneHud);
     game.scene.add("EnemyHudScene", EnemyHudScene);
     game.scene.add("CultHead", CultHead);

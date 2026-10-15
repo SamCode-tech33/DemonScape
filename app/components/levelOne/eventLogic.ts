@@ -52,7 +52,7 @@ export const walkBackCultHead = (scene: Phaser.Scene & SceneOneState) => {
         },
         onComplete: () => {
           scene.cultHead.anims.stop();
-          scene.cultHead.setFrame(18);
+          scene.cultHead.setFrame(26);
         },
       });
     },
