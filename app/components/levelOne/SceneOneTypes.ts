@@ -52,4 +52,7 @@ export interface SceneOneState {
   itemInteractionBox: Phaser.GameObjects.Graphics | undefined;
   itemInteractionKey: Phaser.GameObjects.Text | undefined;
   level1Complete: boolean;
+  pottedPlant: Phaser.GameObjects.Sprite | undefined;
+  portalActive: boolean;
+  portalSafe: boolean;
 }

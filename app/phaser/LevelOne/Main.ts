@@ -60,6 +60,7 @@ import {
   door,
   chest,
   puzzleBooks,
+  pottedPlant,
 } from "@/app/components/levelOne/interactableObjects";
 import type { SceneOneState } from "@/app/components/levelOne/SceneOneTypes";
 import { saveGame } from "@/app/phaser/saveGame";
@@ -123,6 +124,9 @@ export default class Main extends Phaser.Scene implements SceneOneState {
   public itemInteractionKey: Phaser.GameObjects.Text | undefined;
   public level1Complete: boolean = false;
   public levelUpPending = false;
+  public pottedPlant: Phaser.GameObjects.Sprite | undefined;
+  public portalActive: boolean = false;
+  public portalSafe: boolean = false;
 
   constructor() {
     super({ key: "SceneOne" });
@@ -245,6 +249,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
     portal(this);
     chest(this);
     puzzleBooks(this);
+    pottedPlant(this);
 
     // ENEMIES
     zombies(this);
@@ -659,6 +664,39 @@ export default class Main extends Phaser.Scene implements SceneOneState {
           enemy: cultHead(),
         });
       });
+    }
+
+    console.log(
+      this.portalActive,
+      this.portalSafe,
+      this.player.x,
+      this.player.y,
+    );
+
+    if (
+      this.player.x <= 1267 &&
+      this.player.x >= 1203 &&
+      this.player.y <= 557 &&
+      this.player.y >= 493
+    ) {
+      if (this.portalActive && this.portalSafe) {
+        this.player.x = 950;
+        this.player.y = 240;
+      } else if (this.portalActive && !this.portalSafe) {
+        this.player.x = 1150;
+        this.playerStats.health -= 15;
+        for (let i = 0; i < 3; i++) {
+          this.time.delayedCall(100 * i * 2, () => {
+            this.player.setTint(0xff0000);
+            this.time.delayedCall(100, () => {
+              this.player.clearTint();
+            });
+          });
+        }
+        this.game.events.emit("updateHUD", {
+          player: this.playerStats,
+        });
+      }
     }
 
     if (this.ghostFollow && this.ghostCompanion) {

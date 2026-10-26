@@ -27,6 +27,12 @@ const itemInteractionLogic = (scene: Phaser.Scene & SceneOneState) => {
       float: 16,
       range: 28,
     },
+    {
+      name: "pottedPlant",
+      sprite: scene.pottedPlant,
+      float: 16,
+      range: 28,
+    },
   ];
 
   let itemInRange: ItemInRange = null;
@@ -127,20 +133,59 @@ const itemInteractionLogic = (scene: Phaser.Scene & SceneOneState) => {
           )
           .setDepth(50)
           .setOrigin(0.5, 0.5);
+      } else if (scene.portalActive && itemInRange.name === "pottedPlant") {
+        scene.itemInteractionBox = scene.add
+          .graphics()
+          .fillStyle(0x000000, 0.6)
+          .fillRoundedRect(-5, -5, 10, 10, 4)
+          .setDepth(50);
+
+        scene.itemInteractionBox.setPosition(
+          itemInRange.sprite.x,
+          itemInRange.sprite.y - itemInRange.float,
+        );
+        scene.itemInteractionKey = scene.add
+          .text(
+            itemInRange.sprite.x + 0.5,
+            itemInRange.sprite.y - itemInRange.float,
+            "F",
+            {
+              fontSize: "10px",
+              color: "#ffffff",
+            },
+          )
+          .setDepth(50)
+          .setOrigin(0.5, 0.5);
       }
 
       scene.input.keyboard?.once("keydown-F", () => {
         if (itemInRange) {
           if (scene.skelTalk && itemInRange.name === "puzzleBook1") {
-            const currentFrameNum = parseInt(scene.puzzleBook1.frame.name, 10);
-            const nextFrame = (currentFrameNum + 1) % 4;
-            scene.puzzleBook1.setFrame(nextFrame);
+            const bookOneFrame = parseInt(scene.puzzleBook1.frame.name, 10);
+            const bookTwoFrame = parseInt(scene.puzzleBook2.frame.name, 10);
+            const nextBookOneFrame = (bookOneFrame + 1) % 4;
+            const nextBooktwoFrame = (bookTwoFrame + 2) % 4;
+            scene.puzzleBook1.setFrame(nextBookOneFrame);
+            scene.puzzleBook2.setFrame(nextBooktwoFrame);
+            portalOn();
           } else if (scene.skelTalk && itemInRange.name === "puzzleBook2") {
-            const currentFrameNum = parseInt(scene.puzzleBook2.frame.name, 10);
-            const nextFrame = (currentFrameNum + 1) % 4;
-            scene.puzzleBook2.setFrame(nextFrame);
+            const bookOneFrame = parseInt(scene.puzzleBook1.frame.name, 10);
+            const bookTwoFrame = parseInt(scene.puzzleBook2.frame.name, 10);
+            const nextBookOneFrame = (bookOneFrame - 3) % 4;
+            const nextBooktwoFrame = (bookTwoFrame + 1) % 4;
+            scene.puzzleBook1.setFrame(nextBookOneFrame);
+            scene.puzzleBook2.setFrame(nextBooktwoFrame);
+            portalOn();
           } else if (scene.level1Complete && itemInRange.name === "door") {
             scene.door.setFrame(0);
+          } else if (scene.portalActive && itemInRange.name === "pottedPlant") {
+            if (scene.portalSafe) {
+              scene.portal.setFrame(1);
+              scene.portalSafe = false;
+            } else {
+              scene.portal.setFrame(2);
+              scene.portalSafe = true;
+            }
           } else {
             scene.chest.setFrame(1);
           }
@@ -151,6 +196,21 @@ const itemInteractionLogic = (scene: Phaser.Scene & SceneOneState) => {
   } else {
     clearInteraction();
   }
+  const portalOn = () => {
+    console.log(parseInt(scene.puzzleBook1.frame.name, 10));
+    if (
+      parseInt(scene.puzzleBook1.frame.name, 10) === 2 &&
+      parseInt(scene.puzzleBook2.frame.name, 10) === 2
+    ) {
+      scene.portal.setFrame(1);
+      scene.portalActive = true;
+      scene.portalSafe = false;
+    } else {
+      scene.portal.setFrame(0);
+      scene.portalActive = false;
+      scene.portalSafe = false;
+    }
+  };
 };
 
 export default itemInteractionLogic;

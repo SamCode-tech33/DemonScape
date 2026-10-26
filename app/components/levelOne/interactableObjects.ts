@@ -16,3 +16,7 @@ export const puzzleBooks = (scene: Phaser.Scene & SceneOneState) => {
 export const chest = (scene: Phaser.Scene & SceneOneState) => {
   scene.chest = scene.add.sprite(945, 160, "chest", 0).setDepth(6);
 };
+
+export const pottedPlant = (scene: Phaser.Scene & SceneOneState) => {
+  scene.pottedPlant = scene.add.sprite(975, 460, "pottedPlant", 0).setDepth(0);
+};
