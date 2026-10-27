@@ -18,5 +18,11 @@ export const chest = (scene: Phaser.Scene & SceneOneState) => {
 };
 
 export const pottedPlant = (scene: Phaser.Scene & SceneOneState) => {
-  scene.pottedPlant = scene.add.sprite(975, 460, "pottedPlant", 0).setDepth(0);
+  scene.pottedPlant = scene.add.sprite(975, 464, "pottedPlant", 0).setDepth(0);
+};
+
+export const returnPortal = (scene: Phaser.Scene & SceneOneState) => {
+  scene.returnPortal = scene.add
+    .sprite(960, 324, "returnPortal", 0)
+    .setDepth(6);
 };

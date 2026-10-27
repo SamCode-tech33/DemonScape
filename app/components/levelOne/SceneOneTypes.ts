@@ -55,4 +55,5 @@ export interface SceneOneState {
   pottedPlant: Phaser.GameObjects.Sprite | undefined;
   portalActive: boolean;
   portalSafe: boolean;
+  returnPortal: Phaser.GameObjects.Sprite | undefined;
 }

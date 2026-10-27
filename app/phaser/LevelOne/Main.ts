@@ -61,6 +61,7 @@ import {
   chest,
   puzzleBooks,
   pottedPlant,
+  returnPortal,
 } from "@/app/components/levelOne/interactableObjects";
 import type { SceneOneState } from "@/app/components/levelOne/SceneOneTypes";
 import { saveGame } from "@/app/phaser/saveGame";
@@ -127,6 +128,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
   public pottedPlant: Phaser.GameObjects.Sprite | undefined;
   public portalActive: boolean = false;
   public portalSafe: boolean = false;
+  public returnPortal: Phaser.GameObjects.Sprite | undefined;
 
   constructor() {
     super({ key: "SceneOne" });
@@ -250,6 +252,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
     chest(this);
     puzzleBooks(this);
     pottedPlant(this);
+    returnPortal(this);
 
     // ENEMIES
     zombies(this);
@@ -666,13 +669,6 @@ export default class Main extends Phaser.Scene implements SceneOneState {
       });
     }
 
-    console.log(
-      this.portalActive,
-      this.portalSafe,
-      this.player.x,
-      this.player.y,
-    );
-
     if (
       this.player.x <= 1267 &&
       this.player.x >= 1203 &&
@@ -697,6 +693,16 @@ export default class Main extends Phaser.Scene implements SceneOneState {
           player: this.playerStats,
         });
       }
+    }
+
+    if (
+      this.player.x <= 992 &&
+      this.player.x >= 928 &&
+      this.player.y <= 356 &&
+      this.player.y >= 292
+    ) {
+      this.player.x = 1190;
+      this.player.y = 525;
     }
 
     if (this.ghostFollow && this.ghostCompanion) {
