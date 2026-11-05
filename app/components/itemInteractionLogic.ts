@@ -7,31 +7,31 @@ const itemInteractionLogic = (scene: Phaser.Scene & SceneOneState) => {
       name: "door",
       sprite: scene.door,
       float: 48,
-      range: 28,
+      range: 48,
     },
     {
       name: "chest",
       sprite: scene.chest,
       float: 16,
-      range: 28,
+      range: 48,
     },
     {
       name: "puzzleBook1",
       sprite: scene.puzzleBook1,
       float: 16,
-      range: 28,
+      range: 48,
     },
     {
       name: "puzzleBook2",
       sprite: scene.puzzleBook2,
       float: 16,
-      range: 28,
+      range: 48,
     },
     {
       name: "pottedPlant",
       sprite: scene.pottedPlant,
       float: 16,
-      range: 28,
+      range: 48,
     },
   ];
 

@@ -128,7 +128,9 @@ export default class Main extends Phaser.Scene implements SceneOneState {
   public pottedPlant: Phaser.GameObjects.Sprite | undefined;
   public portalActive: boolean = false;
   public portalSafe: boolean = false;
-  public returnPortal: Phaser.GameObjects.Sprite | undefined;
+  public returnPortal!: Phaser.GameObjects.Sprite;
+  public ported: boolean = false;
+  public returnPorted: boolean = false;
 
   constructor() {
     super({ key: "SceneOne" });
@@ -670,39 +672,64 @@ export default class Main extends Phaser.Scene implements SceneOneState {
     }
 
     if (
-      this.player.x <= 1267 &&
-      this.player.x >= 1203 &&
-      this.player.y <= 557 &&
-      this.player.y >= 493
+      Math.abs(this.player.x - this.portal.x) <= 8 &&
+      Math.abs(this.player.y - this.portal.y) <= 8
     ) {
-      if (this.portalActive && this.portalSafe) {
-        this.player.x = 950;
-        this.player.y = 240;
+      if (this.portalActive && this.portalSafe && !this.returnPorted) {
+        this.player.x = this.returnPortal.x;
+        this.player.y = this.returnPortal.y;
+        this.player.setFrame(0);
+        this.ported = true;
       } else if (this.portalActive && !this.portalSafe) {
-        this.player.x = 1150;
-        this.playerStats.health -= 15;
-        for (let i = 0; i < 3; i++) {
-          this.time.delayedCall(100 * i * 2, () => {
+        this.movementDisabled = true;
+        this.player.x = 1120;
+        this.player.setVelocity(0, 0);
+        this.player.anims.stop();
+        this.player.anims.play("pass-out", true);
+        for (let i = 0; i < 2; i++) {
+          this.time.delayedCall(100 * i * 5, () => {
             this.player.setTint(0xff0000);
             this.time.delayedCall(100, () => {
               this.player.clearTint();
             });
           });
         }
-        this.game.events.emit("updateHUD", {
-          player: this.playerStats,
+        this.player.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+          this.time.delayedCall(500, () => {
+            this.playerStats.health -= 15;
+            this.player.anims.play("get-up", true);
+            this.movementDisabled = false;
+            this.game.events.emit("updateHUD", {
+              player: this.playerStats,
+            });
+          });
         });
       }
     }
 
     if (
-      this.player.x <= 992 &&
-      this.player.x >= 928 &&
-      this.player.y <= 356 &&
-      this.player.y >= 292
+      Math.abs(this.player.x - this.returnPortal.x) <= 8 &&
+      Math.abs(this.player.y - this.returnPortal.y) <= 8 &&
+      !this.ported
     ) {
-      this.player.x = 1190;
-      this.player.y = 525;
+      this.player.x = this.portal.x;
+      this.player.y = this.portal.y;
+      this.player.setFrame(17);
+      this.returnPorted = true;
+    }
+
+    if (
+      (this.ported && Math.abs(this.player.x - this.returnPortal.x) > 32) ||
+      Math.abs(this.player.y - this.returnPortal.y) > 32
+    ) {
+      this.ported = false;
+    }
+
+    if (
+      (this.returnPorted && Math.abs(this.player.x - this.portal.x) > 32) ||
+      Math.abs(this.player.y - this.portal.y) > 32
+    ) {
+      this.returnPorted = false;
     }
 
     if (this.ghostFollow && this.ghostCompanion) {

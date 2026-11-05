@@ -2,11 +2,12 @@ import type { SceneOneState } from "./levelOne/SceneOneTypes";
 
 const playerSprite = (
   scene: Phaser.Scene & SceneOneState,
-  collisionGroup: Phaser.Physics.Arcade.StaticGroup
+  collisionGroup: Phaser.Physics.Arcade.StaticGroup,
 ) => {
   scene.player = scene.physics.add
     .sprite(414, 500, "idle", 4)
     .setDepth(8)
+    .setOrigin(0.5, 0.9)
     .setCollideWorldBounds(true);
 
   scene.physics.add.collider(scene.player, collisionGroup);
