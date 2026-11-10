@@ -16,3 +16,13 @@ export const puzzleBooks = (scene: Phaser.Scene & SceneOneState) => {
 export const chest = (scene: Phaser.Scene & SceneOneState) => {
   scene.chest = scene.add.sprite(945, 160, "chest", 0).setDepth(6);
 };
+
+export const pottedPlant = (scene: Phaser.Scene & SceneOneState) => {
+  scene.pottedPlant = scene.add.sprite(975, 464, "pottedPlant", 0).setDepth(0);
+};
+
+export const returnPortal = (scene: Phaser.Scene & SceneOneState) => {
+  scene.returnPortal = scene.add
+    .sprite(960, 324, "returnPortal", 0)
+    .setDepth(6);
+};

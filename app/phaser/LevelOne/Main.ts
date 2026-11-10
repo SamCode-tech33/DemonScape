@@ -54,12 +54,15 @@ import {
   hallwayGirlsDialogue,
   singleTriggerDialogue,
   threeMenGroup,
+  skelComment1,
 } from "@/app/components/levelOne/floatingDialogue";
 import {
   portal,
   door,
   chest,
   puzzleBooks,
+  pottedPlant,
+  returnPortal,
 } from "@/app/components/levelOne/interactableObjects";
 import type { SceneOneState } from "@/app/components/levelOne/SceneOneTypes";
 import { saveGame } from "@/app/phaser/saveGame";
@@ -123,6 +126,18 @@ export default class Main extends Phaser.Scene implements SceneOneState {
   public itemInteractionKey: Phaser.GameObjects.Text | undefined;
   public level1Complete: boolean = false;
   public levelUpPending = false;
+  public pottedPlant: Phaser.GameObjects.Sprite | undefined;
+  public portalActive: boolean = false;
+  public portalSafe: boolean = false;
+  public returnPortal!: Phaser.GameObjects.Sprite;
+  public ported: boolean = false;
+  public returnPorted: boolean = false;
+  public skelCommentBubble!: Phaser.GameObjects.Graphics | undefined;
+  public skelComment!: Phaser.GameObjects.Text | undefined;
+  public skelPatrol!: Phaser.Tweens.TweenChain;
+  public skelCommentTimer!: Phaser.Time.TimerEvent;
+  public skelPatrolTimer!: Phaser.Time.TimerEvent;
+  public puzzleSolved: boolean = false;
 
   constructor() {
     super({ key: "SceneOne" });
@@ -245,6 +260,8 @@ export default class Main extends Phaser.Scene implements SceneOneState {
     portal(this);
     chest(this);
     puzzleBooks(this);
+    pottedPlant(this);
+    returnPortal(this);
 
     // ENEMIES
     zombies(this);
@@ -387,6 +404,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
         this.ghostCompanion.setDepth(12);
       } else if (data?.from === "SkelMan") {
         this.skelTalk = true;
+        this.skelPatrol.play();
       } else if (data?.from === "baseZombie") {
         // Map zomNum to corresponding sprite
         const zomMap: Record<number, Phaser.Physics.Arcade.Sprite> = {
@@ -486,7 +504,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
     this.cameras.main.startFollow(this.player);
     // PATROLS
     pathingAlch1(this);
-    pathingSkel(this);
+    this.skelPatrol = pathingSkel(this);
     pathingZombie1(this);
     pathingZombie2(this);
     pathingZombie3(this);
@@ -659,6 +677,73 @@ export default class Main extends Phaser.Scene implements SceneOneState {
           enemy: cultHead(),
         });
       });
+    }
+
+    if (
+      Math.abs(this.player.x - this.portal.x) <= 8 &&
+      Math.abs(this.player.y - this.portal.y) <= 8
+    ) {
+      if (this.portalActive && this.portalSafe && !this.returnPorted) {
+        this.player.x = this.returnPortal.x;
+        this.player.y = this.returnPortal.y;
+        this.player.setFrame(0);
+        this.ported = true;
+      } else if (this.portalActive && !this.portalSafe) {
+        this.movementDisabled = true;
+        this.player.x = 1120;
+        this.player.setVelocity(0, 0);
+        this.player.anims.stop();
+        this.player.anims.play("pass-out", true);
+        this.skelPatrolTimer?.remove(false);
+        this.skelPatrol.pause();
+        skelComment1(this);
+        this.skelPatrolTimer = this.time.delayedCall(5000, () =>
+          this.skelPatrol.play(),
+        );
+        for (let i = 0; i < 2; i++) {
+          this.time.delayedCall(100 * i * 5, () => {
+            this.player.setTint(0xff0000);
+            this.time.delayedCall(100, () => {
+              this.player.clearTint();
+            });
+          });
+        }
+        this.player.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+          this.time.delayedCall(500, () => {
+            this.playerStats.health -= 15;
+            this.player.anims.play("get-up", true);
+            this.movementDisabled = false;
+            this.game.events.emit("updateHUD", {
+              player: this.playerStats,
+            });
+          });
+        });
+      }
+    }
+
+    if (
+      Math.abs(this.player.x - this.returnPortal.x) <= 8 &&
+      Math.abs(this.player.y - this.returnPortal.y) <= 8 &&
+      !this.ported
+    ) {
+      this.player.x = this.portal.x;
+      this.player.y = this.portal.y;
+      this.player.setFrame(17);
+      this.returnPorted = true;
+    }
+
+    if (
+      (this.ported && Math.abs(this.player.x - this.returnPortal.x) > 32) ||
+      Math.abs(this.player.y - this.returnPortal.y) > 32
+    ) {
+      this.ported = false;
+    }
+
+    if (
+      (this.returnPorted && Math.abs(this.player.x - this.portal.x) > 32) ||
+      Math.abs(this.player.y - this.portal.y) > 32
+    ) {
+      this.returnPorted = false;
     }
 
     if (this.ghostFollow && this.ghostCompanion) {

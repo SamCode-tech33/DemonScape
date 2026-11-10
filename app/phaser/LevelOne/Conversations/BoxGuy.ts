@@ -3,6 +3,7 @@ import type {
   ConvoSceneState,
   DialogueNode,
 } from "@/app/components/demonScapeTypes";
+import type PlayerStatsManager from "@/app/state/PlayerStats";
 
 export default class BoxGuy extends Phaser.Scene implements ConvoSceneState {
   public dialogueNodes: DialogueNode[] = [
@@ -193,6 +194,7 @@ export default class BoxGuy extends Phaser.Scene implements ConvoSceneState {
   public voiceLoop: boolean = true;
   public manyOptionsNode: number = 6;
   public susText!: Phaser.GameObjects.Text;
+  public suspiciousType: boolean = false;
 
   constructor() {
     super({ key: "BoxGuy" });

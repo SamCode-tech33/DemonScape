@@ -142,6 +142,7 @@ export default class CultHead extends Phaser.Scene implements ConvoSceneState {
   public manyOptionsNode: number = -1;
   public playerStats!: PlayerStatsManager;
   public susText!: Phaser.GameObjects.Text;
+  public suspiciousType: boolean = true;
 
   constructor() {
     super({ key: "CultHead" });

@@ -65,9 +65,11 @@ export const conversationLogic = (
   });
 
   scene.susText = scene.add.text(
-    scene.scale.width - 260,
-    scene.scale.height - 160,
-    `Suspicion: ${scene.playerStats?.suspicion}%`,
+    scene.scale.width - 280,
+    scene.scale.height - 180,
+    scene.suspiciousType
+      ? `Suspicion: ${scene.playerStats?.suspicion}%`
+      : "Not Suspicious",
     {
       fontFamily: "Mostean",
       fontSize: "40px",
@@ -134,9 +136,10 @@ const onChoiceKey = function (
   if (!Number.isNaN(key) && key >= 1 && key <= 9) {
     const choice = this.dialogueNodes[this.currentNodeIndex].choices?.[key - 1];
     if (choice) {
-      if (choice.sus && this.playerStats)
+      if (choice.sus && this.playerStats) {
         this.playerStats.suspicion += choice.sus;
-      updateSus(this);
+        updateSus(this);
+      }
       this.input.keyboard?.off("keydown", onChoiceKey, this);
       showNode(choice.next, this);
     }

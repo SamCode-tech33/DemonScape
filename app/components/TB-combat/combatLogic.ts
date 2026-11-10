@@ -26,7 +26,6 @@ import type { CombatSceneState } from "./combatSceneTypes";
 // infra for multi QTE attacks and defense
 // misses will show enemy dodge or parry and delete player attackTime
 
-// create an enemy object, 3 to start (bossZom, zom, and cultHead)
 // array of objects for all of that enemy's attacks which will be used at random or with different chance weights
 // some attacks will need to pass a hasMana? check
 

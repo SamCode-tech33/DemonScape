@@ -159,6 +159,10 @@ const npcInteractionLogic = (scene: Phaser.Scene & SceneOneState) => {
             if (scene.saraOneSceneNum < 2) {
               scene.saraOneSceneNum++;
             }
+          } else if (scene.activeNpc.name === "SkelMan") {
+            scene.scene.launch(scene.activeNpc.scene, {
+              puzzleSolved: scene.puzzleSolved,
+            });
           } else {
             scene.scene.launch(scene.activeNpc.scene);
           }

@@ -4,7 +4,7 @@ import type {
   DialogueNode,
 } from "@/app/components/demonScapeTypes";
 export default class SkelMan extends Phaser.Scene implements ConvoSceneState {
-  public dialogueNodes: DialogueNode[] = [
+  public dialogue1Nodes: DialogueNode[] = [
     {
       text: "WAAAAAAZZZZZZZUUUUUPPPPPPPP?",
       emote: "",
@@ -85,7 +85,26 @@ export default class SkelMan extends Phaser.Scene implements ConvoSceneState {
       dialogueLine: "SkelManVoice",
     },
   ];
+  public dialogue2Nodes: DialogueNode[] = [
+    {
+      text: "Ah you saw through it the puzzle was a distraction. IT WAS JUST A POTTED PLANT SWITCH GEHEHEHEHEH - wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-wadawingdabadoo-Oh yeah...",
+      emote: "",
+      dialogueLine: "SkelManVoice",
+      choices: [
+        {
+          text: "1) OK...",
+          next: 1,
+        },
+      ],
+    },
+    {
+      text: "Or was it? You did indeed return the crosses to their holy orientations. This building is already inverted DOUBLE INVERTED! AHHH, YOU VERTED THE CROSSES. ....thats light-bleach work... but your a...",
+      emote: "*He rubs his boney chin*",
+      dialogueLine: "SkelManVoice",
+    },
+  ];
 
+  public dialogueNodes: DialogueNode[] = [];
   public currentNodeIndex: number = 0;
   public dialogueText!: Phaser.GameObjects.Text;
   public choiceTexts: Phaser.GameObjects.Text[] = [];
@@ -102,9 +121,21 @@ export default class SkelMan extends Phaser.Scene implements ConvoSceneState {
   public voiceLoop: boolean = true;
   public manyOptionsNode: number = -1;
   public susText!: Phaser.GameObjects.Text;
+  public suspiciousType: boolean = false;
 
   constructor() {
     super({ key: "SkelMan" });
+  }
+
+  init(data: { puzzleSolved: boolean }) {
+    switch (data.puzzleSolved) {
+      case false:
+        this.dialogueNodes = this.dialogue1Nodes;
+        break;
+      case true:
+        this.dialogueNodes = this.dialogue2Nodes;
+        break;
+    }
   }
 
   preload() {

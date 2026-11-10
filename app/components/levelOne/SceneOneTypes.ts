@@ -52,4 +52,14 @@ export interface SceneOneState {
   itemInteractionBox: Phaser.GameObjects.Graphics | undefined;
   itemInteractionKey: Phaser.GameObjects.Text | undefined;
   level1Complete: boolean;
+  pottedPlant: Phaser.GameObjects.Sprite | undefined;
+  portalActive: boolean;
+  portalSafe: boolean;
+  returnPortal: Phaser.GameObjects.Sprite | undefined;
+  skelCommentBubble: Phaser.GameObjects.Graphics | undefined;
+  skelComment: Phaser.GameObjects.Text | undefined;
+  skelPatrol: Phaser.Tweens.TweenChain;
+  skelCommentTimer: Phaser.Time.TimerEvent;
+  skelPatrolTimer: Phaser.Time.TimerEvent;
+  puzzleSolved: boolean;
 }
