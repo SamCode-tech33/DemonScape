@@ -1,5 +1,6 @@
 import type { ItemInRange, ItemsInteraction } from "./demonScapeTypes";
 import type { SceneOneState } from "./levelOne/SceneOneTypes";
+import { skelComment2 } from "./levelOne/floatingDialogue";
 
 const itemInteractionLogic = (scene: Phaser.Scene & SceneOneState) => {
   const items: ItemsInteraction = [
@@ -185,6 +186,13 @@ const itemInteractionLogic = (scene: Phaser.Scene & SceneOneState) => {
             } else {
               scene.portal.setFrame(2);
               scene.portalSafe = true;
+              scene.puzzleSolved = true;
+              scene.skelPatrolTimer?.remove(false);
+              scene.skelPatrol.pause();
+              skelComment2(scene);
+              scene.skelPatrolTimer = scene.time.delayedCall(5000, () =>
+                scene.skelPatrol.play(),
+              );
             }
           } else {
             scene.chest.setFrame(1);

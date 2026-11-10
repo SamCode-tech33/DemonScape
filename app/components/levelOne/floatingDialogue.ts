@@ -39,6 +39,73 @@ export const Alch2Dialogue = (scene: Phaser.Scene & SceneOneState) => {
   });
 };
 
+export const skelComment1 = (scene: Phaser.Scene & SceneOneState) => {
+  if (scene.skelCommentBubble) {
+    scene.skelCommentBubble.destroy();
+  }
+  if (scene.skelComment) {
+    scene.skelComment.destroy();
+  }
+
+  scene.skelCommentTimer?.remove(false);
+
+  scene.skelCommentBubble = scene.add.graphics();
+  scene.skelCommentBubble
+    .fillStyle(0x000000, 0.6)
+    .fillRoundedRect(scene.skel.x - 48, scene.skel.y - 56, 96, 32, 6)
+    .setDepth(50);
+
+  scene.skelComment = scene.add
+    .text(
+      scene.skel.x - 44,
+      scene.skel.y - 50,
+      "You should be cautious when something seems too easy hehehehe",
+      {
+        fontSize: "6px",
+        color: "#ffffff",
+        resolution: 2.5,
+        wordWrap: { width: 100 },
+      },
+    )
+    .setDepth(50);
+
+  scene.skelCommentTimer = scene.time.delayedCall(5000, () => {
+    scene.skelComment?.destroy();
+    scene.skelCommentBubble?.destroy();
+  });
+};
+
+export const skelComment2 = (scene: Phaser.Scene & SceneOneState) => {
+  if (scene.skelCommentBubble) {
+    scene.skelCommentBubble.destroy();
+  }
+  if (scene.skelComment) {
+    scene.skelComment.destroy();
+  }
+
+  scene.skelCommentTimer?.remove(false);
+
+  scene.skelCommentBubble = scene.add.graphics();
+  scene.skelCommentBubble
+    .fillStyle(0x000000, 0.6)
+    .fillRoundedRect(scene.skel.x - 48, scene.skel.y - 56, 96, 32, 6)
+    .setDepth(50);
+
+  scene.skelComment = scene.add
+    .text(scene.skel.x - 44, scene.skel.y - 50, "The bush knows the truth...", {
+      fontSize: "6px",
+      color: "#ffffff",
+      resolution: 2.5,
+      wordWrap: { width: 100 },
+    })
+    .setDepth(50);
+
+  scene.time.delayedCall(5000, () => {
+    scene.skelComment?.destroy();
+    scene.skelCommentBubble?.destroy();
+  });
+};
+
 export const hallwayGirlsDialogue = (scene: Phaser.Scene & SceneOneState) => {
   const npcs = scene.npcs.getChildren() as Phaser.Physics.Arcade.Sprite[];
   const participants = [npcs[4], npcs[6]];

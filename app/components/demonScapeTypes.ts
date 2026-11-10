@@ -82,6 +82,7 @@ export interface ConvoSceneState {
   manyOptionsNode: number;
   playerStats?: PlayerStatsManager;
   susText: Phaser.GameObjects.Text;
+  suspiciousType: boolean;
 }
 export interface SaveState {
   userId: string;

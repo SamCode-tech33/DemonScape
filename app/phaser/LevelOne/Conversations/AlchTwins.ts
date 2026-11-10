@@ -250,6 +250,7 @@ export default class AlchTwins extends Phaser.Scene implements ConvoSceneState {
   public manyOptionsNode: number = -1;
   public playerStats!: PlayerStatsManager;
   public susText!: Phaser.GameObjects.Text;
+  public suspiciousType: boolean = true;
 
   constructor() {
     super({ key: "AlchTwins" });

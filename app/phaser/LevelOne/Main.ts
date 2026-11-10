@@ -54,6 +54,7 @@ import {
   hallwayGirlsDialogue,
   singleTriggerDialogue,
   threeMenGroup,
+  skelComment1,
 } from "@/app/components/levelOne/floatingDialogue";
 import {
   portal,
@@ -131,6 +132,12 @@ export default class Main extends Phaser.Scene implements SceneOneState {
   public returnPortal!: Phaser.GameObjects.Sprite;
   public ported: boolean = false;
   public returnPorted: boolean = false;
+  public skelCommentBubble!: Phaser.GameObjects.Graphics | undefined;
+  public skelComment!: Phaser.GameObjects.Text | undefined;
+  public skelPatrol!: Phaser.Tweens.TweenChain;
+  public skelCommentTimer!: Phaser.Time.TimerEvent;
+  public skelPatrolTimer!: Phaser.Time.TimerEvent;
+  public puzzleSolved: boolean = false;
 
   constructor() {
     super({ key: "SceneOne" });
@@ -397,6 +404,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
         this.ghostCompanion.setDepth(12);
       } else if (data?.from === "SkelMan") {
         this.skelTalk = true;
+        this.skelPatrol.play();
       } else if (data?.from === "baseZombie") {
         // Map zomNum to corresponding sprite
         const zomMap: Record<number, Phaser.Physics.Arcade.Sprite> = {
@@ -496,7 +504,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
     this.cameras.main.startFollow(this.player);
     // PATROLS
     pathingAlch1(this);
-    pathingSkel(this);
+    this.skelPatrol = pathingSkel(this);
     pathingZombie1(this);
     pathingZombie2(this);
     pathingZombie3(this);
@@ -686,6 +694,12 @@ export default class Main extends Phaser.Scene implements SceneOneState {
         this.player.setVelocity(0, 0);
         this.player.anims.stop();
         this.player.anims.play("pass-out", true);
+        this.skelPatrolTimer?.remove(false);
+        this.skelPatrol.pause();
+        skelComment1(this);
+        this.skelPatrolTimer = this.time.delayedCall(5000, () =>
+          this.skelPatrol.play(),
+        );
         for (let i = 0; i < 2; i++) {
           this.time.delayedCall(100 * i * 5, () => {
             this.player.setTint(0xff0000);

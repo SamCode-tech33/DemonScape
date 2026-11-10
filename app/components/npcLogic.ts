@@ -1,9 +1,12 @@
 import type { SceneOneState } from "./levelOne/SceneOneTypes";
 
 export const depthSetting = (scene: Phaser.Scene & SceneOneState) => {
+  // Because player origin is set at the feet
+  const playerY = scene.player.y - 28;
+
   (scene.npcs.getChildren() as Phaser.Physics.Arcade.Sprite[]).forEach(
     (npc) => {
-      if (scene.player.y < npc.y) {
+      if (playerY < npc.y) {
         npc.setDepth(12);
       } else {
         npc.setDepth(7);
@@ -11,65 +14,65 @@ export const depthSetting = (scene: Phaser.Scene & SceneOneState) => {
     },
   );
 
-  if (scene.player.y < scene.boxNpc.y) {
+  if (playerY < scene.boxNpc.y) {
     scene.boxNpc.setDepth(33);
   } else {
     scene.boxNpc.setDepth(7);
   }
-  if (scene.player.y < scene.cultHead.y) {
+  if (playerY < scene.cultHead.y) {
     scene.cultHead.setDepth(12);
   } else {
     scene.cultHead.setDepth(7);
   }
-  if (scene.ghost && scene.player.y < scene.ghost.y) {
+  if (scene.ghost && playerY < scene.ghost.y) {
     scene.ghost.setDepth(12);
   } else if (scene.ghost) {
     scene.ghost.setDepth(7);
   }
-  if (scene.player.y < scene.alchTwin.y) {
+  if (playerY < scene.alchTwin.y) {
     scene.alchTwin.setDepth(12);
   } else {
     scene.alchTwin.setDepth(7);
   }
 
-  if (scene.player.y < scene.alchTwin2.y) {
+  if (playerY < scene.alchTwin2.y) {
     scene.alchTwin2.setDepth(12);
   } else {
     scene.alchTwin2.setDepth(7);
   }
 
-  if (scene.player.y < scene.sara.y) {
+  if (playerY < scene.sara.y) {
     scene.sara.setDepth(12);
   } else {
     scene.sara.setDepth(7);
   }
 
-  if (scene.player.y < scene.skel.y) {
+  if (playerY < scene.skel.y) {
     scene.skel.setDepth(12);
   } else {
     scene.skel.setDepth(7);
   }
 
-  if (scene.player.y < scene.zom1.y) {
+  if (playerY < scene.zom1.y) {
     scene.zom1.setDepth(12);
   } else {
     scene.zom1.setDepth(7);
   }
 
-  if (scene.player.y < scene.zom2.y) {
+  if (playerY < scene.zom2.y) {
     scene.zom2.setDepth(12);
   } else {
     scene.zom2.setDepth(7);
   }
 
-  if (scene.player.y < scene.zom3.y) {
+  if (playerY < scene.zom3.y) {
     scene.zom3.setDepth(12);
   } else {
     scene.zom3.setDepth(7);
   }
 
   if (scene.ghostCompanion && scene.ghostFollow) {
-    if (scene.player.y < scene.ghostCompanion.y) {
+    if (playerY < scene.ghostCompanion.y) {
       scene.ghostCompanion.setDepth(12);
     } else {
       scene.ghostCompanion.setDepth(7);
@@ -225,30 +228,25 @@ export const pathingZombie3 = (scene: Phaser.Scene & SceneOneState) => {
 };
 
 export const pathingSkel = (scene: Phaser.Scene & SceneOneState) => {
-  const moveToNextPoint = () => {
-    scene.tweens.add({
-      targets: scene.skel,
-      x: 1228,
-      duration: 6000,
-      ease: "Linear",
-      onStart: () => scene.skel.anims.play("skel-walk-right", true),
-      onComplete: () => {
-        scene.skel.anims.stop();
-        scene.tweens.add({
-          targets: scene.skel,
-          x: 1010,
-          duration: 6000,
-          ease: "Linear",
-          onStart: () => scene.skel.anims.play("skel-walk-left", true),
-          onComplete: () => {
-            scene.skel.anims.stop();
-            moveToNextPoint();
-          },
-        });
+  return scene.tweens.chain({
+    targets: scene.skel,
+    loop: -1,
+    paused: true,
+    tweens: [
+      {
+        x: 1228,
+        duration: 6000,
+        ease: "Linear",
+        onStart: () => scene.skel.anims.play("skel-walk-right", true),
       },
-    });
-  };
-  moveToNextPoint();
+      {
+        x: 1048,
+        duration: 6000,
+        ease: "Linear",
+        onStart: () => scene.skel.anims.play("skel-walk-left", true),
+      },
+    ],
+  });
 };
 
 export const pathingAlch2 = (scene: Phaser.Scene & SceneOneState) => {

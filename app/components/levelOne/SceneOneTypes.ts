@@ -56,4 +56,10 @@ export interface SceneOneState {
   portalActive: boolean;
   portalSafe: boolean;
   returnPortal: Phaser.GameObjects.Sprite | undefined;
+  skelCommentBubble: Phaser.GameObjects.Graphics | undefined;
+  skelComment: Phaser.GameObjects.Text | undefined;
+  skelPatrol: Phaser.Tweens.TweenChain;
+  skelCommentTimer: Phaser.Time.TimerEvent;
+  skelPatrolTimer: Phaser.Time.TimerEvent;
+  puzzleSolved: boolean;
 }

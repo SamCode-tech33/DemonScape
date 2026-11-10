@@ -39,12 +39,12 @@ export const mapLayering = (scene: Phaser.Scene & SceneOneState) => {
   alchemy1?.setDepth(6);
   alchemy2?.setDepth(6);
   floorObjectsLayer?.setDepth(6);
-  largeFloorObjects?.setDepth(20);
-  surfaceItemsLayer?.setDepth(21);
-  runes?.setDepth(21);
-  fire1?.setDepth(23);
-  fire2?.setDepth(23);
-  fire3?.setDepth(23);
+  largeFloorObjects?.setDepth(11);
+  surfaceItemsLayer?.setDepth(12);
+  runes?.setDepth(13);
+  fire1?.setDepth(13);
+  fire2?.setDepth(13);
+  fire3?.setDepth(13);
 
   setupManualTileAnimations(
     scene,

@@ -56,12 +56,12 @@ export const alchTwinsNpc = (scene: Phaser.Scene & SceneOneState) => {
 
 export const skelNpc = (scene: Phaser.Scene & SceneOneState) => {
   scene.skel = scene.physics.add
-    .sprite(1010, 448, "skel-walk", 18)
+    .sprite(1111, 448, "skel-walk", 18)
     .setCollideWorldBounds(true)
     .setImmovable(true);
   scene.skel
-    .setSize(scene.skel.width * 0.4, scene.skel.height * 0.4)
-    .setOffset(scene.skel.width * 0.37, scene.skel.height * 0.55);
+    .setSize(scene.skel.width * 0.4, scene.skel.height * 0.3)
+    .setOffset(scene.skel.width * 0.3, scene.skel.height * 0.7);
   scene.physics.add.collider(scene.player, scene.skel);
 };
 
