@@ -1,6 +1,7 @@
 import playerMovement from "@/app/components/playerMovement";
+import { setupDepthSorting } from "@/app/components/depthSetting";
+import type { DepthSorter } from "@/app/components/depthSetting";
 import {
-  depthSetting,
   pathingZombie1,
   pathingZombie2,
   pathingZombie3,
@@ -59,10 +60,13 @@ import {
 import {
   portal,
   door,
-  chest,
+  normalChest,
+  puzzleChest,
   puzzleBooks,
   pottedPlant,
   returnPortal,
+  brazierFire,
+  brazier,
 } from "@/app/components/levelOne/interactableObjects";
 import type { SceneOneState } from "@/app/components/levelOne/SceneOneTypes";
 import { saveGame } from "@/app/phaser/saveGame";
@@ -72,6 +76,23 @@ import { bossZombie } from "@/app/components/enemies/zombie/bossZombie/enemy";
 import { cultHead } from "@/app/components/enemies/cultHead/enemy";
 export default class Main extends Phaser.Scene implements SceneOneState {
   public player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+  //layers
+  public map!: Phaser.Tilemaps.Tilemap;
+  public floorLayer!: Phaser.Tilemaps.TilemapLayer;
+  public rugLayer!: Phaser.Tilemaps.TilemapLayer;
+  public wallsLayer!: Phaser.Tilemaps.TilemapLayer;
+  public wallThingsLayer!: Phaser.Tilemaps.TilemapLayer;
+  public hiddenFloorLayer!: Phaser.Tilemaps.TilemapLayer;
+  public floorObjectsLayer!: Phaser.Tilemaps.TilemapLayer;
+  public largeFloorObjects!: Phaser.Tilemaps.TilemapLayer;
+  public surfaceItemsLayer!: Phaser.Tilemaps.TilemapLayer;
+  public fire1!: Phaser.Tilemaps.TilemapLayer;
+  public fire2!: Phaser.Tilemaps.TilemapLayer;
+  public fire3!: Phaser.Tilemaps.TilemapLayer;
+  public runes!: Phaser.Tilemaps.TilemapLayer;
+  public alchemy1!: Phaser.Tilemaps.TilemapLayer;
+  public alchemy2!: Phaser.Tilemaps.TilemapLayer;
+
   public keys!: WASDAndArrowKeys;
   public spaceKey!: Phaser.Input.Keyboard.Key;
   public cultHead!: Phaser.Physics.Arcade.Sprite;
@@ -120,13 +141,14 @@ export default class Main extends Phaser.Scene implements SceneOneState {
   public door!: Phaser.GameObjects.Sprite;
   public puzzleBook1!: Phaser.GameObjects.Sprite;
   public puzzleBook2!: Phaser.GameObjects.Sprite;
-  public chest!: Phaser.GameObjects.Sprite;
+  public normalChest!: Phaser.Physics.Arcade.Sprite;
+  public puzzleChest!: Phaser.Physics.Arcade.Sprite;
   public skelTalk: boolean = false;
   public itemInteractionBox: Phaser.GameObjects.Graphics | undefined;
   public itemInteractionKey: Phaser.GameObjects.Text | undefined;
   public level1Complete: boolean = false;
   public levelUpPending = false;
-  public pottedPlant: Phaser.GameObjects.Sprite | undefined;
+  public pottedPlant!: Phaser.Physics.Arcade.Sprite;
   public portalActive: boolean = false;
   public portalSafe: boolean = false;
   public returnPortal!: Phaser.GameObjects.Sprite;
@@ -138,6 +160,21 @@ export default class Main extends Phaser.Scene implements SceneOneState {
   public skelCommentTimer!: Phaser.Time.TimerEvent;
   public skelPatrolTimer!: Phaser.Time.TimerEvent;
   public puzzleSolved: boolean = false;
+  public brazierFire1!: Phaser.GameObjects.Sprite;
+  public brazierFire2!: Phaser.GameObjects.Sprite;
+  public brazierFire3!: Phaser.GameObjects.Sprite;
+  public brazierFire4!: Phaser.GameObjects.Sprite;
+  public brazierFire5!: Phaser.GameObjects.Sprite;
+  public brazierFire6!: Phaser.GameObjects.Sprite;
+  public brazier1!: Phaser.Physics.Arcade.Sprite;
+  public brazier2!: Phaser.Physics.Arcade.Sprite;
+  public brazier3!: Phaser.Physics.Arcade.Sprite;
+  public brazier4!: Phaser.Physics.Arcade.Sprite;
+  public brazier5!: Phaser.Physics.Arcade.Sprite;
+  public brazier6!: Phaser.Physics.Arcade.Sprite;
+
+  private tileset!: Phaser.Tilemaps.Tileset;
+  public depthSorter!: DepthSorter;
 
   constructor() {
     super({ key: "SceneOne" });
@@ -227,7 +264,7 @@ export default class Main extends Phaser.Scene implements SceneOneState {
   }
   private createWorld() {
     // MAP
-    mapLayering(this);
+    this.tileset = mapLayering(this);
 
     // MUSIC
     this.backgroundMusic = this.sound.add("bgm-1", {
@@ -258,10 +295,13 @@ export default class Main extends Phaser.Scene implements SceneOneState {
 
     door(this);
     portal(this);
-    chest(this);
+    normalChest(this);
+    puzzleChest(this);
     puzzleBooks(this);
     pottedPlant(this);
     returnPortal(this);
+    brazierFire(this);
+    brazier(this);
 
     // ENEMIES
     zombies(this);
@@ -276,6 +316,14 @@ export default class Main extends Phaser.Scene implements SceneOneState {
     skelManAnimation(this);
 
     //EVENTS
+
+    if (this.alchEvent) {
+      fillerNpcs(this);
+      hallwayGirlsDialogue(this);
+      guysAlterDialogue(this);
+      girlsLeftWallDialogue(this);
+      threeMenGroup(this);
+    }
 
     if (!this.isLoadingSave && this.cultHeadSceneNum === 1) {
       this.movementDisabled = true;
@@ -650,6 +698,8 @@ export default class Main extends Phaser.Scene implements SceneOneState {
         playerStats: this.playerStats,
       });
     });
+    this.depthSorter = setupDepthSorting(this, this.tileset);
+    this.boxNpc.setDepth(this.boxNpc.y + 48);
   }
 
   update(_time: number, delta: number) {
@@ -664,8 +714,11 @@ export default class Main extends Phaser.Scene implements SceneOneState {
 
     // MOVEMENT AND NPC LOGIC
     playerMovement(this);
-    depthSetting(this);
-    pathingAlch2(this); //index
+    //depthSetting(this);
+    //updateFireDepth(this);
+    pathingAlch2(this);
+    this.depthSorter?.update();
+    //pottedPlantDepth(this);
 
     if (this.playerStats.suspicion >= 100) {
       this.playerStats.suspicion = this.playerStats.prevSus;

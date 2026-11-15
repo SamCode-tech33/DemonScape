@@ -32,7 +32,7 @@ export const demonCultMembers = (scene: Phaser.Scene & SceneOneState) => {
       npc.body?.setSize(npc.width * 0.33, npc.height * 0.3);
       npc.body?.setOffset(npc.width * 0.33, npc.height * 0.7);
       npc.setImmovable(true);
-    }
+    },
   );
 
   scene.physics.add.collider(scene.player, scene.npcs);

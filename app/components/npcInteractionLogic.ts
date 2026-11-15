@@ -9,7 +9,7 @@ const npcInteractionLogic = (scene: Phaser.Scene & SceneOneState) => {
       floatRect: 33,
       floatText: 42,
       scene: "AlchTwins",
-      range: 28,
+      range: 56,
     },
     {
       name: "CultHead",
@@ -17,7 +17,7 @@ const npcInteractionLogic = (scene: Phaser.Scene & SceneOneState) => {
       floatRect: 33,
       floatText: 42,
       scene: "CultHead",
-      range: 28,
+      range: 56,
     },
     {
       name: "BoxGuy",
@@ -82,7 +82,7 @@ const npcInteractionLogic = (scene: Phaser.Scene & SceneOneState) => {
         .graphics()
         .fillStyle(0x000000, 0.6)
         .fillRoundedRect(-10, -10, 20, 20, 4)
-        .setDepth(50);
+        .setDepth(10000);
 
       scene.interactionBox.setPosition(
         npcInRange.sprite.x,
@@ -100,7 +100,7 @@ const npcInteractionLogic = (scene: Phaser.Scene & SceneOneState) => {
               color: "#ffffff",
             },
           )
-          .setDepth(50);
+          .setDepth(10000);
       } else {
         scene.interactionKey = scene.add
           .text(
@@ -112,7 +112,7 @@ const npcInteractionLogic = (scene: Phaser.Scene & SceneOneState) => {
               color: "#ffffff",
             },
           )
-          .setDepth(50);
+          .setDepth(10000);
         scene.noInteraction = scene.add
           .text(
             npcInRange.sprite.x,
@@ -123,7 +123,7 @@ const npcInteractionLogic = (scene: Phaser.Scene & SceneOneState) => {
               color: "#ff0000",
             },
           )
-          .setDepth(50);
+          .setDepth(10000);
       }
 
       scene.activeNpc = { name: npcInRange.name, scene: npcInRange.scene };

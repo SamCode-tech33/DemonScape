@@ -1,85 +1,5 @@
 import type { SceneOneState } from "./levelOne/SceneOneTypes";
 
-export const depthSetting = (scene: Phaser.Scene & SceneOneState) => {
-  // Because player origin is set at the feet
-  const playerY = scene.player.y - 28;
-
-  (scene.npcs.getChildren() as Phaser.Physics.Arcade.Sprite[]).forEach(
-    (npc) => {
-      if (playerY < npc.y) {
-        npc.setDepth(12);
-      } else {
-        npc.setDepth(7);
-      }
-    },
-  );
-
-  if (playerY < scene.boxNpc.y) {
-    scene.boxNpc.setDepth(33);
-  } else {
-    scene.boxNpc.setDepth(7);
-  }
-  if (playerY < scene.cultHead.y) {
-    scene.cultHead.setDepth(12);
-  } else {
-    scene.cultHead.setDepth(7);
-  }
-  if (scene.ghost && playerY < scene.ghost.y) {
-    scene.ghost.setDepth(12);
-  } else if (scene.ghost) {
-    scene.ghost.setDepth(7);
-  }
-  if (playerY < scene.alchTwin.y) {
-    scene.alchTwin.setDepth(12);
-  } else {
-    scene.alchTwin.setDepth(7);
-  }
-
-  if (playerY < scene.alchTwin2.y) {
-    scene.alchTwin2.setDepth(12);
-  } else {
-    scene.alchTwin2.setDepth(7);
-  }
-
-  if (playerY < scene.sara.y) {
-    scene.sara.setDepth(12);
-  } else {
-    scene.sara.setDepth(7);
-  }
-
-  if (playerY < scene.skel.y) {
-    scene.skel.setDepth(12);
-  } else {
-    scene.skel.setDepth(7);
-  }
-
-  if (playerY < scene.zom1.y) {
-    scene.zom1.setDepth(12);
-  } else {
-    scene.zom1.setDepth(7);
-  }
-
-  if (playerY < scene.zom2.y) {
-    scene.zom2.setDepth(12);
-  } else {
-    scene.zom2.setDepth(7);
-  }
-
-  if (playerY < scene.zom3.y) {
-    scene.zom3.setDepth(12);
-  } else {
-    scene.zom3.setDepth(7);
-  }
-
-  if (scene.ghostCompanion && scene.ghostFollow) {
-    if (playerY < scene.ghostCompanion.y) {
-      scene.ghostCompanion.setDepth(12);
-    } else {
-      scene.ghostCompanion.setDepth(7);
-    }
-  }
-};
-
 export const pathingZombie1 = (scene: Phaser.Scene & SceneOneState) => {
   const patrolRight = () => {
     scene.tweens.add({
@@ -289,5 +209,5 @@ export const pathingAlch1 = (scene: Phaser.Scene & SceneOneState) => {
     });
   };
 
-  moveToNextPoint(); // start the loop
+  moveToNextPoint();
 };

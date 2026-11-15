@@ -2,57 +2,46 @@ import type { SceneOneState } from "./SceneOneTypes";
 import { setupManualTileAnimations } from "../../components/tiledAnimator";
 
 export const mapLayering = (scene: Phaser.Scene & SceneOneState) => {
-  const map = scene.add.tilemap("map");
-  const tiledMap = map.addTilesetImage(
+  scene.map = scene.add.tilemap("map");
+
+  const tileset = scene.map.addTilesetImage(
     "level1-master-tileset",
     "level1-master-tileset",
   );
+  if (!tileset) {
+    throw new Error("Tileset 'level1-master-tileset' failed to load");
+  }
 
-  const floorLayer = tiledMap && map.createLayer("floor", tiledMap, 0, 0);
-  const rugLayer = tiledMap && map.createLayer("rug", tiledMap, 0, 0);
-  const wallsLayer = tiledMap && map.createLayer("walls", tiledMap, 0, 0);
-  const wallThingsLayer =
-    tiledMap && map.createLayer("wall-objects", tiledMap, 0, 0);
-  const hiddenFloorLayer =
-    tiledMap && map.createLayer("hidden-floor-objects", tiledMap, 0, 0);
-  const floorObjectsLayer =
-    tiledMap && map.createLayer("floor-objects", tiledMap, 0, 0);
-  const largeFloorObjects =
-    tiledMap && map.createLayer("floor-objects2", tiledMap, 0, 0);
-  const surfaceItemsLayer =
-    tiledMap && map.createLayer("surface-items", tiledMap, 0, 0);
-  const fire1 = tiledMap && map.createLayer("fire1", tiledMap, 0, 0);
-  const fire2 = tiledMap && map.createLayer("fire2", tiledMap, 0, 0);
-  const fire3 = tiledMap && map.createLayer("fire3", tiledMap, 0, 0);
-  const runes = tiledMap && map.createLayer("runes", tiledMap, 0, 0);
-  const brokenRunes =
-    tiledMap && map.createLayer("broken-rune", tiledMap, 0, 0);
-  const alchemy1 = tiledMap && map.createLayer("alchemy1", tiledMap, 0, 0);
-  const alchemy2 = tiledMap && map.createLayer("alchemy2", tiledMap, 0, 0);
+  const makeLayer = (name: string): Phaser.Tilemaps.TilemapLayer => {
+    const layer = scene.map.createLayer(name, tileset, 0, 0);
+    if (!layer) throw new Error(`Tiled layer '${name}' not found`);
+    return layer;
+  };
 
-  floorLayer?.setDepth(1);
-  rugLayer?.setDepth(2);
-  wallsLayer?.setDepth(3);
-  wallThingsLayer?.setDepth(4);
-  brokenRunes?.setDepth(4);
-  hiddenFloorLayer?.setDepth(5);
-  alchemy1?.setDepth(6);
-  alchemy2?.setDepth(6);
-  floorObjectsLayer?.setDepth(6);
-  largeFloorObjects?.setDepth(11);
-  surfaceItemsLayer?.setDepth(12);
-  runes?.setDepth(13);
-  fire1?.setDepth(13);
-  fire2?.setDepth(13);
-  fire3?.setDepth(13);
+  scene.floorLayer = makeLayer("floor").setDepth(1);
+  scene.rugLayer = makeLayer("rug").setDepth(2);
+  scene.wallsLayer = makeLayer("walls");
+  scene.wallThingsLayer = makeLayer("wall-objects");
+  scene.floorObjectsLayer = makeLayer("floor-objects");
+  scene.largeFloorObjects = makeLayer("floor-objects2");
+  scene.surfaceItemsLayer = makeLayer("surface-items");
+  scene.fire1 = makeLayer("fire1");
+  scene.fire2 = makeLayer("fire2");
+  scene.fire3 = makeLayer("fire3");
+  scene.runes = makeLayer("runes").setDepth(20);
+  scene.alchemy1 = makeLayer("alchemy1");
+  scene.alchemy2 = makeLayer("alchemy2");
 
-  setupManualTileAnimations(
-    scene,
-    map,
-    [fire1, fire2, fire3, runes, alchemy1, alchemy2].filter(
-      (layer): layer is Phaser.Tilemaps.TilemapLayer => layer !== null,
-    ),
-  );
+  setupManualTileAnimations(scene, scene.map, [
+    scene.fire1,
+    scene.fire2,
+    scene.fire3,
+    scene.runes,
+    scene.alchemy1,
+    scene.alchemy2,
+  ]);
+
+  return tileset;
 };
 
 export const collisions = (scene: Phaser.Scene & SceneOneState) => {

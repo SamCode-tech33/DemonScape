@@ -268,6 +268,30 @@ const preLoadedAssets = (scene: Phaser.Scene & SceneOneState) => {
     frameWidth: 96,
     frameHeight: 96,
   });
+
+  scene.load.spritesheet(
+    "potted-plant",
+    "assets/animated-objects/potted-plant.png",
+    {
+      frameWidth: 96,
+      frameHeight: 96,
+    },
+  );
+
+  scene.load.spritesheet(
+    "brazier-fire",
+    "assets/animated-objects/brazier-fire.png",
+    {
+      frameWidth: 32,
+      frameHeight: 32,
+    },
+  );
+
+  scene.load.spritesheet("brazier", "assets/animated-objects/brazier.png", {
+    frameWidth: 64,
+    frameHeight: 64,
+  });
+
   scene.load.spritesheet(
     "returnPortal",
     "assets/animated-objects/return-portal.png",

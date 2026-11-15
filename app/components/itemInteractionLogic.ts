@@ -12,7 +12,7 @@ const itemInteractionLogic = (scene: Phaser.Scene & SceneOneState) => {
     },
     {
       name: "chest",
-      sprite: scene.chest,
+      sprite: scene.puzzleChest,
       float: 16,
       range: 48,
     },
@@ -70,7 +70,7 @@ const itemInteractionLogic = (scene: Phaser.Scene & SceneOneState) => {
           .graphics()
           .fillStyle(0x000000, 0.6)
           .fillRoundedRect(-5, -5, 10, 10, 4)
-          .setDepth(50);
+          .setDepth(10000);
 
         scene.itemInteractionBox.setPosition(
           itemInRange.sprite.x - 15,
@@ -86,7 +86,7 @@ const itemInteractionLogic = (scene: Phaser.Scene & SceneOneState) => {
               color: "#ffffff",
             },
           )
-          .setDepth(50)
+          .setDepth(10000)
           .setOrigin(0.5, 0.5);
       } else if (scene.level1Complete && itemInRange.name === "door") {
         scene.itemInteractionBox = scene.add
@@ -109,14 +109,14 @@ const itemInteractionLogic = (scene: Phaser.Scene & SceneOneState) => {
               color: "#ffffff",
             },
           )
-          .setDepth(50)
+          .setDepth(10000)
           .setOrigin(0.5, 0.5);
       } else if (itemInRange.name === "chest") {
         scene.itemInteractionBox = scene.add
           .graphics()
           .fillStyle(0x000000, 0.6)
           .fillRoundedRect(-5, -5, 10, 10, 4)
-          .setDepth(50);
+          .setDepth(10000);
 
         scene.itemInteractionBox.setPosition(
           itemInRange.sprite.x,
@@ -132,14 +132,14 @@ const itemInteractionLogic = (scene: Phaser.Scene & SceneOneState) => {
               color: "#ffffff",
             },
           )
-          .setDepth(50)
+          .setDepth(10000)
           .setOrigin(0.5, 0.5);
       } else if (scene.portalActive && itemInRange.name === "pottedPlant") {
         scene.itemInteractionBox = scene.add
           .graphics()
           .fillStyle(0x000000, 0.6)
           .fillRoundedRect(-5, -5, 10, 10, 4)
-          .setDepth(50);
+          .setDepth(10000);
 
         scene.itemInteractionBox.setPosition(
           itemInRange.sprite.x,
@@ -155,7 +155,7 @@ const itemInteractionLogic = (scene: Phaser.Scene & SceneOneState) => {
               color: "#ffffff",
             },
           )
-          .setDepth(50)
+          .setDepth(10000)
           .setOrigin(0.5, 0.5);
       }
 
@@ -195,7 +195,7 @@ const itemInteractionLogic = (scene: Phaser.Scene & SceneOneState) => {
               );
             }
           } else {
-            scene.chest.setFrame(1);
+            scene.puzzleChest.setFrame(1);
           }
         }
         clearInteraction();
