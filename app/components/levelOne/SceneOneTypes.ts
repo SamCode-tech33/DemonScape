@@ -1,9 +1,25 @@
 import type Phaser from "phaser";
 import type { WASDAndArrowKeys } from "../demonScapeTypes";
 import type PlayerStatsManager from "@/app/state/PlayerStats";
+import { DepthSorter } from "../depthSetting";
 
 export interface SceneOneState {
   player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+  map: Phaser.Tilemaps.Tilemap;
+  floorLayer: Phaser.Tilemaps.TilemapLayer;
+  rugLayer: Phaser.Tilemaps.TilemapLayer;
+  wallsLayer: Phaser.Tilemaps.TilemapLayer;
+  wallThingsLayer: Phaser.Tilemaps.TilemapLayer;
+  hiddenFloorLayer: Phaser.Tilemaps.TilemapLayer;
+  floorObjectsLayer: Phaser.Tilemaps.TilemapLayer;
+  largeFloorObjects: Phaser.Tilemaps.TilemapLayer;
+  surfaceItemsLayer: Phaser.Tilemaps.TilemapLayer;
+  fire1: Phaser.Tilemaps.TilemapLayer;
+  fire2: Phaser.Tilemaps.TilemapLayer;
+  fire3: Phaser.Tilemaps.TilemapLayer;
+  runes: Phaser.Tilemaps.TilemapLayer;
+  alchemy1: Phaser.Tilemaps.TilemapLayer;
+  alchemy2: Phaser.Tilemaps.TilemapLayer;
   keys: WASDAndArrowKeys;
   spaceKey: Phaser.Input.Keyboard.Key;
   cultHead: Phaser.Physics.Arcade.Sprite;
@@ -45,14 +61,15 @@ export interface SceneOneState {
   movementDisabled: boolean;
   portal: Phaser.GameObjects.Sprite;
   door: Phaser.GameObjects.Sprite;
-  chest: Phaser.GameObjects.Sprite;
+  normalChest: Phaser.Physics.Arcade.Sprite;
+  puzzleChest: Phaser.Physics.Arcade.Sprite;
   puzzleBook1: Phaser.GameObjects.Sprite;
   puzzleBook2: Phaser.GameObjects.Sprite;
   skelTalk: boolean;
   itemInteractionBox: Phaser.GameObjects.Graphics | undefined;
   itemInteractionKey: Phaser.GameObjects.Text | undefined;
   level1Complete: boolean;
-  pottedPlant: Phaser.GameObjects.Sprite | undefined;
+  pottedPlant: Phaser.Physics.Arcade.Sprite;
   portalActive: boolean;
   portalSafe: boolean;
   returnPortal: Phaser.GameObjects.Sprite | undefined;
@@ -62,4 +79,17 @@ export interface SceneOneState {
   skelCommentTimer: Phaser.Time.TimerEvent;
   skelPatrolTimer: Phaser.Time.TimerEvent;
   puzzleSolved: boolean;
+  brazierFire1: Phaser.GameObjects.Sprite;
+  brazierFire2: Phaser.GameObjects.Sprite;
+  brazierFire3: Phaser.GameObjects.Sprite;
+  brazierFire4: Phaser.GameObjects.Sprite;
+  brazierFire5: Phaser.GameObjects.Sprite;
+  brazierFire6: Phaser.GameObjects.Sprite;
+  brazier1: Phaser.Physics.Arcade.Sprite;
+  brazier2: Phaser.Physics.Arcade.Sprite;
+  brazier3: Phaser.Physics.Arcade.Sprite;
+  brazier4: Phaser.Physics.Arcade.Sprite;
+  brazier5: Phaser.Physics.Arcade.Sprite;
+  brazier6: Phaser.Physics.Arcade.Sprite;
+  depthSorter: DepthSorter;
 }

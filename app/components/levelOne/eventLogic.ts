@@ -3,7 +3,7 @@ import type { SceneOneState } from "./SceneOneTypes";
 export const cultHeadEvent = (scene: Phaser.Scene & SceneOneState) => {
   scene.tweens.add({
     targets: scene.cultHead,
-    y: scene.player.y + 40,
+    y: scene.player.y + 16,
     duration: 1100,
     onStart: () => {
       scene.cultHead.anims.play("cult-head-walk-down", true);

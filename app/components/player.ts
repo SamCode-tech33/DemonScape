@@ -5,7 +5,7 @@ const playerSprite = (
   collisionGroup: Phaser.Physics.Arcade.StaticGroup,
 ) => {
   scene.player = scene.physics.add
-    .sprite(414, 500, "idle", 4)
+    .sprite(416, 516, "idle", 4)
     .setDepth(10)
     .setOrigin(0.5, 0.9)
     .setCollideWorldBounds(true);

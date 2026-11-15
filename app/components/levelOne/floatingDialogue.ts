@@ -21,7 +21,7 @@ export const Alch2Dialogue = (scene: Phaser.Scene & SceneOneState) => {
           16,
           6,
         )
-        .setDepth(50);
+        .setDepth(10000);
 
       scene.chatTextAlch2 = scene.add
         .text(scene.alchTwin2.x - 21, scene.alchTwin2.y - 35, "uahhnn....❤️", {
@@ -29,7 +29,7 @@ export const Alch2Dialogue = (scene: Phaser.Scene & SceneOneState) => {
           color: "#ffffff",
           resolution: 2.5,
         })
-        .setDepth(50);
+        .setDepth(10000);
 
       scene.time.delayedCall(2000, () => {
         scene.chatBubbleAlch2?.destroy();
@@ -53,7 +53,7 @@ export const skelComment1 = (scene: Phaser.Scene & SceneOneState) => {
   scene.skelCommentBubble
     .fillStyle(0x000000, 0.6)
     .fillRoundedRect(scene.skel.x - 48, scene.skel.y - 56, 96, 32, 6)
-    .setDepth(50);
+    .setDepth(10000);
 
   scene.skelComment = scene.add
     .text(
@@ -67,7 +67,7 @@ export const skelComment1 = (scene: Phaser.Scene & SceneOneState) => {
         wordWrap: { width: 100 },
       },
     )
-    .setDepth(50);
+    .setDepth(10000);
 
   scene.skelCommentTimer = scene.time.delayedCall(5000, () => {
     scene.skelComment?.destroy();
@@ -89,7 +89,7 @@ export const skelComment2 = (scene: Phaser.Scene & SceneOneState) => {
   scene.skelCommentBubble
     .fillStyle(0x000000, 0.6)
     .fillRoundedRect(scene.skel.x - 48, scene.skel.y - 56, 96, 32, 6)
-    .setDepth(50);
+    .setDepth(10000);
 
   scene.skelComment = scene.add
     .text(scene.skel.x - 44, scene.skel.y - 50, "The bush knows the truth...", {
@@ -98,7 +98,7 @@ export const skelComment2 = (scene: Phaser.Scene & SceneOneState) => {
       resolution: 2.5,
       wordWrap: { width: 100 },
     })
-    .setDepth(50);
+    .setDepth(10000);
 
   scene.time.delayedCall(5000, () => {
     scene.skelComment?.destroy();
@@ -216,15 +216,15 @@ export const singleTriggerDialogue = (
       "YOU ARE NOT ALLOWED TO LEAVE UNTIL MAELVOTH GIVES THE ALL CLEAR. DO NOT APPROACH.";
   }
   if (npcInRange) {
-    if (!scene.approachBox) {
+    if (!scene.approachBox && scene.alchEvent) {
       scene.approachBox = scene.add
         .graphics()
         .fillStyle(0x000000, 0.6)
         .fillRoundedRect(npcInRange.x - 48, npcInRange.y - 60, 104, 40, 6)
-        .setDepth(50);
+        .setDepth(10000);
     }
 
-    if (!scene.approachText) {
+    if (!scene.approachText && scene.alchEvent) {
       scene.approachText = scene.add
         .text(npcInRange.x - 43, npcInRange.y - 55, line, {
           fontSize: "5px",
@@ -232,9 +232,9 @@ export const singleTriggerDialogue = (
           resolution: 3,
           wordWrap: { width: 100 },
         })
-        .setDepth(50);
+        .setDepth(10000);
     } else {
-      scene.approachText.setText(line);
+      scene.approachText?.setText(line);
     }
   } else if (scene.approachBox && scene.approachText) {
     scene.approachBox.destroy();
@@ -254,24 +254,20 @@ const convo = (
   textOffsetX: number,
   textOffsetY: number,
   group: boolean,
+  count = 0,
 ) => {
   let npc: Phaser.Physics.Arcade.Sprite | undefined;
-  let count = 0;
   if (group) {
-    if (count === 0 || count === 3) {
-      npc = participants[0];
-    } else if (count === 1 || count === 4) {
-      npc = participants[1];
-    } else {
-      npc = participants[2];
-    }
+    if (count === 0 || count === 3) npc = participants[0];
+    else if (count === 1 || count === 4) npc = participants[1];
+    else npc = participants[2];
   } else {
     npc = participants[count % 2];
   }
 
   const line = lines[count];
   if (!npc || !line) {
-    count = 0;
+    // conversation finished: wait, then restart from 0
     scene.time.delayedCall(16000, () =>
       convo(
         scene,
@@ -282,15 +278,17 @@ const convo = (
         textOffsetX,
         textOffsetY,
         group,
+        0,
       ),
     );
     return;
   }
+
   const chatBubble = scene.add.graphics();
   chatBubble
     .fillStyle(0x000000, 0.6)
     .fillRoundedRect(npc.x - boxOffsetX, npc.y - boxOffsetY, 104, 24, 6)
-    .setDepth(50);
+    .setDepth(10000);
   const chatText = scene.add
     .text(npc.x - textOffsetX, npc.y - textOffsetY, line, {
       fontSize: "6px",
@@ -298,12 +296,13 @@ const convo = (
       resolution: 2.5,
       wordWrap: { width: 100 },
     })
-    .setDepth(50);
+    .setDepth(10000);
+
   scene.time.delayedCall(3000, () => {
     chatBubble.destroy();
     chatText.destroy();
   });
-  count++;
+
   scene.time.delayedCall(3200, () =>
     convo(
       scene,
@@ -314,6 +313,7 @@ const convo = (
       textOffsetX,
       textOffsetY,
       group,
+      count + 1,
     ),
   );
 };
